@@ -55,5 +55,25 @@ jobs:
             exit 1
           fi
 
+      # The registry refactor (PR #4) promises that the default reading is unchanged. That is
+      # only evidence if the comparison ran against the vectors too, so the receipt the golden
+      # test writes is asserted here rather than trusted from a green build.
+      - name: Assert the default-behavior golden compared everything
+        run: |
+          receipt=target/default-behavior-golden.properties
+          if [ ! -s "$receipt" ]; then
+            echo "missing $receipt - DefaultBehaviorGoldenTest did not run" >&2
+            exit 1
+          fi
+          cat "$receipt"
+          for pair in vectorsCompared=228 documentsCompared=47 selectionCasesCompared=304 kindsCompared=18; do
+            key=${pair%%=*}; want=${pair##*=}
+            got=$(sed -n "s/^$key=//p" "$receipt")
+            if [ "$got" != "$want" ]; then
+              echo "$key=$got, expected $want" >&2
+              exit 1
+            fi
+          done
+
       - name: Package
         run: ./mvnw -B -ntp -DskipTests package

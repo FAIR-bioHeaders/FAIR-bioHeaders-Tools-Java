@@ -52,7 +52,14 @@ Check the adoption decision and released support before implementing a
 proposal; an issue or PR's existence does not establish adoption. **FHT and
 FHGM are drafts (rule V7): they have no released contract, no `schemaVersion`,
 no w3id URL, no entry in the shared registry, and no support claim — and a
-draft never takes a release form.** This library implements no draft lane.
+draft never takes a release form.** This repository registers no draft: the
+shipped `schemas/bundled.json` has no draft row, so no draft citation is
+recognised and rule V5 governs such a value. The reader does carry the V7
+lane *machinery* (`Options.enableDraftContracts`, a registry `types` row with
+`status: draft` and pinned bytes, a digest check at bundle build, and a V7
+warning on every record read that way); using it for a real type is a
+deliberate change with its own review, pinned commit and SHA-256, and still
+not a support or release claim.
 
 ## Technical constraints of this tree
 
@@ -134,10 +141,22 @@ This section applies only to FAIR-bioHeaders-Tools-Java.
 
 - Module map: `HeaderScan` (R1-R7/R10/G1 bytes + checksum coverage),
   `PortableYaml` (R8/R12/R13 typing into Jackson `JsonNode`), `SchemaSelection`
-  (V1-V6 + near-miss), `SchemaBundle` (bundled contracts + networknt
-  validation), `UriSchemes` (R14), `BioHeaders` (facade), `cli.Main` (verify).
+  (V1-V6 + near-miss, and V7 when a draft row is opted in), `SchemaBundle`
+  (bundled contracts + networknt validation + draft digest verification),
+  `TypeRegistry`/`HeaderTypeDef` (header types as registry data), `Options`
+  (the V7 opt-in knob), `DraftLog` (the `java.util.logging` channel for lane
+  warnings), `UriSchemes` (R14), `BioHeaders` (facade), `cli.Main` (verify).
   Public API is `org.fairbioheaders.BioHeaders`, `VerifyResult`, `Issue`,
-  `Kind`, `FhType`; everything else is internal.
+  `Kind`, `FhType`, `Options`; everything else is internal.
+- **Default behavior is pinned by a golden.**
+  `src/test/resources/golden/default-behavior-v0.6.0.json` is the canonical
+  fingerprint generated from commit `237da6c` (released-contract behavior: 228
+  vector verdicts, 304 selection outcomes, 47 header documents, the release
+  registry, container inference) and `DefaultBehaviorGoldenTest` requires it to
+  reproduce byte-for-byte. A change that moves the fingerprint is allowed only
+  as a labelled behavior change with the reason stated and the golden regenerated
+  from the *predecessor* commit — never refresh the golden to make a test pass.
+  `GoldenDumpTest -Dfh.golden.write=<path>` is the generator.
 - Java 17 is the baseline; keep dependencies few and licensed per
   docs/DEPENDENCIES.md, and never add one without recording its license there.
 - The vector tests locate the specification checkout via `-Dfh.spec.dir`,

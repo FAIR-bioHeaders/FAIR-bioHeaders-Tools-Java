@@ -11,7 +11,7 @@ Key facts (this library bundles contract copies of FAIR-bioHeaders-Specification
 - Many FASTA tools reject a leading `;~` block, including samtools faidx (htslib), pysam `FastaFile`, bedtools getfasta, Picard, Bowtie2, HISAT2, STAR, salmon and Biopython's default `fasta` format. Use `bioheaders strip` (Python toolkit) to make a plain copy, or `SeqIO.parse(path, "fasta-pearson")` in Biopython. GFF3 and GFA tools surveyed accept `#~` lines.
 - Plain YAML scalars must read identically under YAML 1.1 and YAML 1.2 (rule R12): `010`, `1_000`, `1:30`, `yes`, `1e3` and explicit tags are invalid; the reader enforces this with its own resolver pinned to the reference toolkit's behavior, not the parser's.
 - Extension fields (rule R15, from FHR 2.1 and FHP/FHGFF3 1.1): top-level `^x-[A-Za-z0-9][A-Za-z0-9_.-]*$` keys are accepted and carry no standard meaning; every other unknown key is invalid and nested objects stay closed.
-- No schema is released for FHT or FHGM (drafts, rule V7): no `schemaVersion`, no w3id URL, no registry row. This library implements no draft lane; such citations fall to rule V5 (read as FHR, with a near-miss warning) and are not supported.
+- No schema is released for FHT or FHGM (drafts, rule V7): no `schemaVersion`, no w3id URL, no registry row. This library registers no draft: header types are registry data (`schemas/bundled.json` `types`), and the shipped registry carries only FHR, FHP and FHGFF3, so a draft citation falls to rule V5 (read as FHR, with a near-miss warning) whatever the caller sets. The rule V7 lane is explicit opt-in only (`Options.builder().enableDraftContracts(true)`, system property `org.fairbioheaders.experimental.drafts`, environment variable `FAIR_BIOHEADERS_EXPERIMENTAL_DRAFTS`), reads only pinned bytes (commit + SHA-256, verified at bundle build), warns on every record, and never gives a draft a release form. Using it is not a support claim.
 
 ## Using it
 
@@ -23,7 +23,7 @@ VerifyResult r = new BioHeaders().verifyFile(Path.of("genome.fhr.fasta"));
 r.isValid(); r.status();          // VALID | INVALID | UNSUPPORTED_VERSION
 r.computedChecksum();             // recomputed SHA-512/256 (R3/R4)
 r.metadata();                     // parsed header as a Jackson JsonNode
-r.issues();                       // rule-labelled errors and warnings (R11, R14, V5, V6)
+r.issues();                       // rule-labelled errors and warnings (R11, R14, V5, V6, V7)
 ```
 
 CLI: `java -cp target/classes:<deps> org.fairbioheaders.cli.Main verify FILE...` (exit 0 only when every file verifies).
@@ -31,8 +31,8 @@ CLI: `java -cp target/classes:<deps> org.fairbioheaders.cli.Main verify FILE...`
 ## Scope boundaries
 
 - Implemented: containers FASTA/GFA/GFF3, FORMAT.md R1-R8 and R10-R14, FHGFF3.md G1-G3 placement and contract checks, SCHEMA-VERSIONS.md V1-V6 selection, draft/2020-12 validation with format assertions, bundled frozen schema copies v0.3.0-v0.6.0 with SHA-256 provenance.
-- Not implemented: header writing, conversion, stripping, faidx, link verification, HTML microdata and JSON-LD bindings, GFF3 feature-line validation (use gff3-validator), and any FHT/FHGM draft support. `docs/STATUS.md` records the shared-conformance results (228 embedded-header vectors; the 63 microdata/JSON-LD vectors are not run) and lists what is not verified.
-- Acceptance is the shared 291-vector conformance suite of FAIR-bioHeaders-Specification (`conformance/manifest.json`); run with `./mvnw test -Dfh.spec.dir=<spec-checkout>`.
+- Not implemented: header writing, conversion, stripping, faidx, link verification, HTML microdata and JSON-LD bindings, GFF3 feature-line validation (use gff3-validator), and any FHT/FHGM reading (no draft is registered in this build). `docs/STATUS.md` records the shared-conformance results (228 embedded-header vectors; the 63 microdata/JSON-LD vectors are not run) and lists what is not verified.
+- Acceptance is the shared 291-vector conformance suite of FAIR-bioHeaders-Specification (`conformance/manifest.json`); run with `./mvnw test -Dfh.spec.dir=<spec-checkout>`. Default behavior is additionally pinned by a committed fingerprint of the released-contract reading (`src/test/resources/golden/default-behavior-v0.6.0.json`, `DefaultBehaviorGoldenTest`).
 
 ## References
 

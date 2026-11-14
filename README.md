@@ -24,8 +24,13 @@ bytes.
 | FHP | protein FASTA | `https://w3id.org/fair-bioheaders/fhp/v0.6.0` | `'1.2'` |
 | FHGFF3 | GFF3 annotation | `https://w3id.org/fair-bioheaders/fhgff3/v0.6.0` | `'1.2'` |
 
-FHT and FHGM have **no released contract** (drafts; specification rule V7) and
-this library implements no draft lane for them.
+FHT and FHGM have **no released contract** (drafts; specification rule V7): no
+`schemaVersion`, no w3id URL, no row in the shared registry, and nothing pinned
+in this jar. Header types here are registry data, so a draft could only ever
+join as an explicit opt-in row with its own pinned bytes
+(`Options.builder().enableDraftContracts(true)`), and this build registers none:
+a draft URL in a `schema` field falls to rule V5 (read as FHR, with the
+near-miss warning) exactly as before. See [docs/STATUS.md](docs/STATUS.md).
 
 ## Requirements
 

@@ -1,0 +1,39 @@
+{
+  "description": "Test-only registry for the digest-pin guard: identical to bundled-proof.json except that the PRT draft pin records a sha256 that the pinned bytes do not have. Building a bundle from it with the draft lane enabled must fail instead of reading a draft that does not match its own provenance (SCHEMA-VERSIONS.md V7: 'when the bytes a reader holds no longer match the digest it states, it says so instead of quietly choosing a newer draft').",
+  "types": [
+    { "fileKey": "FHR",    "urlKey": "fhr",    "status": "released", "transport": "embedded-header" },
+    { "fileKey": "FHP",    "urlKey": "fhp",    "status": "released", "transport": "embedded-header" },
+    { "fileKey": "FHGFF3", "urlKey": "fhgff3", "status": "released", "transport": "embedded-header" },
+    {
+      "fileKey": "PRT",
+      "urlKey": "prt",
+      "status": "draft",
+      "transport": "embedded-header",
+      "uriFields": ["protocol"],
+      "draft": {
+        "status": "draft",
+        "file": "proof-draft.json",
+        "citation": "https://raw.githubusercontent.com/FAIR-bioHeaders/Proof-Specification/main/prt.json",
+        "repository": "Proof-Specification",
+        "commit": "000102030405060708090a0b0c0d0e0f10111213",
+        "sha256": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+        "retrieved": "2026-11-14"
+      }
+    }
+  ],
+  "current": {
+    "release": "v0.6.0",
+    "files": {
+      "FHR": "org/fairbioheaders/schemas/fhr-2.1.json",
+      "FHP": "org/fairbioheaders/schemas/fhp-1.2.json",
+      "FHGFF3": "org/fairbioheaders/schemas/fhgff3-1.2.json"
+    }
+  },
+  "releases": {
+    "v0.6.0": {
+      "FHR": "org/fairbioheaders/schemas/fhr-2.1.json",
+      "FHP": "org/fairbioheaders/schemas/fhp-1.2.json",
+      "FHGFF3": "org/fairbioheaders/schemas/fhgff3-1.2.json"
+    }
+  }
+}

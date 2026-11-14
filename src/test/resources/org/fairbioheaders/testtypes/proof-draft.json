@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/fair-bioheaders-testtypes/proof-draft.json",
+  "title": "Test-only draft contract for the header-type registry (not a FAIR-bioHeaders contract)",
+  "description": "This file exists so FAIR-bioHeaders-Tools-Java#4 can show that adding a header type is a registry row plus pinned bytes, with no change to the reader. It is deliberately NOT one of the family's contracts and is never referenced by the shipped schemas/bundled.json: FHT and FHGM have no released contract, and their draft bytes, when they are added, are their development repositories' own files. The keywords here are the minimum needed to observe which contract the reader selected and which field list rule R14 used.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocol"],
+  "properties": {
+    "schema": {"type": "string"},
+    "checksum": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9+/]{43}=$"
+    },
+    "protocol": {
+      "type": "string",
+      "format": "uri"
+    },
+    "relatedLink": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "format": "uri"}
+    },
+    "marker": {
+      "const": "proof-draft"
+    }
+  }
+}
