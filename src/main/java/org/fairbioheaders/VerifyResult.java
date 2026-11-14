@@ -24,14 +24,21 @@ public final class VerifyResult {
     private final String computedChecksum;
     private final JsonNode metadata;
     private final List<Issue> issues;
+    private final List<ParentLinks.Verdict> parentLinkVerdicts;
 
     VerifyResult(Status status, String statedChecksum, String computedChecksum,
                  JsonNode metadata, List<Issue> issues) {
+        this(status, statedChecksum, computedChecksum, metadata, issues, List.of());
+    }
+
+    VerifyResult(Status status, String statedChecksum, String computedChecksum,
+                 JsonNode metadata, List<Issue> issues, List<ParentLinks.Verdict> parentLinkVerdicts) {
         this.status = status;
         this.statedChecksum = statedChecksum;
         this.computedChecksum = computedChecksum;
         this.metadata = metadata;
         this.issues = List.copyOf(issues);
+        this.parentLinkVerdicts = List.copyOf(parentLinkVerdicts);
     }
 
     public Status status() {
@@ -67,6 +74,15 @@ public final class VerifyResult {
 
     public List<Issue> warnings() {
         return issues.stream().filter(i -> i.severity() == Severity.WARNING).toList();
+    }
+
+    /**
+     * The per-entry parent-link verdicts, in document order: non-empty only when the caller passed
+     * a {@link ParentLinks.ParentSource}. An {@link ParentLinks.State#UNCHECKED} entry is a link
+     * nobody verified, not a passing one.
+     */
+    public List<ParentLinks.Verdict> parentLinkVerdicts() {
+        return parentLinkVerdicts;
     }
 
     /** True when any issue carries the given rule label. */

@@ -86,15 +86,40 @@ public final class BioHeaders {
 
     /** Verify a file on disk; the container is inferred from the file name. */
     public VerifyResult verifyFile(Path file) throws IOException {
-        return verify(readAll(file), kindFor(file.getFileName().toString()));
+        return verifyFile(file, null);
+    }
+
+    /**
+     * Verify a file on disk and, when the caller supplies parent files, its {@code derivedFrom}
+     * links too. {@code null} is exactly {@link #verifyFile(Path)}.
+     */
+    public VerifyResult verifyFile(Path file, ParentLinks.ParentSource parents) throws IOException {
+        return verify(readAll(file), kindFor(file.getFileName().toString()), parents);
     }
 
     /** Verify already-read (decompressed) bytes of a given container. */
     public VerifyResult verify(byte[] data, Kind kind) {
+        return verify(data, kind, null);
+    }
+
+    /**
+     * Verify bytes and, where the caller hands over the parent files, check the record's
+     * {@code derivedFrom} links too (see {@link ParentLinks}).
+     *
+     * <p>Passing {@code null} is exactly {@link #verify(byte[], Kind)}. With a source, each link
+     * whose recomputed parent checksum differs becomes an ERROR under the label
+     * {@value ParentLinks#RULE}; a link whose parent was not supplied stays a warning-free
+     * {@code UNCHECKED} verdict and changes no verdict, because an absent parent is not evidence
+     * about the child. The distinction - and the requirement that a failing link be reported
+     * rather than passed - is the SCHEMA/FORMAT position the FHT development suite states as its
+     * rule C3.
+     */
+    public VerifyResult verify(byte[] data, Kind kind, ParentLinks.ParentSource parents) {
         List<Issue> issues = new ArrayList<>();
         String stated = null;
         String computed = null;
         JsonNode metadata = null;
+        List<ParentLinks.Verdict> verdicts = List.of();
         try {
             HeaderScan.checkBom(kind, data);
             HeaderScan scan = HeaderScan.of(kind, data);
@@ -130,12 +155,16 @@ public final class BioHeaders {
             }
             issues.addAll(SchemaBundle.validate(bundle.contract(type, release), metadata));
             UriSchemes.collect(types.def(type), metadata, issues);
+            if (parents != null) {
+                verdicts = ParentLinks.check(metadata, parents);
+                issues.addAll(ParentLinks.issues(verdicts));
+            }
         } catch (ScanException e) {
             issues.add(Issue.error(e.rule(), e.getMessage()));
         }
         boolean invalid = issues.stream().anyMatch(i -> i.severity() == Severity.ERROR);
         return new VerifyResult(invalid ? VerifyResult.Status.INVALID : VerifyResult.Status.VALID,
-            stated, computed, metadata, issues);
+            stated, computed, metadata, issues, verdicts);
     }
 
     /** Infer the container from a file name (extension comparisons are case-insensitive). */

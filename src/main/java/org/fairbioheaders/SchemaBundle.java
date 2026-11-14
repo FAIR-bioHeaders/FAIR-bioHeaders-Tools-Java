@@ -108,7 +108,7 @@ public final class SchemaBundle {
             throw new UncheckedIOException(e);
         }
         this.registry = loaded;
-        this.types = TypeRegistry.of(loaded, options);
+        this.types = TypeRegistry.of(this, loaded, options);
         JsonNode releases = loaded.get("releases");
         releaseOrder = new ArrayList<>();
         for (String release : releases.propertyNames()) {
@@ -169,6 +169,54 @@ public final class SchemaBundle {
         return names;
     }
 
+    /**
+     * An unreleased draft contract this jar declares: the citation the lane recognises, the
+     * development repository and commit the bytes came from, and their SHA-256. Names here carry
+     * no release meaning - see docs/CAPABILITY-MATRIX.md.
+     */
+    public record Draft(String type, String citation, String repository, String commit,
+                        String sha256, String retrieved, String file, String source, String enable,
+                        String suiteCommit, String suiteManifestSha256) {
+    }
+
+    /**
+     * Every draft row the shipped registry declares, whether or not this instance is opted in: the
+     * discovery call for {@link Options.Builder#enableDraft(String)}, and the source of the
+     * commit-and-digest statement rule V7 requires on each record read that way.
+     */
+    public List<Draft> drafts() {
+        List<Draft> out = new ArrayList<>();
+        for (JsonNode entry : registry.path("types")) {
+            if (!"draft".equals(entry.path("status").asString(""))) {
+                continue;
+            }
+            JsonNode draft = entry.path("draft");
+            out.add(new Draft(entry.path("fileKey").asString(""),
+                draft.path("citation").asString(""), draft.path("repository").asString(""),
+                draft.path("commit").asString(""), draft.path("sha256").asString(""),
+                draft.path("retrieved").asString(""), draft.path("file").asString(""),
+                draft.path("source").asString(""), draft.path("enable").asString(""),
+                draft.path("suiteCommit").asString(""),
+                draft.path("suiteManifestSha256").asString("")));
+        }
+        return out;
+    }
+
+    /** The draft contract this bundle pins for {@code fileKey}, or null when it declares none. */
+    public Draft draft(String fileKey) {
+        for (Draft draft : drafts()) {
+            if (draft.type().equalsIgnoreCase(fileKey)) {
+                return draft;
+            }
+        }
+        return null;
+    }
+
+    /** The SHA-256 of bytes as lower-case hex, the same form the provenance records use. */
+    public static String sha256(byte[] bytes) {
+        return sha256Hex(bytes);
+    }
+
     /** The release whose copies {@code main} currently equals, e.g. {@code v0.6.0}. */
     public String currentRelease() {
         JsonNode current = registry.get("current").get("release");
@@ -212,6 +260,11 @@ public final class SchemaBundle {
     /** The compiled contract for a (type, release) selection. */
     Schema contract(FhType type, String release) {
         if (type.isDraft()) {
+            if (!"main".equals(release)) {
+                throw new IllegalArgumentException(type.fileKey() + " is an unreleased draft: it has "
+                    + "no release " + release + " to select, and rule V7 never gives a draft a "
+                    + "release form");
+            }
             HeaderTypeDef def = types.def(type);
             return cache.computeIfAbsent("draft@" + def.draft().file(), key -> {
                 byte[] bytes = readBytes(def.draft().file());

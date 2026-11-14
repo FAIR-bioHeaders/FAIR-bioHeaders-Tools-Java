@@ -1,5 +1,5 @@
 {
-  "description": "Provenance of the bundled schema copies (the family convention of FAIR-bioHeaders-Specification release tags as the source; see FAIR-bioHeaders-Tools bioheaders/schemas/ and FHGFF3 header/provenance.json). Each file was extracted from the named tag of the FAIR-bioHeaders-Specification repository with `git show <tag>:<name>.json` and is recorded here by the tag's commit and the SHA-256 of the exact bytes. Every copy was additionally verified byte-identical to the frozen copy shipped in the released fair-bioheaders 0.11.0 Python package on 2026-11-14.",
+  "description": "Provenance of the contract copies bundled with this jar. Two kinds of entry, on purpose: 'files' are frozen copies of FAIR-bioHeaders-Specification RELEASE tags (governed by selection rules V1-V4), and 'drafts' are unreleased development contracts read only through the rule V7 opt-in lane. Each entry records the source repository, the commit, the exact path, the SHA-256 of the bytes and the retrieval date; the family convention is that a copied tree is pinned by commit and digest together. CapabilityTest and DraftProvenanceTest re-compute every digest on every build, so a copy that drifts from its own provenance fails the build instead of quietly becoming someone else's bytes.",
   "source": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification",
   "retrieved": "2026-11-14",
   "tagCommits": {
@@ -8,6 +8,7 @@
     "v0.5.0": "170e677fbb6726a3f765373dbe1f214820000be7",
     "v0.6.0": "0ae18b00ee4bd71ab2dc28bae706b0f9d195076b"
   },
+  "releaseAndBytesAreSeparateAxes": "A release tag says which registry row a file answers to; a digest says which bytes it is. They are recorded apart because they do not coincide: releases v0.4.1 and v0.4.2 changed no contract, so they repeat the v0.4.0 bytes, and v0.6.0's fhr.json is the unchanged v0.5.0 bytes (FHR 2.1 did not move). The 'releases' map in schemas/bundled.json therefore points several releases at one frozen copy, and each copy is named once here.",
   "identicalBytesAcrossTags": {
     "v0.3.0:fhr.json": "v0.3.1:fhr.json",
     "v0.4.1/v0.4.2 fhr|fhp|fhgff3": "v0.4.0 same files (verified with cmp on 2026-11-14)",
@@ -23,5 +24,23 @@
     { "file": "fhgff3-1.0.json", "type": "FHGFF3", "schemaVersion": "1.0", "tags": ["v0.4.0", "v0.4.1", "v0.4.2"], "sha256": "f89635f252f6e204944de99e6c40bad1b0c9b37af5108fce05ee63f6dfd40bbd" },
     { "file": "fhgff3-1.1.json", "type": "FHGFF3", "schemaVersion": "1.1", "tags": ["v0.5.0"], "sha256": "20ce320f5d706f11ed21cdece4dfb56e3568b50be126e25b4016f46f2e8e416c" },
     { "file": "fhgff3-1.2.json", "type": "FHGFF3", "schemaVersion": "1.2",  "tags": ["v0.6.0"], "sha256": "1942be4cefc8b3a2537942c2252b45fbcef87a5532486e4fd0f5d4c540e0fbf9" }
-  ]
+  ],
+  "drafts": {
+    "FHT": {
+      "status": "draft",
+      "release": null,
+      "repository": "FHT-Specification",
+      "url": "https://github.com/FAIR-bioHeaders/FHT-Specification",
+      "commit": "226f923c28b680edb3c546e99a751482d06aef1a",
+      "path": "fht-draft.json",
+      "sourcePath": "fht.json",
+      "citation": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+      "retrievalCommand": "git -C /path/to/FHT-Specification show 226f923c28b680edb3c546e99a751482d06aef1a:fht.json > src/main/resources/org/fairbioheaders/schemas/fht-draft.json",
+      "size": 29430,
+      "sha256": "59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e",
+      "retrieved": "2026-11-14",
+      "crossCheck": "The pinned commit is the last commit that touched fht.json; its blob was compared byte-for-byte with FHT-Specification origin/main at retrieval time (2026-11-14: origin/main 156bda63, cmp clean, both sha256 59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e). The reference toolkit pins the same commit and digest in bioheaders/schemas/bundled.json (FAIR-bioHeaders-Tools 226f923 re-pin, #154), verified 2026-11-14. The draft's own conformance suite is re-digested against this value on every draft run (DraftHarness refuses to run a suite whose fht.json differs).",
+      "meaning": "Unreleased development contract, readable only through the rule V7 opt-in lane and warned on for every record read that way. Not a released contract: no schemaVersion row in the shared schemas/versions.json, no w3id alias, no release tag, and no support claim. Publication moves it out of the lane (FHT is scheduled as specification v0.7.0)."
+    }
+  }
 }
