@@ -125,12 +125,6 @@ public final class ConformanceHarness {
         String format = v.get("format").asString();
         Kind kind = kindForFormat(format);
         boolean expectedValid = v.get("expected").asString().equals("valid");
-        // DEMO(deliberate-failure, issue #3): invert one vector's expectation on purpose so CI must
-        // go red. Reverted in the next commit. This is the "make native CI fail on a deliberate
-        // meaningful failure" check, not a claim about fasta-lf.
-        if ("fasta-lf".equals(id)) {
-            expectedValid = !expectedValid;
-        }
         if (kind == null) {
             return new Outcome(id, format, expectedValid, false, false, null,
                 "format " + format + " is outside this library's implemented scope");
