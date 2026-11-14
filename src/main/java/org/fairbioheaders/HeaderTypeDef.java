@@ -35,15 +35,48 @@ record HeaderTypeDef(FhType type, List<String> uriFields, DraftPin draft) {
         return type.isDraft();
     }
 
-    /** The rule V7 pin of a draft type: the bytes, where they came from, and the citation. */
+    /**
+     * The rule V7 pin of a draft type: the bytes, where they came from, and the citation.
+     *
+     * <p>The last six components exist for a records-carrying draft ({@code embedded-records},
+     * the FHGM shape). Such a type has no citation of its own in a file: it needs the transport
+     * overlay that admits the records, the extension key that holds them, the type whose header
+     * carries them, and the digest the overlay is pinned to, alongside the record contract above.
+     * They stay null for a file-bound draft, where rules V1-V7 supply the routing.
+     */
     record DraftPin(String file, String citation, String repository, String commit, String sha256,
-                    String retrieved, String source, String enable) {
+                    String retrieved, String source, String enable, String suiteCommit,
+                    String suiteManifestSha256, String transportFile, String transportSha256,
+                    String modelsKey, String carrierFileKey) {
 
         DraftPin {
             for (String required : new String[] {file, citation, repository, commit, sha256, retrieved}) {
                 if (required == null || required.isBlank()) {
-                    throw new IllegalStateException("incomplete draft registry entry: " + this);
+                    throw new IllegalStateException("incomplete draft registry entry: " + file);
                 }
+            }
+        }
+
+        /**
+         * A records-carrying draft must name every half of its transport. A row that declared the
+         * record contract but not the overlay, the key or the carrier type would silently skip the
+         * checks that make its suite worth running.
+         */
+        void requireCompleteFor(FhType.Transport transport) {
+            if (transport != FhType.Transport.EMBEDDED_RECORDS) {
+                return;
+            }
+            requireNamed(transportFile, "transportFile");
+            requireNamed(transportSha256, "transportSha256");
+            requireNamed(modelsKey, "modelsKey");
+            requireNamed(carrierFileKey, "carrierFileKey");
+        }
+
+        private void requireNamed(String value, String field) {
+            if (value == null || value.isBlank()) {
+                throw new IllegalStateException("draft " + citation + " is an embedded-records type"
+                    + " but its registry entry does not name '" + field + "'; refusing to read a"
+                    + " records lane whose transport is only half declared");
             }
         }
 

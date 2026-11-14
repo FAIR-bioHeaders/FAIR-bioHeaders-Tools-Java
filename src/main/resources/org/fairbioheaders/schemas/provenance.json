@@ -15,15 +15,95 @@
     "v0.5.0:fhr.json": "v0.6.0:fhr.json (FHR 2.1 unchanged)"
   },
   "files": [
-    { "file": "fhr-1.json",      "type": "FHR",   "schemaVersion": "1",    "tags": ["v0.3.0", "v0.3.1"], "sha256": "e3d3843e1a1646e12495ccc9a615df94b7abe71b833c5f336c59444e0a49620a" },
-    { "file": "fhr-2.0.json",    "type": "FHR",   "schemaVersion": "2.0",  "tags": ["v0.4.0", "v0.4.1", "v0.4.2"], "sha256": "168a60467e3651dfdfe9855747f38257d5889bfcce6ec8661d9a378762a362dd" },
-    { "file": "fhr-2.1.json",    "type": "FHR",   "schemaVersion": "2.1",  "tags": ["v0.5.0", "v0.6.0"], "sha256": "694ab5afaf8c3743eacf9e2aacb5551f7cbe37073b6f4afc3ae4a65b47f9d4df" },
-    { "file": "fhp-1.0.json",    "type": "FHP",   "schemaVersion": "1.0",  "tags": ["v0.4.0", "v0.4.1", "v0.4.2"], "sha256": "e3f8f45260b833f931644e87ff7530cb9b4151e67094023dd96edde9a1d90366" },
-    { "file": "fhp-1.1.json",    "type": "FHP",   "schemaVersion": "1.1",  "tags": ["v0.5.0"], "sha256": "2409739d4a223164ca368f93afa78c8f1e3809fb04ec46cc9a793cc5aaaba427" },
-    { "file": "fhp-1.2.json",    "type": "FHP",   "schemaVersion": "1.2",  "tags": ["v0.6.0"], "sha256": "92a0b3cbcfe69939ebfaac69f0c5958ce426c005873efe8d3e3eb0fc0dab6de5" },
-    { "file": "fhgff3-1.0.json", "type": "FHGFF3", "schemaVersion": "1.0", "tags": ["v0.4.0", "v0.4.1", "v0.4.2"], "sha256": "f89635f252f6e204944de99e6c40bad1b0c9b37af5108fce05ee63f6dfd40bbd" },
-    { "file": "fhgff3-1.1.json", "type": "FHGFF3", "schemaVersion": "1.1", "tags": ["v0.5.0"], "sha256": "20ce320f5d706f11ed21cdece4dfb56e3568b50be126e25b4016f46f2e8e416c" },
-    { "file": "fhgff3-1.2.json", "type": "FHGFF3", "schemaVersion": "1.2",  "tags": ["v0.6.0"], "sha256": "1942be4cefc8b3a2537942c2252b45fbcef87a5532486e4fd0f5d4c540e0fbf9" }
+    {
+      "file": "fhr-1.json",
+      "type": "FHR",
+      "schemaVersion": "1",
+      "tags": [
+        "v0.3.0",
+        "v0.3.1"
+      ],
+      "sha256": "e3d3843e1a1646e12495ccc9a615df94b7abe71b833c5f336c59444e0a49620a"
+    },
+    {
+      "file": "fhr-2.0.json",
+      "type": "FHR",
+      "schemaVersion": "2.0",
+      "tags": [
+        "v0.4.0",
+        "v0.4.1",
+        "v0.4.2"
+      ],
+      "sha256": "168a60467e3651dfdfe9855747f38257d5889bfcce6ec8661d9a378762a362dd"
+    },
+    {
+      "file": "fhr-2.1.json",
+      "type": "FHR",
+      "schemaVersion": "2.1",
+      "tags": [
+        "v0.5.0",
+        "v0.6.0"
+      ],
+      "sha256": "694ab5afaf8c3743eacf9e2aacb5551f7cbe37073b6f4afc3ae4a65b47f9d4df"
+    },
+    {
+      "file": "fhp-1.0.json",
+      "type": "FHP",
+      "schemaVersion": "1.0",
+      "tags": [
+        "v0.4.0",
+        "v0.4.1",
+        "v0.4.2"
+      ],
+      "sha256": "e3f8f45260b833f931644e87ff7530cb9b4151e67094023dd96edde9a1d90366"
+    },
+    {
+      "file": "fhp-1.1.json",
+      "type": "FHP",
+      "schemaVersion": "1.1",
+      "tags": [
+        "v0.5.0"
+      ],
+      "sha256": "2409739d4a223164ca368f93afa78c8f1e3809fb04ec46cc9a793cc5aaaba427"
+    },
+    {
+      "file": "fhp-1.2.json",
+      "type": "FHP",
+      "schemaVersion": "1.2",
+      "tags": [
+        "v0.6.0"
+      ],
+      "sha256": "92a0b3cbcfe69939ebfaac69f0c5958ce426c005873efe8d3e3eb0fc0dab6de5"
+    },
+    {
+      "file": "fhgff3-1.0.json",
+      "type": "FHGFF3",
+      "schemaVersion": "1.0",
+      "tags": [
+        "v0.4.0",
+        "v0.4.1",
+        "v0.4.2"
+      ],
+      "sha256": "f89635f252f6e204944de99e6c40bad1b0c9b37af5108fce05ee63f6dfd40bbd"
+    },
+    {
+      "file": "fhgff3-1.1.json",
+      "type": "FHGFF3",
+      "schemaVersion": "1.1",
+      "tags": [
+        "v0.5.0"
+      ],
+      "sha256": "20ce320f5d706f11ed21cdece4dfb56e3568b50be126e25b4016f46f2e8e416c"
+    },
+    {
+      "file": "fhgff3-1.2.json",
+      "type": "FHGFF3",
+      "schemaVersion": "1.2",
+      "tags": [
+        "v0.6.0"
+      ],
+      "sha256": "1942be4cefc8b3a2537942c2252b45fbcef87a5532486e4fd0f5d4c540e0fbf9"
+    }
   ],
   "drafts": {
     "FHT": {
@@ -32,15 +112,70 @@
       "repository": "FHT-Specification",
       "url": "https://github.com/FAIR-bioHeaders/FHT-Specification",
       "commit": "226f923c28b680edb3c546e99a751482d06aef1a",
-      "path": "fht-draft.json",
-      "sourcePath": "fht.json",
       "citation": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
-      "retrievalCommand": "git -C /path/to/FHT-Specification show 226f923c28b680edb3c546e99a751482d06aef1a:fht.json > src/main/resources/org/fairbioheaders/schemas/fht-draft.json",
-      "size": 29430,
-      "sha256": "59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e",
       "retrieved": "2026-11-14",
-      "crossCheck": "The pinned commit is the last commit that touched fht.json; its blob was compared byte-for-byte with FHT-Specification origin/main at retrieval time (2026-11-14: origin/main 156bda63, cmp clean, both sha256 59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e). The reference toolkit pins the same commit and digest in bioheaders/schemas/bundled.json (FAIR-bioHeaders-Tools 226f923 re-pin, #154), verified 2026-11-14. The draft's own conformance suite is re-digested against this value on every draft run (DraftHarness refuses to run a suite whose fht.json differs).",
-      "meaning": "Unreleased development contract, readable only through the rule V7 opt-in lane and warned on for every record read that way. Not a released contract: no schemaVersion row in the shared schemas/versions.json, no w3id alias, no release tag, and no support claim. Publication moves it out of the lane (FHT is scheduled as specification v0.7.0)."
+      "transport": {
+        "modelsKey": null,
+        "carrierFileKey": "FHT"
+      },
+      "artifacts": [
+        {
+          "path": "fht-draft.json",
+          "sourcePath": "fht.json",
+          "size": 29430,
+          "sha256": "59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e",
+          "role": "the draft file-bound header contract (rules V7, C1-C3 of the FHT suite)"
+        }
+      ],
+      "suiteCommit": "24d3b033ab951ef79ee9f6d17419d8ba700f1b0a",
+      "suiteManifestSha256": "9b07179497bdc7247d6ead2404d9d5fdee48308a58b385bd4cd9a7e91450053a",
+      "retrievalCommand": "git -C /path/to/FHT-Specification show 226f923c28b680edb3c546e99a751482d06aef1a:fht.json > src/main/resources/org/fairbioheaders/schemas/fht-draft.json",
+      "crossCheck": "The pinned commit is the last commit that touched fht.json, and its blob was compared byte-for-byte with FHT-Specification origin/main (156bda63) on 2026-11-14: cmp clean, both sha256 59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e. The reference toolkit pins the same commit and digest (FAIR-bioHeaders-Tools bioheaders/schemas/bundled.json, its #154 re-pin), verified 2026-11-14. The contract bytes live in this jar; the vectors come from the suite revision above, and DraftHarness re-digests both against these values before reading a vector.",
+      "meaning": "Unreleased development contract, readable only through the rule V7 opt-in lane and warned on for every record read that way. Not a released contract: no schemaVersion row in the shared schemas/versions.json, no w3id alias, no release tag, no support claim. Publication moves it out of the lane (FHT is scheduled as specification v0.7.0)."
+    },
+    "FHGM": {
+      "status": "draft",
+      "release": null,
+      "repository": "FHGM-Specification",
+      "url": "https://github.com/FAIR-bioHeaders/FHGM-Specification",
+      "commit": "ac3d37b3033312844fc3151217731928ae33aa54",
+      "citation": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json",
+      "retrieved": "2026-11-14",
+      "transport": {
+        "modelsKey": "x-fhgm-models",
+        "carrierFileKey": "FHGFF3",
+        "note": "FHGM records are not a file header. They ride inside an FHGFF3 header under one R15 extension key, so the lane needs two pinned files - the record contract and the transport overlay - and the file itself is still routed by its own released FHGFF3 citation under V1-V3. A records row without all four fields (transportFile, transportSha256, modelsKey, carrierFileKey) is refused at registry load."
+      },
+      "artifacts": [
+        {
+          "path": "fhgm-model-draft.json",
+          "sourcePath": "development/model/fhgm-model.schema.json",
+          "size": 9564,
+          "sha256": "bf1553cac04dc88d8afaff1d39bc50360342e1ebedac4b73dfe3dff570ff410f",
+          "role": "native record contract (the suite's K2)"
+        },
+        {
+          "path": "fhgm-transport-draft.json",
+          "sourcePath": "development/model/fhgm-draft.schema.json",
+          "size": 1363,
+          "sha256": "dd9f69274f26860bbfd71d0e8b2794420c5369fb5d40ce838fb6a9e6d5116e3d",
+          "role": "transport overlay (the suite's K1): released FHGFF3 1.1 identity plus the x-fhgm-models array"
+        }
+      ],
+      "baseSchema": {
+        "type": "FHGFF3",
+        "schemaVersion": "1.1",
+        "release": "v0.5.0",
+        "commit": "170e677fbb6726a3f765373dbe1f214820000be7",
+        "path": "fhgff3-1.1.json",
+        "sha256": "20ce320f5d706f11ed21cdece4dfb56e3568b50be126e25b4016f46f2e8e416c",
+        "note": "The draft suite records this released copy as the base its outcomes were observed against; it is byte-identical to the frozen v0.5.0 copy already in this jar (see 'files' above), which the suite's own development/conformance/provenance.json states with the same digest."
+      },
+      "suiteCommit": "ac3d37b3033312844fc3151217731928ae33aa54",
+      "suiteManifestSha256": "31f14f022ff0858191170d1c8285bd83c7f943d88fd8cebc70f11712525617db",
+      "retrievalCommand": "git -C /path/to/FHGM-Specification show ac3d37b3033312844fc3151217731928ae33aa54:development/model/fhgm-model.schema.json > src/main/resources/org/fairbioheaders/schemas/fhgm-model-draft.json ; git -C /path/to/FHGM-Specification show ac3d37b3033312844fc3151217731928ae33aa54:development/model/fhgm-draft.schema.json > src/main/resources/org/fairbioheaders/schemas/fhgm-transport-draft.json",
+      "crossCheck": "Both blobs were compared against FHGM-Specification origin/main (52b07b7a) on 2026-11-14 and are identical to the pinned commit's. The suite's own development/conformance/provenance.json records the same two digests and the same base-schema digest, so the pins agree across repositories without either one trusting the other's prose.",
+      "meaning": "Unreleased development contracts for gene-model records, readable only through the rule V7 opt-in lane and warned on per record. Not a released contract and not a file-bound header type: no schemaVersion, no w3id alias, no shared registry row, no support claim. Publication is scheduled separately (specification v0.8.0)."
     }
   }
 }

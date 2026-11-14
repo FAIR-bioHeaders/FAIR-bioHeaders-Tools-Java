@@ -81,6 +81,7 @@ final class TypeRegistry {
                     FhType type = FhType.of(urlKey, fileKey, FhType.Status.DRAFT, transport);
                     if (options.draftEnabled(fileKey)) {
                         HeaderTypeDef.DraftPin draftPin = pin(fileKey, entry.get("draft"));
+                        draftPin.requireCompleteFor(transport);
                         // A draft's R14 field list is read off the draft's own bytes unless the row
                         // states one, so registering a type never means hand-copying a table from
                         // a schema nobody diffed it against.
@@ -139,7 +140,13 @@ final class TypeRegistry {
             required(draft, "sha256", fileKey),
             required(draft, "retrieved", fileKey),
             optional(draft, "source"),
-            optional(draft, "enable"));
+            optional(draft, "enable"),
+            optional(draft, "suiteCommit"),
+            optional(draft, "suiteManifestSha256"),
+            optional(draft, "transportFile"),
+            optional(draft, "transportSha256"),
+            optional(draft, "modelsKey"),
+            optional(draft, "carrierFileKey"));
     }
 
     private static String required(JsonNode node, String field) {
