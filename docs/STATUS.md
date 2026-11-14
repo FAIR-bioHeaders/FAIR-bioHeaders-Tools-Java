@@ -40,10 +40,17 @@ Consequences that matter for the five-type goal:
   pinned bytes' SHA-256 is re-computed when the bundle is built, and a mismatch
   throws instead of reading a draft that does not match its own provenance
   (rule V7's "says so instead of quietly choosing a newer draft").
-- **No draft row is registered in this build.** The shipped registry declares only
-  FHR, FHP and FHGFF3, so the lane currently has nothing to opt into and every
-  draft citation still falls to rule V5 with the near-miss warning. Draft support
-  for FHT and FHGM is the next step of issue #2, not a present capability.
+- **One draft is registered, and it is not support.** `FHT` is a draft row:
+  `fht-draft.json` is FHT-Specification commit
+  `226f923c28b680edb3c546e99a751482d06aef1a`'s `fht.json`, SHA-256
+  `59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e`, 29 430 bytes
+  (re-verified against the live repository on 2026-11-14: the commit's blob and
+  `origin/main`'s blob are the same bytes). Reading it requires the opt-in, and it
+  is a draft in every sense rule V7 uses: no `schemaVersion` in the shared registry,
+  no w3id URL, no release, no support claim, and its vectors are counted separately
+  ("Draft evidence" below). With the gate closed - which is the default, and what
+  the golden pins - the citation still falls to rule V5 exactly as before this row
+  existed. `FHGM` registers nothing here; see `docs/CAPABILITY-MATRIX.md` §4.
 
 ## Default behaviour is byte-identical to the pre-registry code
 
@@ -152,8 +159,11 @@ counts — verified 2026-11-14.)
 | `jsonld` | 37 | 0 | — | not implemented |
 | **total** | **291** | **228** | **228** | 0 |
 
-Plus 54 unit/integration JUnit tests (282 test executions, 0 failures, on
-2026-11-14; the pre-registry count was 30 plus 228 vectors = 258). The 63 not-run vectors are every `microdata-*` and `jsonld-*`
+Plus 76 unit/integration/CLI JUnit tests in the released-contract job: **304 test
+executions, 0 failures, 0 skipped** (JDK 17.0.21.0.3 and 27.0.1.0.3 locally,
+Temurin 17 and 21 in CI). The draft job adds 133 more (66 FHT draft vectors, 66
+lane-off controls, 1 ledger) for **437 in total**, with the same counts on JDK 17
+and 21. The earlier PR #1 figure was 258 (30 unit plus 228 vectors). The 63 not-run vectors are every `microdata-*` and `jsonld-*`
 vector listed in `ConformanceReportTest` output; they exercise the HTML
 microdata (rule M1/M3, `itemtype`/`itemprop` token lists, typed values) and
 JSON-LD (rules J1/J7, context handling) bindings, which this slice does not
@@ -166,6 +176,43 @@ must return `VALID`, with the manifest's `checksum` recomputed exactly and the
 manifest-listed `R14` warning present; expected-invalid files must return
 `INVALID` (or `UNSUPPORTED_VERSION` where the manifest's `result` says
 `unsupported-version`, per rule V4).
+
+### Draft evidence, kept separate (rule V7)
+
+FHT has no released contract, so its results never join the table above. They run
+in their own labelled `draft-vectors` CI job against the FHT-Specification suite
+at the pinned revision, and the job asserts the receipt rather than a green tick:
+
+| suite | vectors | ran | passed | identity of what was measured |
+| --- | --- | --- | --- | --- |
+| FHT development suite (`conformance/manifest.json`, format `fht-fasta`) | 66 | 66 | **66** | contract `fht.json` commit `226f923c28b680edb3c546e99a751482d06aef1a`, SHA-256 `59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e`; suite commit `24d3b033ab951ef79ee9f6d17419d8ba700f1b0a`, manifest SHA-256 `9b07179497bdc7247d6ead2404d9d5fdee48308a58b385bd4cd9a7e91450053a` |
+
+`DraftHarness` re-digests the checkout's `fht.json` **and** its `manifest.json`
+against the registry pin before running anything; on a mismatch every vector is
+reported **not run** with the drift message, never as a pass. (That path was
+exercised for real while writing this: a stale extraction at the contract commit,
+whose manifest predated the `parent-mixed-verdicts` vector, produced
+`vectorsRan=0` and a drift line instead of 66 green tests.)
+
+Per vector it enforces the manifest's own model: verdict; recomputed SHA-512/256;
+`selfChecksum` (`matches` must not report `R3`; `broken` must report `R3`;
+`unreachable` must report the `R2`/`R5`/`R10` line-shape family and not `R3` — the
+suite's anti-accident rule); the `warnings` list; the named `rule`; the
+`parentLink` verdicts through `ParentLinks`; that `result: invalid-as-fhr` stays a
+rule V5 reading even with the lane open; and that every record routed to the draft
+carries the `V7` warning naming the commit and digest (and that no other record
+does).
+
+The differential control runs in the same job: `FhtLaneOffControlTest` reads all
+66 files with the default reader and requires each to be **rejected** as FHR with
+no `V7` warning — 66/66. Without it, a passing draft suite would not distinguish
+the lane from the released reader.
+
+`FHGM` registers nothing in this build: it is not a header type (its records ride
+inside an FHGFF3 header under `x-fhgm-models`), and its suite's verdicts depend on
+a model-level checker (rules K1–K6) this library does not have. The boundary and
+the reason are row 2 of `docs/CAPABILITY-MATRIX.md` §4; no partial FHGM claim is
+made.
 
 ## What this library does
 
@@ -185,6 +232,16 @@ manifest-listed `R14` warning present; expected-invalid files must return
   (`schemas/provenance.json`; every copy verified byte-identical to the
   released fair-bioheaders 0.11.0 bundle on 2026-11-14).
 - Draft/2020-12 validation with format assertions.
+- V7 draft lane (opt-in): the pinned FHT draft contract, a `V7` warning naming the
+  commit and digest on every record read through it, the same statement on the
+  `org.fairbioheaders.draft` `java.util.logging` logger, and a bundle that refuses
+  to build when the shipped draft bytes no longer match their recorded digest.
+- Parent-link verdicts (`ParentLinks`, and `verify --parent` on the CLI):
+  `CHECKED_PASS` / `CHECKED_FAIL` / `UNCHECKED` per `derivedFrom` entry, with a
+  failing entry reported as an error and an unsupplied parent never called verified.
+- Container registry: header types are data (`schemas/bundled.json` `types`), so a
+  type joins with a row plus pinned bytes; `UriFields` reads the R14 field list off
+  the contract being applied.
 
 ## What this library does NOT implement or claim
 
@@ -195,18 +252,31 @@ manifest-listed `R14` warning present; expected-invalid files must return
 - **No GFF3 feature validation.** FHGFF3 vectors pass on header, placement,
   link-cardinality and checksum grounds only; feature-line syntax/SO/biology
   belongs to gff3-validator.
-- **No FHT or FHGM support of any kind.** Both are drafts (rule V7): no
-  `schemaVersion`, no w3id URL, no registry row, no "supported" claim. Neither is
-  registered here: the shipped `schemas/bundled.json` declares no draft row, so a
-  raw-main `fht.json` citation is read as FHR under published rule V5, with the
-  near-miss warning, whatever the caller sets.
-- **The V7 lane has no draft to read.** `Options.enableDraftContracts(true)` builds
-  the lane machinery (`TypeRegistry`, `SchemaBundle`, `SchemaSelection`) around the
-  registry's draft rows, and the shipped registry has none, so the flag changes
-  nothing today. `DraftLaneTest`/`TypeRegistryTest` exercise the lane through the
-  test registry in `src/test/resources/org/fairbioheaders/testtypes/` only; that is
-  a code-path test, not support for a family type. Registering FHT or FHGM is a
-  deliberate later change with its own pinned bytes and provenance (issue #2).
+- **No FHT or FHGM *support*.** Neither has a released contract (rule V7), a
+  `schemaVersion` row in the shared registry, a w3id URL or a release tag, and
+  nothing in this repository gives them one. What FHT has here is a **pinned
+  opt-in reading lane**: with `--experimental-drafts` (or the `Options`/property/env
+  equivalents) the reader validates a record against FHT-Specification's pinned
+  draft bytes and says so on every record. That is development-preview behavior,
+  labelled as such in the result, in the log, in the CI job name and in this file -
+  not a claim that FHT is supported, and not enabled by default: with the gate
+  closed the citation is rule V5 material, byte-identically to before the row
+  existed.
+- **FHGM: nothing at all.** No pinned bytes, no registry row, no reader, no vectors
+  run. FHGM is not a header type - its records ride inside an FHGFF3 header under
+  `x-fhgm-models` - and its acceptance suite asserts model-level rules K1–K6
+  (ID uniqueness, `featureId` resolution against the GFF3 feature layer,
+  reference/assembly agreement with the file's genome link, and predecessor-pointer
+  resolution across supplied snapshots). This library reads none of that, so the
+  whole lane is declared absent rather than half-ported: evaluating only the record
+  schema would pass the suite's valid vectors while skipping the rules the suite
+  exists to test. Registered candidate bytes for a later change:
+  `development/model/fhgm-model.schema.json` at commit
+  `ac3d37b3033312844fc3151217731928ae33aa54`, SHA-256
+  `bf1553cac04dc88d8afaff1d39bc50360342e1ebedac4b73dfe3dff570ff410f` (9 564 bytes),
+  and the transport overlay `development/model/fhgm-draft.schema.json`, SHA-256
+  `dd9f69274f26860bbfd71d0e8b2794420c5369fb5d40ce838fb6a9e6d5116e3d` (1 363 bytes),
+  both re-verified against `FHGM-Specification` main on 2026-11-14.
 - No release, tag, Maven Central publication or Zenodo record exists for this
   repository; version `0.1.0-SNAPSHOT` is a development marker only.
 - Non-string YAML mapping keys are rejected outright (the reference loader's
@@ -235,12 +305,17 @@ text so it cannot change by accident.
 
 ## Not verified (open questions, honestly listed)
 
-- The suite (282 tests) passed on this host with Homebrew OpenJDK **17.0.21.0.3**
-  and **27.0.1.0.3** (macOS/aarch64, Maven 3.9.11), and in CI with Temurin
-  **17** and **21** on ubuntu-latest against the specification pinned at tag
-  `v0.6.0` (run 43618810450 for the pre-registry suite, both matrix legs green,
-  vector-count guard step reporting "FileVectorTest executed 228 tests").
-  Platforms/JDKs beyond these are untested.
+- The suite passed on this host with Homebrew OpenJDK **17.0.21.0.3** and
+  **27.0.1.0.3** (macOS/aarch64, Maven 3.9.11) and in CI with Temurin **17** and
+  **21** on ubuntu-latest, with the specification pinned at tag `v0.6.0` and the
+  FHT suite pinned at `24d3b03` (the pre-registry run was 43618810450). The report
+  guard (`.github/scripts/assert-reports.sh`) fails on zero tests, a class that
+  executed nothing, or any skip; the receipts pin the vector counts. Platforms/JDKs
+  beyond these are untested.
+- The FHT draft reading is verified only where the FHT suite reaches: FASTA
+  containers, the pinned `fht.json` revision, and the 66 vectors' rules. Nothing
+  about FHT in a GFA container, FHT microdata or FHT JSON-LD, or any other draft
+  revision, is implemented or tested here.
 - Behavior on huge files (multi-GB bgzip) and on adversarially crafted YAML is
   bounded by buffer-in-memory design and the ported size limits, but was not
   load-tested.

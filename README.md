@@ -25,12 +25,28 @@ bytes.
 | FHGFF3 | GFF3 annotation | `https://w3id.org/fair-bioheaders/fhgff3/v0.6.0` | `'1.2'` |
 
 FHT and FHGM have **no released contract** (drafts; specification rule V7): no
-`schemaVersion`, no w3id URL, no row in the shared registry, and nothing pinned
-in this jar. Header types here are registry data, so a draft could only ever
-join as an explicit opt-in row with its own pinned bytes
-(`Options.builder().enableDraftContracts(true)`), and this build registers none:
-a draft URL in a `schema` field falls to rule V5 (read as FHR, with the
-near-miss warning) exactly as before. See [docs/STATUS.md](docs/STATUS.md).
+`schemaVersion`, no w3id URL, no row in the shared registry. Header types here
+are registry data. `FHT` is registered as a **pinned draft**, readable only
+through an explicit opt-in:
+
+```java
+new BioHeaders(Options.builder().enableDraftContracts(true).build());
+```
+```bash
+bioheaders-java verify --experimental-drafts transcripts.fht.fasta
+# or: -Dorg.fairbioheaders.experimental.drafts=1, FAIR_BIOHEADERS_EXPERIMENTAL_DRAFTS=1
+```
+
+A record read that way is validated against FHT-Specification's pinned
+`fht.json` bytes (commit and SHA-256 in `schemas/bundled.json`, re-digest-checked
+on every build) and carries a `V7` warning naming them, because a draft result is
+not a released-contract result. With the gate closed - the default - a draft URL
+in a `schema` field is rule V5 material (read as FHR, near-miss warning),
+byte-identically to before the row existed. `FHGM` is not registered and has no
+support here at all: it is not a header type, and its model-level rules are not
+implemented. [docs/CAPABILITY-MATRIX.md](docs/CAPABILITY-MATRIX.md) is the
+type × operation × serialization × version statement, including the named holes;
+[docs/STATUS.md](docs/STATUS.md) has the vector counts.
 
 ## Requirements
 
