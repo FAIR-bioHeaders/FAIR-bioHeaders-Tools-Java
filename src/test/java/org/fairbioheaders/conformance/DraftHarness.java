@@ -182,7 +182,7 @@ public final class DraftHarness {
         return SpecSource.resolve(System.getProperty("fh.fht.dir"), System.getenv("FH_FHT_DIR"),
             "-Dfh.fht.dir", "FH_FHT_DIR",
             List.of(Path.of("../FHT-Specification/conformance"), Path.of("FHT-Specification/conformance")),
-            SpecSource.SUITE_DIRECTORY);
+            SpecSource.FHT_SUITE);
     }
 
     public List<JsonNode> vectors() {

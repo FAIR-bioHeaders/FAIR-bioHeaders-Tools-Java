@@ -1,0 +1,38 @@
+{
+  "description": "Test-only registry for FAIR-bioHeaders-Tools-Java#2: a records-carrying draft (embedded-records) whose registry entry names the record contract but omits the transport overlay, its digest, the extension key and the carrier type. Loading it with the lane open must fail, because a half-declared records lane would read the record contract and silently skip every transport rule the draft states.",
+  "types": [
+    { "fileKey": "FHR",    "urlKey": "fhr",    "status": "released", "transport": "embedded-header" },
+    { "fileKey": "FHP",    "urlKey": "fhp",    "status": "released", "transport": "embedded-header" },
+    { "fileKey": "FHGFF3", "urlKey": "fhgff3", "status": "released", "transport": "embedded-header" },
+    {
+      "fileKey": "PRM",
+      "urlKey": "prm",
+      "status": "draft",
+      "transport": "embedded-records",
+      "draft": {
+        "status": "draft",
+        "file": "proof-draft.json",
+        "citation": "https://raw.githubusercontent.com/FAIR-bioHeaders/Proof-Specification/main/prm.json",
+        "repository": "Proof-Specification",
+        "commit": "000102030405060708090a0b0c0d0e0f10111213",
+        "sha256": "3490101dc053a38d07399185e6dfd28a3ecbb6bc966b813cf8f8e90359e1fed9",
+        "retrieved": "2026-11-14"
+      }
+    }
+  ],
+  "current": {
+    "release": "v0.6.0",
+    "files": {
+      "FHR": "fhr-2.1.json",
+      "FHP": "fhp-1.2.json",
+      "FHGFF3": "fhgff3-1.2.json"
+    }
+  },
+  "releases": {
+    "v0.6.0": {
+      "FHR": "fhr-2.1.json",
+      "FHP": "fhp-1.2.json",
+      "FHGFF3": "fhgff3-1.2.json"
+    }
+  }
+}

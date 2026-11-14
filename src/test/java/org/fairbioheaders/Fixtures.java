@@ -101,7 +101,10 @@ public final class Fixtures {
         return sealed(Kind.FASTA, yaml, records);
     }
 
-    /** A sealed file in any container: the checksum line closes the header block (R2). */
+    /**
+     * A sealed file in any container. The checksum line is written last inside the header block, and
+     * its value is the digest of every other byte of the finished file (FORMAT.md R1-R5).
+     */
     public static byte[] sealed(Kind kind, String yaml, String records) {
         String prefix = kind.prefixText();
         String lead = kind == Kind.GFF3 ? "##gff-version 3\n" : "";
@@ -137,6 +140,73 @@ public final class Fixtures {
             "- headerType: FHR",
             "  relationship: filteredFrom",
             "  checksum: " + ABSENT);
+    }
+
+    // ---------------------------------------------------------------- FHGM draft fixtures
+
+    /** The FHGFF3 1.1 header the FHGM draft's transport overlay pins, minus the records. */
+    private static final String FHGM_CARRIER = """
+        schema: https://w3id.org/fair-bioheaders/fhgff3/v0.5.0
+        schemaVersion: '1.1'
+        annotation: fixture-annotation-carrying-model-records
+        taxon:
+          name: Synthetic example
+        version: '1'
+        metadataAuthor:
+        - name: Synthetic fixture author
+        dateCreated: 2026-01-01
+        genomeReference:
+          accession: SYNTHETIC_ASSEMBLY.1
+          seqcol_id: J3Hvvqu0USaOuxA-3wRFyZ3YPdnSEDCp
+        """;
+
+    /** Two gene rows and one transcript row, the shape the draft suite's toy collection uses. */
+    public static final String TOY_FEATURES = """
+        toy	pilot	gene	10	30	.	+	.	ID=toy-a
+        toy	pilot	lncRNA	10	30	.	+	.	ID=toy-a-rna;Parent=toy-a
+        toy	pilot	exon	10	30	.	+	.	Parent=toy-a-rna
+        toy	pilot	gene	60	80	.	+	.	ID=toy-b
+        """;
+
+    /**
+     * A sealed FHGFF3 1.1 file carrying {@code modelsYaml} under {@code x-fhgm-models} over the
+     * given feature rows. The records are YAML, so a test can write one defect per fixture instead
+     * of editing bytes: {@link #TOY_FEATURES} supplies {@code toy-a} (a gene row) and
+     * {@code toy-a-rna} (a transcript row) for the targeting rules to distinguish.
+     */
+    public static byte[] fhgm(String modelsYaml, String features) {
+        String yaml = FHGM_CARRIER.stripTrailing() + "\nx-fhgm-models:\n" + modelsYaml + "\n";
+        return sealed(Kind.GFF3, yaml, features);
+    }
+
+    /** One well-formed record bound to the same assembly as its carrier. */
+    public static String record(String modelId, String version, String featureId) {
+        return "- modelId: " + modelId + "\n"
+            + "  modelVersion: '" + version + "'\n"
+            + "  featureId: " + featureId + "\n"
+            + "  reference:\n"
+            + "    genomeReference:\n"
+            + "      accession: SYNTHETIC_ASSEMBLY.1\n"
+            + "      seqcol_id: J3Hvvqu0USaOuxA-3wRFyZ3YPdnSEDCp\n";
+    }
+
+    /** One record bound to an FHR parent checksum instead (the other comparable form). */
+    public static String recordByParent(String modelId, String version, String featureId,
+                                        String parentChecksum) {
+        return "- modelId: " + modelId + "\n"
+            + "  modelVersion: '" + version + "'\n"
+            + "  featureId: " + featureId + "\n"
+            + "  reference:\n"
+            + "    annotates: " + parentChecksum + "\n";
+    }
+
+    /** {@code records} with a predecessor pointer added to its first record. */
+    public static String withPointer(String records, String annotationChecksum, String modelId,
+                                     String predecessorVersion) {
+        return records + "  predecessor:\n"
+            + "    annotationChecksum: " + annotationChecksum + "\n"
+            + "    modelId: " + modelId + "\n"
+            + "    modelVersion: '" + predecessorVersion + "'\n";
     }
 
     /** The checksum value a sealed file states on its own root checksum line. */
