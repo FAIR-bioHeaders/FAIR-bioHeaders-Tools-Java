@@ -82,7 +82,7 @@ jobs:
         run: >
           ./mvnw -B -ntp test
           -DexcludedGroups=draft
-          -Dfh.spec.dir=${{ github.workspace }}/fair-bioheaders-specification
+          -Dfh.spec.dir=${{ github.workspace }}/fair-bioheaders-specification/schemas
 
       - name: Assert the vector tests actually ran (not silently skipped)
         run: |
