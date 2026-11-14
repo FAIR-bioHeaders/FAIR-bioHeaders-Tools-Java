@@ -40,7 +40,7 @@ Consequences that matter for the five-type goal:
   pinned bytes' SHA-256 is re-computed when the bundle is built, and a mismatch
   throws instead of reading a draft that does not match its own provenance
   (rule V7's "says so instead of quietly choosing a newer draft").
-- **One draft is registered, and it is not support.** `FHT` is a draft row:
+- **Two drafts are registered, and neither is support.** `FHT` is a draft row:
   `fht-draft.json` is FHT-Specification commit
   `226f923c28b680edb3c546e99a751482d06aef1a`'s `fht.json`, SHA-256
   `59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e`, 29 430 bytes
@@ -159,11 +159,12 @@ counts — verified 2026-11-14.)
 | `jsonld` | 37 | 0 | — | not implemented |
 | **total** | **291** | **228** | **228** | 0 |
 
-Plus 76 unit/integration/CLI JUnit tests in the released-contract job: **304 test
+Plus 89 unit/integration/CLI JUnit tests in the released-contract job: **317 test
 executions, 0 failures, 0 skipped** (JDK 17.0.21.0.3 and 27.0.1.0.3 locally,
-Temurin 17 and 21 in CI). The draft job adds 133 more (66 FHT draft vectors, 66
-lane-off controls, 1 ledger) for **437 in total**, with the same counts on JDK 17
-and 21. The earlier PR #1 figure was 258 (30 unit plus 228 vectors). The 63 not-run vectors are every `microdata-*` and `jsonld-*`
+Temurin 17 and 21 in CI on ubuntu-latest and macos-latest). The draft job adds 175
+more (66 FHT draft vectors, 66 lane-off controls, 31 FHGM draft vectors, 10 FHGM
+rule tests, 2 ledgers) for **492 in total**, with the same counts on JDK 17 and 21.
+The earlier PR #1 figure was 258 (30 unit plus 228 vectors). The 63 not-run vectors are every `microdata-*` and `jsonld-*`
 vector listed in `ConformanceReportTest` output; they exercise the HTML
 microdata (rule M1/M3, `itemtype`/`itemprop` token lists, typed values) and
 JSON-LD (rules J1/J7, context handling) bindings, which this slice does not
@@ -186,6 +187,7 @@ at the pinned revision, and the job asserts the receipt rather than a green tick
 | suite | vectors | ran | passed | identity of what was measured |
 | --- | --- | --- | --- | --- |
 | FHT development suite (`conformance/manifest.json`, format `fht-fasta`) | 66 | 66 | **66** | contract `fht.json` commit `226f923c28b680edb3c546e99a751482d06aef1a`, SHA-256 `59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e`; suite commit `24d3b033ab951ef79ee9f6d17419d8ba700f1b0a`, manifest SHA-256 `9b07179497bdc7247d6ead2404d9d5fdee48308a58b385bd4cd9a7e91450053a` |
+| FHGM draft suite (`development/conformance/manifest.json`, format `fhgff3` with `x-fhgm-models`) | 31 | 31 | **31** | record contract `development/model/fhgm-model.schema.json` commit `ac3d37b3033312844fc3151217731928ae33aa54`, SHA-256 `bf1553cac04dc88d8afaff1d39bc50360342e1ebedac4b73dfe3dff570ff410f` (9 564 B); transport overlay `development/model/fhgm-draft.schema.json`, SHA-256 `dd9f69274f26860bbfd71d0e8b2794420c5369fb5d40ce838fb6a9e6d5116e3d` (1 363 B); suite commit `ac3d37b3…`, manifest SHA-256 `31f14f022ff0858191170d1c8285bd83c7f943d88fd8cebc70f11712525617db` |
 
 `DraftHarness` re-digests the checkout's `fht.json` **and** its `manifest.json`
 against the registry pin before running anything; on a mismatch every vector is
@@ -213,6 +215,39 @@ inside an FHGFF3 header under `x-fhgm-models`), and its suite's verdicts depend 
 a model-level checker (rules K1–K6) this library does not have. The boundary and
 the reason are row 2 of `docs/CAPABILITY-MATRIX.md` §4; no partial FHGM claim is
 made.
+
+### FHGM draft records (K1–K6), and what a pass means
+
+FHGM is not a file-bound header type. Its records ride inside an FHGFF3 header
+under one R15 extension key, `x-fhgm-models`, and the file stays routed by its own
+released FHGFF3 citation under V1–V3; rule V7 selects only the contract and the
+validator applied to the records. `FhgmModels` is that validator, ported natively
+from the draft's model-level rules:
+
+| rule | what this library checks | where it is proven |
+| --- | --- | --- |
+| B1 | the carrier file must satisfy the released FHGFF3 base schema **and** its exact-byte checksum before any model verdict exists | the suite's `transport-1-0-extension` and `tampered-record-bytes` vectors, and `FhgmModelsTest.aBrokenCarrierIsBoundaryB1NotAModelVerdict` |
+| K1 | the pinned transport overlay: FHGFF3 1.1 identity plus a non-empty `x-fhgm-models` array | `empty-model-array` + `k1RequiresTheTransportOverlay…` |
+| K2 | each record against the pinned record contract (four required fields, closed nested objects, opaque non-empty strings) | `record-unknown-key`, `record-without-reference`, `record-numeric-model-version` + `k2IsThePinnedRecordContract…` |
+| K3 | one `modelId` per snapshot; a duplicate is reported as an unselectable identity and rejects the snapshot | `ambiguous-model-id-in-snapshot`, `pointer-into-ambiguous-history` + `k3RejectsTwoRecordsSharingOneModelId…` |
+| K4 | `featureId`, percent-decoded over raw bytes, resolves to exactly one local `gene` (or `SO:0000704`) row | `feature-target-absent`, `-duplicate-rows`, `-transcript-row`, `percent-decoded-feature-target` + `k4RequiresExactlyOneLocalGeneRow` |
+| K5 | the record's reference shares at least one comparable form with the file's genome link and never contradicts it | `reference-forms-not-comparable`, `record-reference-contradicts-file`, `both-reference-forms`, `file-linked-by-fhr-parent` + `k5RequiresOneComparableFormAndForbidsContradiction` |
+| K6 | a `predecessor` claim resolves against the prior snapshots the caller supplied, and only those (own model ID named, a different recorded version, matching assembly link and record reference, no recorded successor skipped) | `revision-resolves-supplied-history`, `predecessor-*`, `gap-*`, `stale-pointer-absent-history`, `revision-without-supplied-history`, `contract-rich-revision-chain`, `history-with-unresolved-own-pointer` + `k6ResolvesAPointerOnlyAgainstSuppliedHistory` |
+
+Per record read through this lane the result carries a `V7` warning naming the
+record contract's commit and digest and the extension key, and the same statement
+goes to the `org.fairbioheaders.draft` logger. The `gff3` layer of the suite is
+reported **skipped** — feature-line validation belongs to `gff3-validator`, and the
+suite itself records that no FHGM rule depends on that layer.
+
+Runner controls, so the 31/31 is not a vacuous agreement: changing one byte of a
+vector fixture inside checksum coverage made that vector fail (31 ran, 1 failure,
+build red); zeroing one recorded fixture digest in the manifest made the whole
+suite report **not run** through the pinned-manifest drift check (1 skipped test,
+never a pass). Both were reverted, and the earlier "control" that appeared to pass
+was found to be a no-op edit — the file it claimed to tamper with was byte-identical
+to the original, which is why `cmp` is now run against the control before any
+conclusion is drawn from it.
 
 ## What this library does
 

@@ -125,8 +125,12 @@ public final class SchemaBundle {
         }
         for (HeaderTypeDef draft : types.drafts()) {
             // Fail before reading a single record if the pinned draft bytes are not what the
-            // registry says they are.
+            // registry says they are. A records-carrying draft has two pinned files, and both are
+            // verified: an overlay nobody checked would let the transport rules drift.
             contract(draft.type(), "main");
+            if (draft.type().transport() == FhType.Transport.EMBEDDED_RECORDS) {
+                transportContract(draft.type());
+            }
         }
     }
 
@@ -176,7 +180,27 @@ public final class SchemaBundle {
      */
     public record Draft(String type, String citation, String repository, String commit,
                         String sha256, String retrieved, String file, String source, String enable,
-                        String suiteCommit, String suiteManifestSha256) {
+                        String suiteCommit, String suiteManifestSha256, String sourcePath,
+                        String transportFile, String transportSha256, String transportSourcePath,
+                        String modelsKey, String carrierFileKey) {
+
+        /**
+         * Every contract file this draft pins, with the path it was copied from in its own
+         * development repository and the digest recorded for it. A records-carrying draft pins two
+         * (the record contract and the transport overlay); a file-bound draft pins one.
+         */
+        public List<Artifact> pinnedArtifacts() {
+            List<Artifact> out = new ArrayList<>();
+            out.add(new Artifact(file, sha256, sourcePath));
+            if (transportFile != null && !transportFile.isBlank()) {
+                out.add(new Artifact(transportFile, transportSha256, transportSourcePath));
+            }
+            return out;
+        }
+
+        /** One pinned contract: its name in this jar, its digest, and its upstream path. */
+        public record Artifact(String file, String sha256, String sourcePath) {
+        }
     }
 
     /**
@@ -197,7 +221,13 @@ public final class SchemaBundle {
                 draft.path("retrieved").asString(""), draft.path("file").asString(""),
                 draft.path("source").asString(""), draft.path("enable").asString(""),
                 draft.path("suiteCommit").asString(""),
-                draft.path("suiteManifestSha256").asString("")));
+                draft.path("suiteManifestSha256").asString(""),
+                draft.path("sourcePath").asString(""),
+                draft.path("transportFile").asString(""),
+                draft.path("transportSha256").asString(""),
+                draft.path("transportSourcePath").asString(""),
+                draft.path("modelsKey").asString(""),
+                draft.path("carrierFileKey").asString("")));
         }
         return out;
     }
@@ -265,19 +295,8 @@ public final class SchemaBundle {
                     + "no release " + release + " to select, and rule V7 never gives a draft a "
                     + "release form");
             }
-            HeaderTypeDef def = types.def(type);
-            return cache.computeIfAbsent("draft@" + def.draft().file(), key -> {
-                byte[] bytes = readBytes(def.draft().file());
-                String actual = sha256Hex(bytes);
-                if (!actual.equals(def.draft().sha256())) {
-                    throw new IllegalStateException("the draft contract bytes this jar ships as "
-                        + def.draft().file() + " have sha256 " + actual + " but the registry pins "
-                        + def.draft().sha256() + " (commit " + def.draft().commit() + " of "
-                        + def.draft().repository() + "); refusing to read drafts that do not match"
-                        + " their own provenance");
-                }
-                return validatorRegistry.getSchema(new ByteArrayInputStream(bytes), InputFormat.JSON);
-            });
+            HeaderTypeDef.DraftPin pin = types.def(type).draft();
+            return pinnedContract(pin.file(), pin.sha256(), pin.commit(), pin.repository());
         }
         String file = "main".equals(release) ? currentFile(type) : releaseIndexEntry(release).get(type);
         if (file == null) {
@@ -285,6 +304,32 @@ public final class SchemaBundle {
         }
         return cache.computeIfAbsent(type + "@" + file, key -> validatorRegistry.getSchema(
             new ByteArrayInputStream(readBytes(file)), InputFormat.JSON));
+    }
+
+    /**
+     * The transport overlay of a records-carrying draft (the FHGM shape): the contract that admits
+     * the extension key holding the records. Digest-verified the same way as the record contract -
+     * an unpinned overlay would let the transport rules drift unnoticed.
+     */
+    Schema transportContract(FhType type) {
+        HeaderTypeDef.DraftPin pin = types.def(type).draft();
+        pin.requireCompleteFor(type.transport());
+        return pinnedContract(pin.transportFile(), pin.transportSha256(), pin.commit(),
+            pin.repository());
+    }
+
+    private Schema pinnedContract(String file, String sha256, String commit, String repository) {
+        return cache.computeIfAbsent("draft@" + file, key -> {
+            byte[] bytes = readBytes(file);
+            String actual = sha256Hex(bytes);
+            if (!actual.equals(sha256)) {
+                throw new IllegalStateException("the draft contract bytes this jar ships as " + file
+                    + " have sha256 " + actual + " but the registry pins " + sha256 + " (commit "
+                    + commit + " of " + repository + "); refusing to read drafts that do not match"
+                    + " their own provenance");
+            }
+            return validatorRegistry.getSchema(new ByteArrayInputStream(bytes), InputFormat.JSON);
+        });
     }
 
     private byte[] readBytes(String name) {

@@ -36,22 +36,30 @@ class TypeRegistryTest {
     }
 
     @Test
-    void shippedRegistryRegistersThreeReleasedTypesAndOneOptInDraft() {
+    void shippedRegistryRegistersThreeReleasedTypesAndTwoOptInDrafts() {
         SchemaBundle bundle = SchemaBundle.getDefault();
         assertEquals(List.of("FHR", "FHP", "FHGFF3"),
             bundle.types().released().stream().map(d -> d.type().fileKey()).toList(),
             "rules V1-V3 recognise exactly the released rows");
         assertTrue(bundle.types().drafts().isEmpty(),
             "no draft is active on a default bundle (rule V7 is never the default)");
-        assertEquals(List.of("FHT"), bundle.declaredDraftTypes(),
-            "FHT is registered as a pinned draft, opt-in only (docs/CAPABILITY-MATRIX.md)");
+        assertEquals(List.of("FHT", "FHGM"), bundle.declaredDraftTypes(),
+            "the two drafts registered as pinned rows, both opt-in only"
+                + " (docs/CAPABILITY-MATRIX.md)");
         assertEquals(List.of("fhr", "fhp", "fhgff3"),
             bundle.types().released().stream().map(d -> d.type().urlKey()).toList());
         assertEquals(3, new BioHeaders().readableTypes().size());
-        // Opting in is what makes it readable; the released three are unchanged by it.
-        BioHeaders optedIn = new BioHeaders(Options.builder().enableDraft("FHT").build());
+        // Opting in is what makes a draft readable; the released three are unchanged by it, and
+        // naming one draft does not open the other.
+        BioHeaders fhtOnly = new BioHeaders(Options.builder().enableDraft("FHT").build());
         assertEquals(List.of("FHR", "FHP", "FHGFF3", "FHT"),
-            optedIn.readableTypes().stream().map(FhType::fileKey).toList());
+            fhtOnly.readableTypes().stream().map(FhType::fileKey).toList());
+        BioHeaders both = new BioHeaders(Options.builder().enableDraftContracts(true).build());
+        assertEquals(List.of("FHR", "FHP", "FHGFF3", "FHT", "FHGM"),
+            both.readableTypes().stream().map(FhType::fileKey).toList());
+        assertEquals(FhType.Transport.EMBEDDED_RECORDS,
+            both.readableTypes().get(4).transport(),
+            "FHGM is a records lane inside an FHGFF3 header, not a file header type");
         // The pin the V7 warning must name.
         SchemaBundle.Draft fht = bundle.draft("FHT");
         assertEquals("226f923c28b680edb3c546e99a751482d06aef1a", fht.commit());

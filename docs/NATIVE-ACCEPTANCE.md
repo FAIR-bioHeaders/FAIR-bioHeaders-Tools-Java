@@ -42,26 +42,35 @@ git -C spec-v0.6.0 checkout v0.6.0
 # 2. Rule V7 draft evidence (its own labelled job, never merged into 1's counts).
 git -C .. clone https://github.com/FAIR-bioHeaders/FHT-Specification fht-pin
 git -C fht-pin checkout 24d3b033ab951ef79ee9f6d17419d8ba700f1b0a
-./mvnw -B -ntp test -Dgroups=draft -Dfh.fht.dir=$PWD/../fht-pin/conformance
+git -C .. clone https://github.com/FAIR-bioHeaders/FHGM-Specification fhgm-pin
+git -C fhgm-pin checkout ac3d37b3033312844fc3151217731928ae33aa54
+./mvnw -B -ntp test -Dgroups=draft \
+  -Dfh.fht.dir=$PWD/../fht-pin/conformance \
+  -Dfh.fhgm.dir=$PWD/../fhgm-pin/development/conformance
 
 # 3. Everything (local default: the draft tests skip visibly if no FHT checkout exists).
 ./mvnw -B -ntp test -Dfh.spec.dir=/path/to/FAIR-bioHeaders-Specification
 
 # 4. The reports guard, exactly as CI runs it.
-sh .github/scripts/assert-reports.sh 308          # released job
-sh .github/scripts/assert-reports.sh 133 target/surefire-reports   # draft job
+sh .github/scripts/assert-reports.sh 317          # released job
+sh .github/scripts/assert-reports.sh 175 target/surefire-reports   # draft job
 sh .github/scripts/ci-guards-dryrun.sh            # local dry run of the CI shell guards
 ```
 
 Discovery conventions: `-Dfh.spec.dir` → `FH_SPEC_DIR` → a sibling
-`../FAIR-bioHeaders-Specification`, and `-Dfh.fht.dir` → `FH_FHT_DIR` → a sibling
-`../FHT-Specification/conformance`. With no checkout, the vector tests are
+`../FAIR-bioHeaders-Specification`; `-Dfh.fht.dir` → `FH_FHT_DIR` → a sibling
+`../FHT-Specification/conformance`; `-Dfh.fhgm.dir` → `FH_FHGM_DIR` → a sibling
+`../FHGM-Specification/development/conformance` (or `../FHGM/…`). A **named**
+directory that does not hold the suite is a hard error — it never falls through to
+a sibling, because case-insensitive filesystems once made that rescue a broken
+path (`SpecSource`, `SpecSourceTest`). With no checkout, the vector tests are
 reported as skipped and the receipts record zero compared - a missing fixture is
 never a pass, and the CI report guard fails on any skip.
 
 Artifacts land in `target/`: `surefire-reports/`,
 `default-behavior-golden.properties`, `acceptance-ledger.json`,
-`acceptance-ledger.properties`, `fht-draft-vectors.properties`. CI uploads them
+`acceptance-ledger.properties`, `fht-draft-vectors.properties` and
+`fhgm-draft-vectors.properties`. CI uploads them
 per job and per JDK with `if-no-files-found: error`.
 
 ## Runtime and operating-system matrix
@@ -88,9 +97,9 @@ run is reported as not tested, not as supported.
 | default-behavior receipt | `build.yml` | `target/default-behavior-golden.properties` is missing, or `vectorsCompared≠228`, `documentsCompared≠47`, `selectionCasesCompared≠304`, `kindsCompared≠18` |
 | golden equality | `DefaultBehaviorGoldenTest` | the recomputed fingerprint differs by even one byte from the golden generated from commit `237da6c` |
 | acceptance ledger | `AcceptanceLedgerTest` + `build.yml` | the shared manifest is not 291 vectors, the run set is not 228, anything fails, or a format is not run without a declared reason |
-| report guard | `.github/scripts/assert-reports.sh` | no report directory, no `TEST-*.xml`, a class that executed 0 tests, any skip, any failure/error, or an aggregate below the job's bound (308 released, 133 draft) |
-| draft receipts | `draft-vectors` job | draft vectors ran ≠ 66, passed ≠ 66, or the recorded contract/suite pin ≠ the pinned values |
-| draft byte identity | `DraftHarness`, `DraftProvenanceTest` | the checkout's `fht.json` or `manifest.json` differs from the registry pin, or the shipped copy differs from its own recorded SHA-256 |
+| report guard | `.github/scripts/assert-reports.sh` | no report directory, no `TEST-*.xml`, a class that executed 0 tests, any skip, any failure/error, or an aggregate below the job's bound (317 released, 175 draft) |
+| draft receipts | `draft-vectors` job | FHT ran/passed ≠ 66, FHGM ran/passed ≠ 31, a recorded contract or suite pin that differs from the registry's, or a missing `gff3Layer=skipped` statement in the FHGM receipt |
+| draft byte identity | `DraftHarness`, `FhgmHarness`, `DraftProvenanceTest` | a checkout whose `fht.json`, `fhgm-model.schema.json`, `fhgm-draft.schema.json` or suite manifest differs from the registry pins, or a shipped copy that differs from its own recorded SHA-256 |
 | native purity | `NativePurityTest` | any source uses `ProcessBuilder`, `Runtime.getRuntime`, `javax.script`/`ScriptEngine`, `System.load`/`loadLibrary`, `LibraryLoader`, or a Python bridge; or the test classpath holds a jar outside the documented set; or a foreign project file (`requirements.txt`, `pyproject.toml`, `package.json`, `DESCRIPTION`, `Project.toml`, `.venv`, …) appears in the tree |
 | build wiring | `build.yml` | `pom.xml` names an interpreter/exec/foreign plugin, or a foreign project file exists in the tree |
 | pin freshness | `draft-pin-freshness` (advisory) | FHT-Specification's live raw-main bytes no longer match the recorded pin (a deliberate re-pin is then required); the step first proves its own probe by checking that a nonsense path returns 404 |
