@@ -66,24 +66,16 @@ public final class ConformanceHarness {
         return specDir;
     }
 
+    /**
+     * The specification checkout holding {@code conformance/manifest.json}, or null when nothing
+     * was named and no sibling holds one (reported as skipped, never as passed). A named directory
+     * that does not hold the suite is an error: see {@link SpecSource}.
+     */
     private static Path locateSpec() {
-        List<Path> candidates = new ArrayList<>();
-        String prop = System.getProperty("fh.spec.dir");
-        if (prop != null) {
-            candidates.add(Path.of(prop));
-        }
-        String env = System.getenv("FH_SPEC_DIR");
-        if (env != null) {
-            candidates.add(Path.of(env));
-        }
-        candidates.add(Path.of("../FAIR-bioHeaders-Specification"));
-        candidates.add(Path.of("FAIR-bioHeaders-Specification"));
-        for (Path c : candidates) {
-            if (Files.isRegularFile(c.resolve("conformance/manifest.json"))) {
-                return c;
-            }
-        }
-        return null;
+        return SpecSource.resolve(System.getProperty("fh.spec.dir"), System.getenv("FH_SPEC_DIR"),
+            "-Dfh.spec.dir", "FH_SPEC_DIR",
+            List.of(Path.of("../FAIR-bioHeaders-Specification"), Path.of("FAIR-bioHeaders-Specification")),
+            SpecSource.SPECIFICATION);
     }
 
     public static Kind kindForFormat(String format) {

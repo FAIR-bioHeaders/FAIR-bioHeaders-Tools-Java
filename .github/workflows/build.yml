@@ -116,7 +116,7 @@ jobs:
       - name: Assert nothing was skipped and no report is empty
         run: |
           # Zero-test and skip guards: a green build with a quiet skip is not acceptance.
-          sh .github/scripts/assert-reports.sh 308
+          sh .github/scripts/assert-reports.sh 315
 
       # The ledger is the completeness claim: all 291 shared vectors accounted for, 228 run here,
       # 63 declared not-run with a reason each. A stale declared count fails the build.

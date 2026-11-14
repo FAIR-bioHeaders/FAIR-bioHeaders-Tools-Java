@@ -172,24 +172,17 @@ public final class DraftHarness {
         }
     }
 
+    /**
+     * The FHT-Specification {@code conformance} directory, or null when nothing was named and no
+     * sibling holds one. A named directory without the suite is an error ({@link SpecSource}): a
+     * draft run must never silently read a different revision than the one it was pointed at,
+     * because the whole value of draft evidence is that its revision is known.
+     */
     private static Path locate() {
-        List<Path> candidates = new ArrayList<>();
-        String prop = System.getProperty("fh.fht.dir");
-        if (prop != null) {
-            candidates.add(Path.of(prop));
-        }
-        String env = System.getenv("FH_FHT_DIR");
-        if (env != null) {
-            candidates.add(Path.of(env));
-        }
-        candidates.add(Path.of("../FHT-Specification/conformance"));
-        candidates.add(Path.of("FHT-Specification/conformance"));
-        for (Path c : candidates) {
-            if (Files.isRegularFile(c.resolve("manifest.json")) && Files.isDirectory(c.resolve("valid"))) {
-                return c;
-            }
-        }
-        return null;
+        return SpecSource.resolve(System.getProperty("fh.fht.dir"), System.getenv("FH_FHT_DIR"),
+            "-Dfh.fht.dir", "FH_FHT_DIR",
+            List.of(Path.of("../FHT-Specification/conformance"), Path.of("FHT-Specification/conformance")),
+            SpecSource.SUITE_DIRECTORY);
     }
 
     public List<JsonNode> vectors() {
