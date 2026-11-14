@@ -52,11 +52,14 @@ Check the adoption decision and released support before implementing a
 proposal; an issue or PR's existence does not establish adoption. **FHT and
 FHGM are drafts (rule V7): they have no released contract, no `schemaVersion`,
 no w3id URL, no entry in the shared registry, and no support claim — and a
-draft never takes a release form.** This repository registers **one**
-draft, FHT, as a pinned row of `schemas/bundled.json` (the commit and SHA-256 of
-FHT-Specification's `fht.json`), readable only through the explicit V7 opt-in and
-warned on for every record read that way. `FHGM` is registered nowhere and has no
-support of any kind here. Registration is not adoption, support or release: with
+draft never takes a release form.** This repository registers **two**
+drafts as pinned rows of `schemas/bundled.json`, both readable only through the
+explicit V7 opt-in and both warned on for every record read that way: `FHT` (the
+commit and SHA-256 of FHT-Specification's `fht.json`, a file-bound header) and
+`FHGM` (an `embedded-records` draft: two pinned files — the record contract and the
+transport overlay — plus the extension key `x-fhgm-models` and the carrier type
+FHGFF3, applied by `FhgmModels`). A records row that does not name all four
+transport fields is refused at registry load. Neither registration is support. Registration is not adoption, support or release: with
 the gate closed a draft citation is still rule V5 material, and the FHT vectors are
 counted in their own labelled job, never inside the 291. Adding a draft row, or
 widening what one does, is a deliberate change with its own review, pinned commit
@@ -167,9 +170,11 @@ This section applies only to FAIR-bioHeaders-Tools-Java.
   `FH_SPEC_DIR` or a sibling directory; without one they skip (never pass).
   CI clones the specification at a pinned tag and passes it explicitly.
 - Draft evidence is a separate tagged test group: `./mvnw test
-  -DexcludedGroups=draft` is released-contract acceptance, `./mvnw test
-  -Dgroups=draft -Dfh.fht.dir=<FHT-Specification>/conformance` is rule V7
-  evidence, and CI runs them as separate labelled jobs. The receipts
+  -DexcludedGroups=draft -Dfh.spec.dir=<spec>` is released-contract acceptance
+  (317 tests), and `./mvnw test -Dgroups=draft
+  -Dfh.fht.dir=<FHT-Specification>/conformance
+  -Dfh.fhgm.dir=<FHGM-Specification>/development/conformance` is rule V7 evidence
+  (175 tests). CI runs them as separate labelled jobs. The receipts
   (`target/default-behavior-golden.properties`,
   `target/fht-draft-vectors.properties`) plus
   `.github/scripts/assert-reports.sh` keep a zero-test, missing-fixture or

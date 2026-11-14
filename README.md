@@ -42,11 +42,31 @@ A record read that way is validated against FHT-Specification's pinned
 on every build) and carries a `V7` warning naming them, because a draft result is
 not a released-contract result. With the gate closed - the default - a draft URL
 in a `schema` field is rule V5 material (read as FHR, near-miss warning),
-byte-identically to before the row existed. `FHGM` is not registered and has no
-support here at all: it is not a header type, and its model-level rules are not
-implemented. [docs/CAPABILITY-MATRIX.md](docs/CAPABILITY-MATRIX.md) is the
-type × operation × serialization × version statement, including the named holes;
-[docs/STATUS.md](docs/STATUS.md) has the vector counts.
+byte-identically to before the row existed.
+
+`FHGM` is registered the same way, as a draft of **records rather than a header**:
+its records ride inside an FHGFF3 header under the `x-fhgm-models` extension key,
+so the file stays routed by its own released FHGFF3 citation and the lane selects
+only the contract and the validator applied to the records.
+
+```java
+FhgmModels models = FhgmModels.open(Options.builder().enableDraft("FHGM").build());
+FhgmModels.Report report = models.check(gff3Bytes, List.of(priorSnapshotBytes));
+```
+
+`FhgmModels` runs the draft's model-level rules - transport overlay (K1), record
+shape (K2), `modelId` uniqueness (K3), `featureId` resolution to exactly one local
+gene row (K4), reference agreement with the file's genome link (K5), and
+revision-pointer resolution against the history you supply (K6) - against two
+pinned contract files, and it refuses any carrier whose released FHGFF3 schema or
+checksum fails first (the suite's boundary B1). It is not support, not a release,
+and not a feature-line validator: `gff3-validator` remains that. With the lane
+closed, `FhgmModels` will not construct at all.
+
+[docs/CAPABILITY-MATRIX.md](docs/CAPABILITY-MATRIX.md) is the type × operation ×
+serialization × version statement, including the named holes;
+[docs/STATUS.md](docs/STATUS.md) has the vector counts and
+[docs/NATIVE-ACCEPTANCE.md](docs/NATIVE-ACCEPTANCE.md) the commands and guards.
 
 ## Requirements
 
