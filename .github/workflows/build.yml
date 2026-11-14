@@ -13,11 +13,12 @@ jobs:
   # toolkit anywhere in this job - the only inputs are the JDK, Maven, this repository and a
   # read-only checkout of the specification's language-neutral conformance data.
   build:
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         java: ['17', '21']
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
 
@@ -25,8 +26,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: maven-${{ matrix.java }}-${{ hashFiles('pom.xml') }}
-          restore-keys: maven-${{ matrix.java }}-
+          key: maven-${{ matrix.os }}-${{ matrix.java }}-${{ hashFiles('pom.xml') }}
+          restore-keys: maven-${{ matrix.os }}-${{ matrix.java }}-
 
       - uses: actions/setup-java@v4
         with:
@@ -66,7 +67,16 @@ jobs:
               exit 1
             fi
           done
-          echo "no subprocess use, no foreign interpreter plugin, no foreign project files"
+          # And after the run: nothing in the workspace was produced by an interpreter.
+          found=$(find . -name '*.pyc' -o -name '__pycache__' -o -name '.pytest_cache' \
+              -o -name 'Rplots.pdf' -o -name '*.rds' -o -name 'Manifest.toml' -o -name 'Project.toml' \
+              | grep -v '^./.git/' || true)
+          if [ -n "$found" ]; then
+            echo "foreign runtime output appeared in the workspace: $found" >&2
+            exit 1
+          fi
+          echo "no subprocess use, no foreign interpreter plugin, no foreign project files," \
+            "no foreign runtime output"
 
       - name: Test (unit + shared conformance vectors, released contracts only)
         run: >
@@ -106,7 +116,45 @@ jobs:
       - name: Assert nothing was skipped and no report is empty
         run: |
           # Zero-test and skip guards: a green build with a quiet skip is not acceptance.
-          sh .github/scripts/assert-reports.sh 304
+          sh .github/scripts/assert-reports.sh 308
+
+      # The ledger is the completeness claim: all 291 shared vectors accounted for, 228 run here,
+      # 63 declared not-run with a reason each. A stale declared count fails the build.
+      # The ledger is the completeness claim: all 291 shared vectors accounted for, 228 run here,
+      # 63 declared not-run each with its reason (checked in Java by AcceptanceLedgerTest). A stale
+      # declared count is a build failure, never a quiet pass. Fixed-string line comparison, so no
+      # value here is produced by parsing the file it is checking.
+      - name: Assert the acceptance ledger accounts for every shared vector
+        run: |
+          receipt=target/acceptance-ledger.properties
+          if [ ! -s "$receipt" ]; then
+            echo "missing $receipt - AcceptanceLedgerTest did not run" >&2
+            exit 1
+          fi
+          cat "$receipt"
+          cat > "${RUNNER_TEMP:-target}/ledger-expected.txt" <<'EXPECTED'
+          available=true
+          vectorsTotal=291
+          vectorsRun=228
+          vectorsPassed=228
+          vectorsFailed=0
+          vectorsNotRun=63
+          vectorsDeclaredNotRunWithReason=63
+          fasta=98/98 passed, 0 not run
+          gfa=56/56 passed, 0 not run
+          fhp-fasta=36/36 passed, 0 not run
+          fhgff3=38/38 passed, 0 not run
+          microdata=0/26 passed, 26 not run
+          jsonld=0/37 passed, 37 not run
+          EXPECTED
+          missing=0
+          while IFS= read -r line; do
+            grep -qxF "$line" "$receipt" || { echo "ledger: no '$line' line" >&2; missing=1; }
+          done < "${RUNNER_TEMP:-target}/ledger-expected.txt"
+          if [ "$missing" -ne 0 ]; then
+            echo "the acceptance ledger does not match the declared v0.6.0 baseline" >&2
+            exit 1
+          fi
 
       - name: Package
         run: ./mvnw -B -ntp -DskipTests package
@@ -115,7 +163,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: surefire-reports-java${{ matrix.java }}
+          name: surefire-reports-${{ matrix.os }}-java${{ matrix.java }}
           path: target/surefire-reports/
           if-no-files-found: error
 
