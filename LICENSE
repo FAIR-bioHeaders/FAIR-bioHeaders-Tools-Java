@@ -30,7 +30,9 @@ redistributed under the terms of that repository's LICENSE: the
 project's specifications and schemas are MPL-2.0 for contributions from
 March 2025 onward, and that file also preserves the historical USDA
 public-domain notice for material predating it; nothing here narrows
-those terms.
+those terms. Within such redistributed files, file notices and version
+history identify provenance; a file's most recent modification date
+alone does not determine the status of every portion of that file.
 
 2. Mozilla Public License 2.0
 
