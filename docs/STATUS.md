@@ -147,9 +147,11 @@ manifest-listed `R14` warning present; expected-invalid files must return
 ## Not verified (open questions, honestly listed)
 
 - The suite (258 tests) passed on this host with Homebrew OpenJDK **17.0.21.0.3**
-  and **27.0.1.0.3** (macOS/aarch64, Maven 3.9.11). JDK 21 is in the CI matrix
-  but had not been executed here, and no GitHub Actions run existed at the time
-  of writing — treat the CI green as the evidence for other platforms.
+  and **27.0.1.0.3** (macOS/aarch64, Maven 3.9.11), and in CI with Temurin
+  **17** and **21** on ubuntu-latest against the specification pinned at tag
+  `v0.6.0` (run 43618810450, both matrix legs green, vector-count guard step
+  reporting "FileVectorTest executed 228 tests"). Platforms/JDKs beyond these
+  are untested.
 - Behavior on huge files (multi-GB bgzip) and on adversarially crafted YAML is
   bounded by buffer-in-memory design and the ported size limits, but was not
   load-tested.
