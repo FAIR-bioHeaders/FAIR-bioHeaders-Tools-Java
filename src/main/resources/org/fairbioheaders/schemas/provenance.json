@@ -1,0 +1,27 @@
+{
+  "description": "Provenance of the bundled schema copies (the family convention of FAIR-bioHeaders-Specification release tags as the source; see FAIR-bioHeaders-Tools bioheaders/schemas/ and FHGFF3 header/provenance.json). Each file was extracted from the named tag of the FAIR-bioHeaders-Specification repository with `git show <tag>:<name>.json` and is recorded here by the tag's commit and the SHA-256 of the exact bytes. Every copy was additionally verified byte-identical to the frozen copy shipped in the released fair-bioheaders 0.11.0 Python package on 2026-11-14.",
+  "source": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification",
+  "retrieved": "2026-11-14",
+  "tagCommits": {
+    "v0.3.1": "378b534dda9c1d759f25b4b32287172402492233",
+    "v0.4.0": "84c2f90ab0e97c81d8afbf33eafe80ebade7a009",
+    "v0.5.0": "170e677fbb6726a3f765373dbe1f214820000be7",
+    "v0.6.0": "0ae18b00ee4bd71ab2dc28bae706b0f9d195076b"
+  },
+  "identicalBytesAcrossTags": {
+    "v0.3.0:fhr.json": "v0.3.1:fhr.json",
+    "v0.4.1/v0.4.2 fhr|fhp|fhgff3": "v0.4.0 same files (verified with cmp on 2026-11-14)",
+    "v0.5.0:fhr.json": "v0.6.0:fhr.json (FHR 2.1 unchanged)"
+  },
+  "files": [
+    { "file": "fhr-1.json",      "type": "FHR",   "schemaVersion": "1",    "tags": ["v0.3.0", "v0.3.1"], "sha256": "e3d3843e1a1646e12495ccc9a615df94b7abe71b833c5f336c59444e0a49620a" },
+    { "file": "fhr-2.0.json",    "type": "FHR",   "schemaVersion": "2.0",  "tags": ["v0.4.0", "v0.4.1", "v0.4.2"], "sha256": "168a60467e3651dfdfe9855747f38257d5889bfcce6ec8661d9a378762a362dd" },
+    { "file": "fhr-2.1.json",    "type": "FHR",   "schemaVersion": "2.1",  "tags": ["v0.5.0", "v0.6.0"], "sha256": "694ab5afaf8c3743eacf9e2aacb5551f7cbe37073b6f4afc3ae4a65b47f9d4df" },
+    { "file": "fhp-1.0.json",    "type": "FHP",   "schemaVersion": "1.0",  "tags": ["v0.4.0", "v0.4.1", "v0.4.2"], "sha256": "e3f8f45260b833f931644e87ff7530cb9b4151e67094023dd96edde9a1d90366" },
+    { "file": "fhp-1.1.json",    "type": "FHP",   "schemaVersion": "1.1",  "tags": ["v0.5.0"], "sha256": "2409739d4a223164ca368f93afa78c8f1e3809fb04ec46cc9a793cc5aaaba427" },
+    { "file": "fhp-1.2.json",    "type": "FHP",   "schemaVersion": "1.2",  "tags": ["v0.6.0"], "sha256": "92a0b3cbcfe69939ebfaac69f0c5958ce426c005873efe8d3e3eb0fc0dab6de5" },
+    { "file": "fhgff3-1.0.json", "type": "FHGFF3", "schemaVersion": "1.0", "tags": ["v0.4.0", "v0.4.1", "v0.4.2"], "sha256": "f89635f252f6e204944de99e6c40bad1b0c9b37af5108fce05ee63f6dfd40bbd" },
+    { "file": "fhgff3-1.1.json", "type": "FHGFF3", "schemaVersion": "1.1", "tags": ["v0.5.0"], "sha256": "20ce320f5d706f11ed21cdece4dfb56e3568b50be126e25b4016f46f2e8e416c" },
+    { "file": "fhgff3-1.2.json", "type": "FHGFF3", "schemaVersion": "1.2",  "tags": ["v0.6.0"], "sha256": "1942be4cefc8b3a2537942c2252b45fbcef87a5532486e4fd0f5d4c540e0fbf9" }
+  ]
+}
