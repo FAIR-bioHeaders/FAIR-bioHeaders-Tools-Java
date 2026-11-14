@@ -36,16 +36,28 @@ class TypeRegistryTest {
     }
 
     @Test
-    void shippedRegistryDeclaresTheThreeReleasedTypesAndNoDraft() {
+    void shippedRegistryRegistersThreeReleasedTypesAndOneOptInDraft() {
         SchemaBundle bundle = SchemaBundle.getDefault();
         assertEquals(List.of("FHR", "FHP", "FHGFF3"),
-            bundle.types().released().stream().map(d -> d.type().fileKey()).toList());
+            bundle.types().released().stream().map(d -> d.type().fileKey()).toList(),
+            "rules V1-V3 recognise exactly the released rows");
         assertTrue(bundle.types().drafts().isEmpty(),
-            "the shipped registry carries no draft row while no draft bytes are pinned here");
-        assertTrue(bundle.declaredDraftTypes().isEmpty());
+            "no draft is active on a default bundle (rule V7 is never the default)");
+        assertEquals(List.of("FHT"), bundle.declaredDraftTypes(),
+            "FHT is registered as a pinned draft, opt-in only (docs/CAPABILITY-MATRIX.md)");
         assertEquals(List.of("fhr", "fhp", "fhgff3"),
             bundle.types().released().stream().map(d -> d.type().urlKey()).toList());
         assertEquals(3, new BioHeaders().readableTypes().size());
+        // Opting in is what makes it readable; the released three are unchanged by it.
+        BioHeaders optedIn = new BioHeaders(Options.builder().enableDraft("FHT").build());
+        assertEquals(List.of("FHR", "FHP", "FHGFF3", "FHT"),
+            optedIn.readableTypes().stream().map(FhType::fileKey).toList());
+        // The pin the V7 warning must name.
+        SchemaBundle.Draft fht = bundle.draft("FHT");
+        assertEquals("226f923c28b680edb3c546e99a751482d06aef1a", fht.commit());
+        assertEquals("59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e", fht.sha256());
+        assertEquals("https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+            fht.citation());
     }
 
     @Test
