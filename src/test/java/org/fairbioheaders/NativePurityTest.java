@@ -50,7 +50,9 @@ class NativePurityTest {
         "Runtime" + ".getRuntime",
         "getRuntime()" + ".exec",
         "javax." + "script",
-        "ScriptEngine" + "Manager",
+        // Split so that this file's own text is not a hit for CI's plain-text grep step, which
+        // looks for the same names. The runtime pattern still matches every spelling.
+        "Script" + "Engine",
         "System." + "loadLibrary",
         "System." + "load(",
         "Library" + "Loader",
