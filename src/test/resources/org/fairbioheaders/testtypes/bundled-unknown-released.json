@@ -1,0 +1,24 @@
+{
+  "description": "Test-only registry for FAIR-bioHeaders-Tools-Java#4: a row that claims to be a RELEASED type the library has no constant for. The registry must refuse it, because a released type is public API (an FhType constant, a contract copy, a versions.json row) and a resource file cannot mint public API on its own.",
+  "types": [
+    { "fileKey": "FHR",    "urlKey": "fhr",    "status": "released", "transport": "embedded-header" },
+    { "fileKey": "FHP",    "urlKey": "fhp",    "status": "released", "transport": "embedded-header" },
+    { "fileKey": "FHGFF3", "urlKey": "fhgff3", "status": "released", "transport": "embedded-header" },
+    { "fileKey": "NEWT",   "urlKey": "newt",   "status": "released", "transport": "embedded-header" }
+  ],
+  "current": {
+    "release": "v0.6.0",
+    "files": {
+      "FHR": "fhr-2.1.json",
+      "FHP": "fhp-1.2.json",
+      "FHGFF3": "fhgff3-1.2.json"
+    }
+  },
+  "releases": {
+    "v0.6.0": {
+      "FHR": "fhr-2.1.json",
+      "FHP": "fhp-1.2.json",
+      "FHGFF3": "fhgff3-1.2.json"
+    }
+  }
+}

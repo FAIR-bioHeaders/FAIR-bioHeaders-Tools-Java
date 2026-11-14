@@ -1,0 +1,5268 @@
+{
+  "fingerprintVersion": 1,
+  "configuration": "default: released contracts only, no draft lane, no parent links",
+  "vectorsAvailable": true,
+  "bundle": {
+    "currentRelease": "v0.6.0",
+    "currentFiles": {
+      "FHR": "fhr-2.1.json",
+      "FHP": "fhp-1.2.json",
+      "FHGFF3": "fhgff3-1.2.json"
+    },
+    "releases": [
+      {
+        "release": "v0.3.0",
+        "hasType": [
+          "FHR"
+        ],
+        "releasesWith": [
+          {
+            "type": "FHR",
+            "index": 0
+          },
+          {
+            "type": "FHP",
+            "index": -1
+          },
+          {
+            "type": "FHGFF3",
+            "index": -1
+          }
+        ]
+      },
+      {
+        "release": "v0.3.1",
+        "hasType": [
+          "FHR"
+        ],
+        "releasesWith": [
+          {
+            "type": "FHR",
+            "index": 1
+          },
+          {
+            "type": "FHP",
+            "index": -1
+          },
+          {
+            "type": "FHGFF3",
+            "index": -1
+          }
+        ]
+      },
+      {
+        "release": "v0.4.0",
+        "hasType": [
+          "FHR",
+          "FHP",
+          "FHGFF3"
+        ],
+        "releasesWith": [
+          {
+            "type": "FHR",
+            "index": 2
+          },
+          {
+            "type": "FHP",
+            "index": 0
+          },
+          {
+            "type": "FHGFF3",
+            "index": 0
+          }
+        ]
+      },
+      {
+        "release": "v0.4.1",
+        "hasType": [
+          "FHR",
+          "FHP",
+          "FHGFF3"
+        ],
+        "releasesWith": [
+          {
+            "type": "FHR",
+            "index": 3
+          },
+          {
+            "type": "FHP",
+            "index": 1
+          },
+          {
+            "type": "FHGFF3",
+            "index": 1
+          }
+        ]
+      },
+      {
+        "release": "v0.4.2",
+        "hasType": [
+          "FHR",
+          "FHP",
+          "FHGFF3"
+        ],
+        "releasesWith": [
+          {
+            "type": "FHR",
+            "index": 4
+          },
+          {
+            "type": "FHP",
+            "index": 2
+          },
+          {
+            "type": "FHGFF3",
+            "index": 2
+          }
+        ]
+      },
+      {
+        "release": "v0.5.0",
+        "hasType": [
+          "FHR",
+          "FHP",
+          "FHGFF3"
+        ],
+        "releasesWith": [
+          {
+            "type": "FHR",
+            "index": 5
+          },
+          {
+            "type": "FHP",
+            "index": 3
+          },
+          {
+            "type": "FHGFF3",
+            "index": 3
+          }
+        ]
+      },
+      {
+        "release": "v0.6.0",
+        "hasType": [
+          "FHR",
+          "FHP",
+          "FHGFF3"
+        ],
+        "releasesWith": [
+          {
+            "type": "FHR",
+            "index": 6
+          },
+          {
+            "type": "FHP",
+            "index": 4
+          },
+          {
+            "type": "FHGFF3",
+            "index": 4
+          }
+        ]
+      }
+    ]
+  },
+  "selection": [
+    {
+      "section": "select",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhr.json",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhr.json\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhr.json\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhr.json\",\"schemaVersion\":1}",
+      "outcome": "FHR@v0.3.1 | WARNING V6: FHR: warning: schemaVersion 1 via the raw-main schema URL is read as FHR 1 (v0.3.1); cite https://w3id.org/fair-bioheaders/fhr/v0.3.1 or move to schemaVersion \"2.0\""
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhr.json\",\"schemaVersion\":1.0}",
+      "outcome": "FHR@v0.3.1 | WARNING V6: FHR: warning: schemaVersion 1 via the raw-main schema URL is read as FHR 1 (v0.3.1); cite https://w3id.org/fair-bioheaders/fhr/v0.3.1 or move to schemaVersion \"2.0\""
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhr.json\",\"schemaVersion\":true}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhr.json\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhr.json\",\"schemaVersion\":2}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "select",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhp.json",
+      "outcome": "FHP@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhp.json\"}",
+      "outcome": "FHP@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhp.json\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHP@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhp.json\",\"schemaVersion\":1}",
+      "outcome": "FHP@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhp.json\",\"schemaVersion\":1.0}",
+      "outcome": "FHP@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhp.json\",\"schemaVersion\":true}",
+      "outcome": "FHP@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhp.json\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHP@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhp.json\",\"schemaVersion\":2}",
+      "outcome": "FHP@main | none"
+    },
+    {
+      "section": "select",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhgff3.json",
+      "outcome": "FHGFF3@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhgff3.json\"}",
+      "outcome": "FHGFF3@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhgff3.json\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHGFF3@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhgff3.json\",\"schemaVersion\":1}",
+      "outcome": "FHGFF3@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhgff3.json\",\"schemaVersion\":1.0}",
+      "outcome": "FHGFF3@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhgff3.json\",\"schemaVersion\":true}",
+      "outcome": "FHGFF3@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhgff3.json\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHGFF3@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/fhgff3.json\",\"schemaVersion\":2}",
+      "outcome": "FHGFF3@main | none"
+    },
+    {
+      "section": "select",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json\",\"schemaVersion\":1}",
+      "outcome": "FHR@v0.3.1 | WARNING V6: FHR: warning: schemaVersion 1 via the raw-main schema URL is read as FHR 1 (v0.3.1); cite https://w3id.org/fair-bioheaders/fhr/v0.3.1 or move to schemaVersion \"2.0\""
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json\",\"schemaVersion\":1.0}",
+      "outcome": "FHR@v0.3.1 | WARNING V6: FHR: warning: schemaVersion 1 via the raw-main schema URL is read as FHR 1 (v0.3.1); cite https://w3id.org/fair-bioheaders/fhr/v0.3.1 or move to schemaVersion \"2.0\""
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json\",\"schemaVersion\":true}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/main/fhr.json\",\"schemaVersion\":2}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "select",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/v0.4.0/fhp.json",
+      "outcome": "FHP@v0.4.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/v0.4.0/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/v0.4.0/fhp.json\"}",
+      "outcome": "FHP@v0.4.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/v0.4.0/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/v0.4.0/fhp.json\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHP@v0.4.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/v0.4.0/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/v0.4.0/fhp.json\",\"schemaVersion\":1}",
+      "outcome": "FHP@v0.4.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/v0.4.0/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/v0.4.0/fhp.json\",\"schemaVersion\":1.0}",
+      "outcome": "FHP@v0.4.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/v0.4.0/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/v0.4.0/fhp.json\",\"schemaVersion\":true}",
+      "outcome": "FHP@v0.4.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/v0.4.0/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/v0.4.0/fhp.json\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHP@v0.4.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/v0.4.0/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHR-Specification/v0.4.0/fhp.json\",\"schemaVersion\":2}",
+      "outcome": "FHP@v0.4.0 | none"
+    },
+    {
+      "section": "select",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhr.json",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhr.json\"}",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhr.json\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhr.json\",\"schemaVersion\":1}",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhr.json\",\"schemaVersion\":1.0}",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhr.json\",\"schemaVersion\":true}",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhr.json\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhr.json\",\"schemaVersion\":2}",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "select",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhp.json",
+      "outcome": "FHP@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhp.json\"}",
+      "outcome": "FHP@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhp.json\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHP@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhp.json\",\"schemaVersion\":1}",
+      "outcome": "FHP@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhp.json\",\"schemaVersion\":1.0}",
+      "outcome": "FHP@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhp.json\",\"schemaVersion\":true}",
+      "outcome": "FHP@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhp.json\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHP@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhp.json\",\"schemaVersion\":2}",
+      "outcome": "FHP@v0.6.0 | none"
+    },
+    {
+      "section": "select",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhgff3.json",
+      "outcome": "FHGFF3@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhgff3.json\"}",
+      "outcome": "FHGFF3@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhgff3.json\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHGFF3@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhgff3.json\",\"schemaVersion\":1}",
+      "outcome": "FHGFF3@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhgff3.json\",\"schemaVersion\":1.0}",
+      "outcome": "FHGFF3@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhgff3.json\",\"schemaVersion\":true}",
+      "outcome": "FHGFF3@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhgff3.json\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHGFF3@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.6.0/fhgff3.json\",\"schemaVersion\":2}",
+      "outcome": "FHGFF3@v0.6.0 | none"
+    },
+    {
+      "section": "select",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.3.1/fhp.json",
+      "outcome": "V4: FHP: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.3.1/fhp.json (this tool has FHP schemas for main (v0.6.0), v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.3.1/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.3.1/fhp.json\"}",
+      "outcome": "V4: FHP: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.3.1/fhp.json (this tool has FHP schemas for main (v0.6.0), v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.3.1/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.3.1/fhp.json\",\"schemaVersion\":\"1\"}",
+      "outcome": "V4: FHP: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.3.1/fhp.json (this tool has FHP schemas for main (v0.6.0), v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.3.1/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.3.1/fhp.json\",\"schemaVersion\":1}",
+      "outcome": "V4: FHP: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.3.1/fhp.json (this tool has FHP schemas for main (v0.6.0), v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.3.1/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.3.1/fhp.json\",\"schemaVersion\":1.0}",
+      "outcome": "V4: FHP: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.3.1/fhp.json (this tool has FHP schemas for main (v0.6.0), v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.3.1/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.3.1/fhp.json\",\"schemaVersion\":true}",
+      "outcome": "V4: FHP: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.3.1/fhp.json (this tool has FHP schemas for main (v0.6.0), v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.3.1/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.3.1/fhp.json\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "V4: FHP: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.3.1/fhp.json (this tool has FHP schemas for main (v0.6.0), v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.3.1/fhp.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.3.1/fhp.json\",\"schemaVersion\":2}",
+      "outcome": "V4: FHP: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.3.1/fhp.json (this tool has FHP schemas for main (v0.6.0), v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "select",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.0/fhr.json",
+      "outcome": "FHR@v0.4.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.0/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.0/fhr.json\"}",
+      "outcome": "FHR@v0.4.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.0/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.0/fhr.json\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHR@v0.4.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.0/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.0/fhr.json\",\"schemaVersion\":1}",
+      "outcome": "FHR@v0.4.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.0/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.0/fhr.json\",\"schemaVersion\":1.0}",
+      "outcome": "FHR@v0.4.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.0/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.0/fhr.json\",\"schemaVersion\":true}",
+      "outcome": "FHR@v0.4.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.0/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.0/fhr.json\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHR@v0.4.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.0/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.0/fhr.json\",\"schemaVersion\":2}",
+      "outcome": "FHR@v0.4.0 | none"
+    },
+    {
+      "section": "select",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.1/fhr.json",
+      "outcome": "FHR@v0.4.1 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.1/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.1/fhr.json\"}",
+      "outcome": "FHR@v0.4.1 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.1/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.1/fhr.json\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHR@v0.4.1 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.1/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.1/fhr.json\",\"schemaVersion\":1}",
+      "outcome": "FHR@v0.4.1 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.1/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.1/fhr.json\",\"schemaVersion\":1.0}",
+      "outcome": "FHR@v0.4.1 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.1/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.1/fhr.json\",\"schemaVersion\":true}",
+      "outcome": "FHR@v0.4.1 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.1/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.1/fhr.json\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHR@v0.4.1 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.1/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.1/fhr.json\",\"schemaVersion\":2}",
+      "outcome": "FHR@v0.4.1 | none"
+    },
+    {
+      "section": "select",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.2/fhgff3.json",
+      "outcome": "FHGFF3@v0.4.2 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.2/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.2/fhgff3.json\"}",
+      "outcome": "FHGFF3@v0.4.2 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.2/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.2/fhgff3.json\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHGFF3@v0.4.2 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.2/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.2/fhgff3.json\",\"schemaVersion\":1}",
+      "outcome": "FHGFF3@v0.4.2 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.2/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.2/fhgff3.json\",\"schemaVersion\":1.0}",
+      "outcome": "FHGFF3@v0.4.2 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.2/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.2/fhgff3.json\",\"schemaVersion\":true}",
+      "outcome": "FHGFF3@v0.4.2 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.2/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.2/fhgff3.json\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHGFF3@v0.4.2 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.2/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.4.2/fhgff3.json\",\"schemaVersion\":2}",
+      "outcome": "FHGFF3@v0.4.2 | none"
+    },
+    {
+      "section": "select",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/fhgff3.json",
+      "outcome": "FHGFF3@v0.5.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/fhgff3.json\"}",
+      "outcome": "FHGFF3@v0.5.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/fhgff3.json\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHGFF3@v0.5.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/fhgff3.json\",\"schemaVersion\":1}",
+      "outcome": "FHGFF3@v0.5.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/fhgff3.json\",\"schemaVersion\":1.0}",
+      "outcome": "FHGFF3@v0.5.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/fhgff3.json\",\"schemaVersion\":true}",
+      "outcome": "FHGFF3@v0.5.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/fhgff3.json\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHGFF3@v0.5.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/fhgff3.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/v0.5.0/fhgff3.json\",\"schemaVersion\":2}",
+      "outcome": "FHGFF3@v0.5.0 | none"
+    },
+    {
+      "section": "select",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/refs/tags/v0.6.0/fhr.json",
+      "outcome": "V4: FHR: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/refs/tags/v0.6.0/fhr.json (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/refs/tags/v0.6.0/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/refs/tags/v0.6.0/fhr.json\"}",
+      "outcome": "V4: FHR: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/refs/tags/v0.6.0/fhr.json (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/refs/tags/v0.6.0/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/refs/tags/v0.6.0/fhr.json\",\"schemaVersion\":\"1\"}",
+      "outcome": "V4: FHR: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/refs/tags/v0.6.0/fhr.json (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/refs/tags/v0.6.0/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/refs/tags/v0.6.0/fhr.json\",\"schemaVersion\":1}",
+      "outcome": "V4: FHR: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/refs/tags/v0.6.0/fhr.json (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/refs/tags/v0.6.0/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/refs/tags/v0.6.0/fhr.json\",\"schemaVersion\":1.0}",
+      "outcome": "V4: FHR: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/refs/tags/v0.6.0/fhr.json (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/refs/tags/v0.6.0/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/refs/tags/v0.6.0/fhr.json\",\"schemaVersion\":true}",
+      "outcome": "V4: FHR: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/refs/tags/v0.6.0/fhr.json (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/refs/tags/v0.6.0/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/refs/tags/v0.6.0/fhr.json\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "V4: FHR: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/refs/tags/v0.6.0/fhr.json (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/refs/tags/v0.6.0/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/refs/tags/v0.6.0/fhr.json\",\"schemaVersion\":2}",
+      "outcome": "V4: FHR: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/refs/tags/v0.6.0/fhr.json (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "select",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/my-branch/fhr.json",
+      "outcome": "V4: FHR: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/my-branch/fhr.json (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/my-branch/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/my-branch/fhr.json\"}",
+      "outcome": "V4: FHR: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/my-branch/fhr.json (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/my-branch/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/my-branch/fhr.json\",\"schemaVersion\":\"1\"}",
+      "outcome": "V4: FHR: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/my-branch/fhr.json (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/my-branch/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/my-branch/fhr.json\",\"schemaVersion\":1}",
+      "outcome": "V4: FHR: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/my-branch/fhr.json (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/my-branch/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/my-branch/fhr.json\",\"schemaVersion\":1.0}",
+      "outcome": "V4: FHR: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/my-branch/fhr.json (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/my-branch/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/my-branch/fhr.json\",\"schemaVersion\":true}",
+      "outcome": "V4: FHR: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/my-branch/fhr.json (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/my-branch/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/my-branch/fhr.json\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "V4: FHR: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/my-branch/fhr.json (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/my-branch/fhr.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/my-branch/fhr.json\",\"schemaVersion\":2}",
+      "outcome": "V4: FHR: unsupported schema version: https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/my-branch/fhr.json (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "select",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.6.0\"}",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.6.0\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.6.0\",\"schemaVersion\":1}",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.6.0\",\"schemaVersion\":1.0}",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.6.0\",\"schemaVersion\":true}",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.6.0\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.6.0\",\"schemaVersion\":2}",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "select",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.6.0/",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.6.0/",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.6.0/\"}",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.6.0/",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.6.0/\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.6.0/",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.6.0/\",\"schemaVersion\":1}",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.6.0/",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.6.0/\",\"schemaVersion\":1.0}",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.6.0/",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.6.0/\",\"schemaVersion\":true}",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.6.0/",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.6.0/\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.6.0/",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.6.0/\",\"schemaVersion\":2}",
+      "outcome": "FHR@v0.6.0 | none"
+    },
+    {
+      "section": "select",
+      "input": "https://w3id.org/fair-bioheaders/fhp/v0.4.0",
+      "outcome": "FHP@v0.4.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhp/v0.4.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhp/v0.4.0\"}",
+      "outcome": "FHP@v0.4.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhp/v0.4.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhp/v0.4.0\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHP@v0.4.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhp/v0.4.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhp/v0.4.0\",\"schemaVersion\":1}",
+      "outcome": "FHP@v0.4.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhp/v0.4.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhp/v0.4.0\",\"schemaVersion\":1.0}",
+      "outcome": "FHP@v0.4.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhp/v0.4.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhp/v0.4.0\",\"schemaVersion\":true}",
+      "outcome": "FHP@v0.4.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhp/v0.4.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhp/v0.4.0\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHP@v0.4.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhp/v0.4.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhp/v0.4.0\",\"schemaVersion\":2}",
+      "outcome": "FHP@v0.4.0 | none"
+    },
+    {
+      "section": "select",
+      "input": "https://w3id.org/fair-bioheaders/fhgff3/v0.5.0",
+      "outcome": "FHGFF3@v0.5.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhgff3/v0.5.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhgff3/v0.5.0\"}",
+      "outcome": "FHGFF3@v0.5.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhgff3/v0.5.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhgff3/v0.5.0\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHGFF3@v0.5.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhgff3/v0.5.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhgff3/v0.5.0\",\"schemaVersion\":1}",
+      "outcome": "FHGFF3@v0.5.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhgff3/v0.5.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhgff3/v0.5.0\",\"schemaVersion\":1.0}",
+      "outcome": "FHGFF3@v0.5.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhgff3/v0.5.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhgff3/v0.5.0\",\"schemaVersion\":true}",
+      "outcome": "FHGFF3@v0.5.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhgff3/v0.5.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhgff3/v0.5.0\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHGFF3@v0.5.0 | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhgff3/v0.5.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhgff3/v0.5.0\",\"schemaVersion\":2}",
+      "outcome": "FHGFF3@v0.5.0 | none"
+    },
+    {
+      "section": "select",
+      "input": "https://w3id.org/fair-bioheaders/fhgff3/v0.3.1",
+      "outcome": "V4: FHGFF3: unsupported schema version: https://w3id.org/fair-bioheaders/fhgff3/v0.3.1 (this tool has FHGFF3 schemas for main (v0.6.0), v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhgff3/v0.3.1",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhgff3/v0.3.1\"}",
+      "outcome": "V4: FHGFF3: unsupported schema version: https://w3id.org/fair-bioheaders/fhgff3/v0.3.1 (this tool has FHGFF3 schemas for main (v0.6.0), v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhgff3/v0.3.1",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhgff3/v0.3.1\",\"schemaVersion\":\"1\"}",
+      "outcome": "V4: FHGFF3: unsupported schema version: https://w3id.org/fair-bioheaders/fhgff3/v0.3.1 (this tool has FHGFF3 schemas for main (v0.6.0), v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhgff3/v0.3.1",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhgff3/v0.3.1\",\"schemaVersion\":1}",
+      "outcome": "V4: FHGFF3: unsupported schema version: https://w3id.org/fair-bioheaders/fhgff3/v0.3.1 (this tool has FHGFF3 schemas for main (v0.6.0), v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhgff3/v0.3.1",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhgff3/v0.3.1\",\"schemaVersion\":1.0}",
+      "outcome": "V4: FHGFF3: unsupported schema version: https://w3id.org/fair-bioheaders/fhgff3/v0.3.1 (this tool has FHGFF3 schemas for main (v0.6.0), v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhgff3/v0.3.1",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhgff3/v0.3.1\",\"schemaVersion\":true}",
+      "outcome": "V4: FHGFF3: unsupported schema version: https://w3id.org/fair-bioheaders/fhgff3/v0.3.1 (this tool has FHGFF3 schemas for main (v0.6.0), v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhgff3/v0.3.1",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhgff3/v0.3.1\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "V4: FHGFF3: unsupported schema version: https://w3id.org/fair-bioheaders/fhgff3/v0.3.1 (this tool has FHGFF3 schemas for main (v0.6.0), v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhgff3/v0.3.1",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhgff3/v0.3.1\",\"schemaVersion\":2}",
+      "outcome": "V4: FHGFF3: unsupported schema version: https://w3id.org/fair-bioheaders/fhgff3/v0.3.1 (this tool has FHGFF3 schemas for main (v0.6.0), v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "select",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.0.0",
+      "outcome": "V4: FHR: unsupported schema version: https://w3id.org/fair-bioheaders/fhr/v0.0.0 (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.0.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.0.0\"}",
+      "outcome": "V4: FHR: unsupported schema version: https://w3id.org/fair-bioheaders/fhr/v0.0.0 (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.0.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.0.0\",\"schemaVersion\":\"1\"}",
+      "outcome": "V4: FHR: unsupported schema version: https://w3id.org/fair-bioheaders/fhr/v0.0.0 (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.0.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.0.0\",\"schemaVersion\":1}",
+      "outcome": "V4: FHR: unsupported schema version: https://w3id.org/fair-bioheaders/fhr/v0.0.0 (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.0.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.0.0\",\"schemaVersion\":1.0}",
+      "outcome": "V4: FHR: unsupported schema version: https://w3id.org/fair-bioheaders/fhr/v0.0.0 (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.0.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.0.0\",\"schemaVersion\":true}",
+      "outcome": "V4: FHR: unsupported schema version: https://w3id.org/fair-bioheaders/fhr/v0.0.0 (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.0.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.0.0\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "V4: FHR: unsupported schema version: https://w3id.org/fair-bioheaders/fhr/v0.0.0 (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.0.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.0.0\",\"schemaVersion\":2}",
+      "outcome": "V4: FHR: unsupported schema version: https://w3id.org/fair-bioheaders/fhr/v0.0.0 (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "select",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v9.9.9",
+      "outcome": "V4: FHR: unsupported schema version: https://w3id.org/fair-bioheaders/fhr/v9.9.9 (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v9.9.9",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v9.9.9\"}",
+      "outcome": "V4: FHR: unsupported schema version: https://w3id.org/fair-bioheaders/fhr/v9.9.9 (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v9.9.9",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v9.9.9\",\"schemaVersion\":\"1\"}",
+      "outcome": "V4: FHR: unsupported schema version: https://w3id.org/fair-bioheaders/fhr/v9.9.9 (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v9.9.9",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v9.9.9\",\"schemaVersion\":1}",
+      "outcome": "V4: FHR: unsupported schema version: https://w3id.org/fair-bioheaders/fhr/v9.9.9 (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v9.9.9",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v9.9.9\",\"schemaVersion\":1.0}",
+      "outcome": "V4: FHR: unsupported schema version: https://w3id.org/fair-bioheaders/fhr/v9.9.9 (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v9.9.9",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v9.9.9\",\"schemaVersion\":true}",
+      "outcome": "V4: FHR: unsupported schema version: https://w3id.org/fair-bioheaders/fhr/v9.9.9 (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v9.9.9",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v9.9.9\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "V4: FHR: unsupported schema version: https://w3id.org/fair-bioheaders/fhr/v9.9.9 (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v9.9.9",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v9.9.9\",\"schemaVersion\":2}",
+      "outcome": "V4: FHR: unsupported schema version: https://w3id.org/fair-bioheaders/fhr/v9.9.9 (this tool has FHR schemas for main (v0.6.0), v0.3.0, v0.3.1, v0.4.0, v0.4.1, v0.4.2, v0.5.0, v0.6.0)"
+    },
+    {
+      "section": "select",
+      "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":1}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":1.0}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":true}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":2}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "select",
+      "input": "https://w3id.org/fair-bioheaders/fhgm/v0.8.0",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fhgm/v0.8.0 is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhgm/v0.8.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhgm/v0.8.0\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fhgm/v0.8.0 is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhgm/v0.8.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhgm/v0.8.0\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fhgm/v0.8.0 is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhgm/v0.8.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhgm/v0.8.0\",\"schemaVersion\":1}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fhgm/v0.8.0 is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhgm/v0.8.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhgm/v0.8.0\",\"schemaVersion\":1.0}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fhgm/v0.8.0 is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhgm/v0.8.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhgm/v0.8.0\",\"schemaVersion\":true}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fhgm/v0.8.0 is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhgm/v0.8.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhgm/v0.8.0\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fhgm/v0.8.0 is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhgm/v0.8.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhgm/v0.8.0\",\"schemaVersion\":2}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fhgm/v0.8.0 is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "select",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.4.0/fhr.json",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fhr/v0.4.0/fhr.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.4.0/fhr.json",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.4.0/fhr.json\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fhr/v0.4.0/fhr.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.4.0/fhr.json",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.4.0/fhr.json\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fhr/v0.4.0/fhr.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.4.0/fhr.json",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.4.0/fhr.json\",\"schemaVersion\":1}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fhr/v0.4.0/fhr.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.4.0/fhr.json",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.4.0/fhr.json\",\"schemaVersion\":1.0}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fhr/v0.4.0/fhr.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.4.0/fhr.json",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.4.0/fhr.json\",\"schemaVersion\":true}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fhr/v0.4.0/fhr.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.4.0/fhr.json",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.4.0/fhr.json\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fhr/v0.4.0/fhr.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/fhr/v0.4.0/fhr.json",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fhr/v0.4.0/fhr.json\",\"schemaVersion\":2}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fhr/v0.4.0/fhr.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "select",
+      "input": "https://w3id.org/fair-bioheaders/core/v0.6.0",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/core/v0.6.0 is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/core/v0.6.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/core/v0.6.0\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/core/v0.6.0 is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/core/v0.6.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/core/v0.6.0\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/core/v0.6.0 is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/core/v0.6.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/core/v0.6.0\",\"schemaVersion\":1}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/core/v0.6.0 is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/core/v0.6.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/core/v0.6.0\",\"schemaVersion\":1.0}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/core/v0.6.0 is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/core/v0.6.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/core/v0.6.0\",\"schemaVersion\":true}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/core/v0.6.0 is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/core/v0.6.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/core/v0.6.0\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/core/v0.6.0 is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://w3id.org/fair-bioheaders/core/v0.6.0",
+      "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/core/v0.6.0\",\"schemaVersion\":2}",
+      "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/core/v0.6.0 is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "select",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/core.yaml",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/core.yaml is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/core.yaml",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/core.yaml\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/core.yaml is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/core.yaml",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/core.yaml\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/core.yaml is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/core.yaml",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/core.yaml\",\"schemaVersion\":1}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/core.yaml is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/core.yaml",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/core.yaml\",\"schemaVersion\":1.0}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/core.yaml is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/core.yaml",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/core.yaml\",\"schemaVersion\":true}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/core.yaml is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/core.yaml",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/core.yaml\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/core.yaml is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/core.yaml",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/core.yaml\",\"schemaVersion\":2}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/main/core.yaml is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "select",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":1}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":1.0}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":true}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":2}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "select",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":1}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":1.0}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":true}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":2}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+    },
+    {
+      "section": "select",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/fhgm.json",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/fhgm.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/fhgm.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/fhgm.json\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/fhgm.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/fhgm.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/fhgm.json\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/fhgm.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/fhgm.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/fhgm.json\",\"schemaVersion\":1}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/fhgm.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/fhgm.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/fhgm.json\",\"schemaVersion\":1.0}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/fhgm.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/fhgm.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/fhgm.json\",\"schemaVersion\":true}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/fhgm.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/fhgm.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/fhgm.json\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/fhgm.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/fhgm.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/fhgm.json\",\"schemaVersion\":2}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/fhgm.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "select",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json\",\"schemaVersion\":1}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json\",\"schemaVersion\":1.0}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json\",\"schemaVersion\":true}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json",
+      "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json\",\"schemaVersion\":2}",
+      "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json is not a FAIR-bioHeaders schema URL; read as FHR against the current schema (rule V5)"
+    },
+    {
+      "section": "select",
+      "input": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/fhr.json",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/fhr.json",
+      "record": "{\"schema\":\"https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/fhr.json\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/fhr.json",
+      "record": "{\"schema\":\"https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/fhr.json\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/fhr.json",
+      "record": "{\"schema\":\"https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/fhr.json\",\"schemaVersion\":1}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/fhr.json",
+      "record": "{\"schema\":\"https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/fhr.json\",\"schemaVersion\":1.0}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/fhr.json",
+      "record": "{\"schema\":\"https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/fhr.json\",\"schemaVersion\":true}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/fhr.json",
+      "record": "{\"schema\":\"https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/fhr.json\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/fhr.json",
+      "record": "{\"schema\":\"https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/blob/main/fhr.json\",\"schemaVersion\":2}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "select",
+      "input": "https://example.org/profile.json",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://example.org/profile.json",
+      "record": "{\"schema\":\"https://example.org/profile.json\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://example.org/profile.json",
+      "record": "{\"schema\":\"https://example.org/profile.json\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://example.org/profile.json",
+      "record": "{\"schema\":\"https://example.org/profile.json\",\"schemaVersion\":1}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://example.org/profile.json",
+      "record": "{\"schema\":\"https://example.org/profile.json\",\"schemaVersion\":1.0}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://example.org/profile.json",
+      "record": "{\"schema\":\"https://example.org/profile.json\",\"schemaVersion\":true}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://example.org/profile.json",
+      "record": "{\"schema\":\"https://example.org/profile.json\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://example.org/profile.json",
+      "record": "{\"schema\":\"https://example.org/profile.json\",\"schemaVersion\":2}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "select",
+      "input": "https://example.org/fhp/profile.json",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://example.org/fhp/profile.json",
+      "record": "{\"schema\":\"https://example.org/fhp/profile.json\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://example.org/fhp/profile.json",
+      "record": "{\"schema\":\"https://example.org/fhp/profile.json\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://example.org/fhp/profile.json",
+      "record": "{\"schema\":\"https://example.org/fhp/profile.json\",\"schemaVersion\":1}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://example.org/fhp/profile.json",
+      "record": "{\"schema\":\"https://example.org/fhp/profile.json\",\"schemaVersion\":1.0}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://example.org/fhp/profile.json",
+      "record": "{\"schema\":\"https://example.org/fhp/profile.json\",\"schemaVersion\":true}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://example.org/fhp/profile.json",
+      "record": "{\"schema\":\"https://example.org/fhp/profile.json\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "https://example.org/fhp/profile.json",
+      "record": "{\"schema\":\"https://example.org/fhp/profile.json\",\"schemaVersion\":2}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "select",
+      "input": "http://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "http://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "record": "{\"schema\":\"http://w3id.org/fair-bioheaders/fhr/v0.6.0\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "http://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "record": "{\"schema\":\"http://w3id.org/fair-bioheaders/fhr/v0.6.0\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "http://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "record": "{\"schema\":\"http://w3id.org/fair-bioheaders/fhr/v0.6.0\",\"schemaVersion\":1}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "http://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "record": "{\"schema\":\"http://w3id.org/fair-bioheaders/fhr/v0.6.0\",\"schemaVersion\":1.0}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "http://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "record": "{\"schema\":\"http://w3id.org/fair-bioheaders/fhr/v0.6.0\",\"schemaVersion\":true}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "http://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "record": "{\"schema\":\"http://w3id.org/fair-bioheaders/fhr/v0.6.0\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "http://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "record": "{\"schema\":\"http://w3id.org/fair-bioheaders/fhr/v0.6.0\",\"schemaVersion\":2}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "select",
+      "input": "ftp://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "ftp://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "record": "{\"schema\":\"ftp://w3id.org/fair-bioheaders/fhr/v0.6.0\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "ftp://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "record": "{\"schema\":\"ftp://w3id.org/fair-bioheaders/fhr/v0.6.0\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "ftp://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "record": "{\"schema\":\"ftp://w3id.org/fair-bioheaders/fhr/v0.6.0\",\"schemaVersion\":1}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "ftp://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "record": "{\"schema\":\"ftp://w3id.org/fair-bioheaders/fhr/v0.6.0\",\"schemaVersion\":1.0}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "ftp://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "record": "{\"schema\":\"ftp://w3id.org/fair-bioheaders/fhr/v0.6.0\",\"schemaVersion\":true}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "ftp://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "record": "{\"schema\":\"ftp://w3id.org/fair-bioheaders/fhr/v0.6.0\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "ftp://w3id.org/fair-bioheaders/fhr/v0.6.0",
+      "record": "{\"schema\":\"ftp://w3id.org/fair-bioheaders/fhr/v0.6.0\",\"schemaVersion\":2}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "select",
+      "input": "",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "",
+      "record": "{\"schema\":\"\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "",
+      "record": "{\"schema\":\"\",\"schemaVersion\":\"1\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "",
+      "record": "{\"schema\":\"\",\"schemaVersion\":1}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "",
+      "record": "{\"schema\":\"\",\"schemaVersion\":1.0}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "",
+      "record": "{\"schema\":\"\",\"schemaVersion\":true}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "",
+      "record": "{\"schema\":\"\",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "",
+      "record": "{\"schema\":\"\",\"schemaVersion\":2}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "select",
+      "input": "   ",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "   ",
+      "record": "{\"schema\":\"   \"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "   ",
+      "record": "{\"schema\":\"   \",\"schemaVersion\":\"1\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "   ",
+      "record": "{\"schema\":\"   \",\"schemaVersion\":1}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "   ",
+      "record": "{\"schema\":\"   \",\"schemaVersion\":1.0}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "   ",
+      "record": "{\"schema\":\"   \",\"schemaVersion\":true}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "   ",
+      "record": "{\"schema\":\"   \",\"schemaVersion\":\"2.0\"}",
+      "outcome": "FHR@main | none"
+    },
+    {
+      "section": "selectRecord",
+      "input": "   ",
+      "record": "{\"schema\":\"   \",\"schemaVersion\":2}",
+      "outcome": "FHR@main | none"
+    }
+  ],
+  "kinds": [
+    {
+      "name": "a.fa",
+      "kind": "FASTA"
+    },
+    {
+      "name": "A.FA",
+      "kind": "FASTA"
+    },
+    {
+      "name": "x.fasta",
+      "kind": "FASTA"
+    },
+    {
+      "name": "x.fna",
+      "kind": "FASTA"
+    },
+    {
+      "name": "x.fhr.fa",
+      "kind": "FASTA"
+    },
+    {
+      "name": "x.fhp.fasta",
+      "kind": "FASTA"
+    },
+    {
+      "name": "x.gfa",
+      "kind": "GFA"
+    },
+    {
+      "name": "x.GFA",
+      "kind": "GFA"
+    },
+    {
+      "name": "x.gff3",
+      "kind": "GFF3"
+    },
+    {
+      "name": "x.gff3.gz",
+      "kind": "GFF3"
+    },
+    {
+      "name": "x.fasta.gz",
+      "kind": "FASTA"
+    },
+    {
+      "name": "x.fa.bgzip",
+      "kind": "FASTA"
+    },
+    {
+      "name": "noext",
+      "kind": "FASTA"
+    },
+    {
+      "name": "x.txt",
+      "kind": "FASTA"
+    },
+    {
+      "name": "x.json",
+      "kind": "FASTA"
+    },
+    {
+      "name": "x.fhgff3.gff3",
+      "kind": "GFF3"
+    },
+    {
+      "name": "x.gfa.gz",
+      "kind": "GFA"
+    },
+    {
+      "name": "x.gz",
+      "kind": "FASTA"
+    }
+  ],
+  "documents": [
+    {
+      "name": "fhr-fasta",
+      "kind": "FASTA",
+      "status": "VALID",
+      "stated": "VId2Jbo/6PdtAnln47XLWfm8cAdnmqB15gtBULKJ7wU=",
+      "computed": "VId2Jbo/6PdtAnln47XLWfm8cAdnmqB15gtBULKJ7wU=",
+      "metadata": {
+        "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+        "schemaVersion": "2.1",
+        "genome": "fingerprint-test-genome",
+        "taxon": {
+          "name": "Homo sapiens",
+          "uri": "https://identifiers.org/taxonomy:9606"
+        },
+        "version": "1.0.0",
+        "metadataAuthor": [
+          {
+            "name": "Synthetic fingerprint author"
+          }
+        ],
+        "assemblyAuthor": [
+          {
+            "name": "Synthetic assembly author"
+          }
+        ],
+        "dateCreated": "2026-01-01",
+        "masking": "not-masked",
+        "checksum": "VId2Jbo/6PdtAnln47XLWfm8cAdnmqB15gtBULKJ7wU="
+      },
+      "issues": []
+    },
+    {
+      "name": "fhr-fasta-r14",
+      "kind": "FASTA",
+      "status": "VALID",
+      "stated": "+5HsR1axE6icQEUueB5YmHRwoZnUnuxCinnfJxRlVIQ=",
+      "computed": "+5HsR1axE6icQEUueB5YmHRwoZnUnuxCinnfJxRlVIQ=",
+      "metadata": {
+        "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+        "schemaVersion": "2.1",
+        "genome": "fingerprint-test-genome",
+        "taxon": {
+          "name": "Homo sapiens",
+          "uri": "https://identifiers.org/taxonomy:9606"
+        },
+        "version": "1.0.0",
+        "metadataAuthor": [
+          {
+            "name": "Synthetic fingerprint author"
+          }
+        ],
+        "assemblyAuthor": [
+          {
+            "name": "Synthetic assembly author"
+          }
+        ],
+        "dateCreated": "2026-01-01",
+        "masking": "not-masked",
+        "relatedLink": [
+          "javascript:void(0)"
+        ],
+        "checksum": "+5HsR1axE6icQEUueB5YmHRwoZnUnuxCinnfJxRlVIQ="
+      },
+      "issues": [
+        {
+          "severity": "WARNING",
+          "rule": "R14",
+          "message": "the relatedLink[] value 'javascript:void(0)' has no accepted scheme (http, https, ftp, urn, doi, info)"
+        }
+      ]
+    },
+    {
+      "name": "fhp-fasta",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": "oYEfU0UOWoWgNlJFJ+UeNkgNLWD4cI4jN4ll+RkyU7E=",
+      "computed": "oYEfU0UOWoWgNlJFJ+UeNkgNLWD4cI4jN4ll+RkyU7E=",
+      "metadata": {
+        "schema": "https://w3id.org/fair-bioheaders/fhp/v0.6.0",
+        "schemaVersion": "1.2",
+        "proteinSet": "fingerprint-proteins",
+        "taxon": {
+          "name": "Homo sapiens",
+          "uri": "https://identifiers.org/taxonomy:9606"
+        },
+        "version": "1.0.0",
+        "metadataAuthor": [
+          {
+            "name": "Synthetic fingerprint author"
+          }
+        ],
+        "dateCreated": "2026-01-01",
+        "checksum": "oYEfU0UOWoWgNlJFJ+UeNkgNLWD4cI4jN4ll+RkyU7E="
+      },
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "property 'proteinSet' is not defined in the schema and the schema does not allow additional properties"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'proteome' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'sourceType' not found"
+        }
+      ]
+    },
+    {
+      "name": "fhr-gfa",
+      "kind": "GFA",
+      "status": "VALID",
+      "stated": "9uRXEFOFW2RsvmV0sM7LboQ9Vqbch1nDzfIvVK9IjY4=",
+      "computed": "9uRXEFOFW2RsvmV0sM7LboQ9Vqbch1nDzfIvVK9IjY4=",
+      "metadata": {
+        "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+        "schemaVersion": "2.1",
+        "genome": "fingerprint-test-genome",
+        "taxon": {
+          "name": "Homo sapiens",
+          "uri": "https://identifiers.org/taxonomy:9606"
+        },
+        "version": "1.0.0",
+        "metadataAuthor": [
+          {
+            "name": "Synthetic fingerprint author"
+          }
+        ],
+        "assemblyAuthor": [
+          {
+            "name": "Synthetic assembly author"
+          }
+        ],
+        "dateCreated": "2026-01-01",
+        "masking": "not-masked",
+        "checksum": "9uRXEFOFW2RsvmV0sM7LboQ9Vqbch1nDzfIvVK9IjY4="
+      },
+      "issues": []
+    },
+    {
+      "name": "fhgff3-gff3",
+      "kind": "GFF3",
+      "status": "INVALID",
+      "stated": "LLS0zyw4yK9tgr5LR5Ih9oos4Gv7kz+cYph/mFosTy4=",
+      "computed": "LLS0zyw4yK9tgr5LR5Ih9oos4Gv7kz+cYph/mFosTy4=",
+      "metadata": {
+        "schema": "https://w3id.org/fair-bioheaders/fhgff3/v0.6.0",
+        "schemaVersion": "1.2",
+        "genomeReference": {
+          "accession": "GCA_000001.1",
+          "seqcol_id": "0123456789abcdef0123456789abcdef",
+          "assemblyName": "fingerprint-assembly"
+        },
+        "taxon": {
+          "name": "Homo sapiens",
+          "uri": "https://identifiers.org/taxonomy:9606"
+        },
+        "version": "1.0.0",
+        "metadataAuthor": [
+          {
+            "name": "Synthetic fingerprint author"
+          }
+        ],
+        "dateCreated": "2026-01-01",
+        "annotationAuthor": [
+          {
+            "name": "Synthetic annotation author"
+          }
+        ],
+        "checksum": "LLS0zyw4yK9tgr5LR5Ih9oos4Gv7kz+cYph/mFosTy4="
+      },
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "property 'annotationAuthor' is not defined in the schema and the schema does not allow additional properties"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'annotation' not found"
+        }
+      ]
+    },
+    {
+      "name": "fhr-fasta-tampered-sequence",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": "VId2Jbo/6PdtAnln47XLWfm8cAdnmqB15gtBULKJ7wU=",
+      "computed": "989fe8y0iK9lPyUv1fNtcXYGpssIX4ND5wYiMQmolBE=",
+      "metadata": {
+        "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+        "schemaVersion": "2.1",
+        "genome": "fingerprint-test-genome",
+        "taxon": {
+          "name": "Homo sapiens",
+          "uri": "https://identifiers.org/taxonomy:9606"
+        },
+        "version": "1.0.0",
+        "metadataAuthor": [
+          {
+            "name": "Synthetic fingerprint author"
+          }
+        ],
+        "assemblyAuthor": [
+          {
+            "name": "Synthetic assembly author"
+          }
+        ],
+        "dateCreated": "2026-01-01",
+        "masking": "not-masked",
+        "checksum": "VId2Jbo/6PdtAnln47XLWfm8cAdnmqB15gtBULKJ7wU="
+      },
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R3",
+          "message": "checksum mismatch: the file states VId2Jbo/6PdtAnln47XLWfm8cAdnmqB15gtBULKJ7wU= but the covered bytes hash to 989fe8y0iK9lPyUv1fNtcXYGpssIX4ND5wYiMQmolBE="
+        }
+      ]
+    },
+    {
+      "name": "fhr-fasta-tampered-metadata",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": "VId2Jbo/6PdtAnln47XLWfm8cAdnmqB15gtBULKJ7wU=",
+      "computed": "kRHSj1p9XMtP3Zv/dEPHo6rCD9pSusZhszSI2dUMnsk=",
+      "metadata": {
+        "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+        "schemaVersion": "2.1",
+        "genome": "fingerprint-tst-genome",
+        "taxon": {
+          "name": "Homo sapiens",
+          "uri": "https://identifiers.org/taxonomy:9606"
+        },
+        "version": "1.0.0",
+        "metadataAuthor": [
+          {
+            "name": "Synthetic fingerprint author"
+          }
+        ],
+        "assemblyAuthor": [
+          {
+            "name": "Synthetic assembly author"
+          }
+        ],
+        "dateCreated": "2026-01-01",
+        "masking": "not-masked",
+        "checksum": "VId2Jbo/6PdtAnln47XLWfm8cAdnmqB15gtBULKJ7wU="
+      },
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R3",
+          "message": "checksum mismatch: the file states VId2Jbo/6PdtAnln47XLWfm8cAdnmqB15gtBULKJ7wU= but the covered bytes hash to kRHSj1p9XMtP3Zv/dEPHo6rCD9pSusZhszSI2dUMnsk="
+        }
+      ]
+    },
+    {
+      "name": "fhr-fasta-crlf-bytes",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": "VId2Jbo/6PdtAnln47XLWfm8cAdnmqB15gtBULKJ7wU=",
+      "computed": "i1+ptCTD3hhRximxp7TMbCYCMBLPejNiLBgt0ivxgy8=",
+      "metadata": {
+        "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+        "schemaVersion": "2.1",
+        "genome": "fingerprint-test-genome",
+        "taxon": {
+          "name": "Homo sapiens",
+          "uri": "https://identifiers.org/taxonomy:9606"
+        },
+        "version": "1.0.0",
+        "metadataAuthor": [
+          {
+            "name": "Synthetic fingerprint author"
+          }
+        ],
+        "assemblyAuthor": [
+          {
+            "name": "Synthetic assembly author"
+          }
+        ],
+        "dateCreated": "2026-01-01",
+        "masking": "not-masked",
+        "checksum": "VId2Jbo/6PdtAnln47XLWfm8cAdnmqB15gtBULKJ7wU="
+      },
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R3",
+          "message": "checksum mismatch: the file states VId2Jbo/6PdtAnln47XLWfm8cAdnmqB15gtBULKJ7wU= but the covered bytes hash to i1+ptCTD3hhRximxp7TMbCYCMBLPejNiLBgt0ivxgy8="
+        }
+      ]
+    },
+    {
+      "name": "fhr-fasta-cr-bytes",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": "VId2Jbo/6PdtAnln47XLWfm8cAdnmqB15gtBULKJ7wU=",
+      "computed": "3dyHJHL5dU4u3pMv3VmEhQY742F8EyaBY0uE7usgIsM=",
+      "metadata": {
+        "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+        "schemaVersion": "2.1",
+        "genome": "fingerprint-test-genome",
+        "taxon": {
+          "name": "Homo sapiens",
+          "uri": "https://identifiers.org/taxonomy:9606"
+        },
+        "version": "1.0.0",
+        "metadataAuthor": [
+          {
+            "name": "Synthetic fingerprint author"
+          }
+        ],
+        "assemblyAuthor": [
+          {
+            "name": "Synthetic assembly author"
+          }
+        ],
+        "dateCreated": "2026-01-01",
+        "masking": "not-masked",
+        "checksum": "VId2Jbo/6PdtAnln47XLWfm8cAdnmqB15gtBULKJ7wU="
+      },
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R3",
+          "message": "checksum mismatch: the file states VId2Jbo/6PdtAnln47XLWfm8cAdnmqB15gtBULKJ7wU= but the covered bytes hash to 3dyHJHL5dU4u3pMv3VmEhQY742F8EyaBY0uE7usgIsM="
+        }
+      ]
+    },
+    {
+      "name": "fhgff3-gff3-crlf-bytes",
+      "kind": "GFF3",
+      "status": "INVALID",
+      "stated": "LLS0zyw4yK9tgr5LR5Ih9oos4Gv7kz+cYph/mFosTy4=",
+      "computed": "pjShzqpa9P6/uvTW9SYPwzq4bIEEsttNfu4qTomtiOI=",
+      "metadata": {
+        "schema": "https://w3id.org/fair-bioheaders/fhgff3/v0.6.0",
+        "schemaVersion": "1.2",
+        "genomeReference": {
+          "accession": "GCA_000001.1",
+          "seqcol_id": "0123456789abcdef0123456789abcdef",
+          "assemblyName": "fingerprint-assembly"
+        },
+        "taxon": {
+          "name": "Homo sapiens",
+          "uri": "https://identifiers.org/taxonomy:9606"
+        },
+        "version": "1.0.0",
+        "metadataAuthor": [
+          {
+            "name": "Synthetic fingerprint author"
+          }
+        ],
+        "dateCreated": "2026-01-01",
+        "annotationAuthor": [
+          {
+            "name": "Synthetic annotation author"
+          }
+        ],
+        "checksum": "LLS0zyw4yK9tgr5LR5Ih9oos4Gv7kz+cYph/mFosTy4="
+      },
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R3",
+          "message": "checksum mismatch: the file states LLS0zyw4yK9tgr5LR5Ih9oos4Gv7kz+cYph/mFosTy4= but the covered bytes hash to pjShzqpa9P6/uvTW9SYPwzq4bIEEsttNfu4qTomtiOI="
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "property 'annotationAuthor' is not defined in the schema and the schema does not allow additional properties"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'annotation' not found"
+        }
+      ]
+    },
+    {
+      "name": "fasta-lf",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "computed": "6YN8XYHkCq96VOhOXK+Znr7VvuxECbu2r742dUCm7j8=",
+      "metadata": {
+        "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+        "schemaVersion": "2.1",
+        "genome": "fingerprint-test-genome",
+        "taxon": {
+          "name": "Homo sapiens",
+          "uri": "https://identifiers.org/taxonomy:9606"
+        },
+        "version": "1.0.0",
+        "metadataAuthor": [
+          {
+            "name": "Synthetic fingerprint author"
+          }
+        ],
+        "assemblyAuthor": [
+          {
+            "name": "Synthetic assembly author"
+          }
+        ],
+        "dateCreated": "2026-01-01",
+        "masking": "not-masked",
+        "checksum": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      },
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R3",
+          "message": "checksum mismatch: the file states AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= but the covered bytes hash to 6YN8XYHkCq96VOhOXK+Znr7VvuxECbu2r742dUCm7j8="
+        }
+      ]
+    },
+    {
+      "name": "gfa",
+      "kind": "GFA",
+      "status": "INVALID",
+      "stated": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "computed": "iksdv6BqF3XgJ5IK2sGaLGTTjPQso7mdxEUHRBZZ48c=",
+      "metadata": {
+        "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+        "schemaVersion": "2.1",
+        "genome": "fingerprint-test-genome",
+        "taxon": {
+          "name": "Homo sapiens",
+          "uri": "https://identifiers.org/taxonomy:9606"
+        },
+        "version": "1.0.0",
+        "metadataAuthor": [
+          {
+            "name": "Synthetic fingerprint author"
+          }
+        ],
+        "assemblyAuthor": [
+          {
+            "name": "Synthetic assembly author"
+          }
+        ],
+        "dateCreated": "2026-01-01",
+        "masking": "not-masked",
+        "checksum": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      },
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R3",
+          "message": "checksum mismatch: the file states AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= but the covered bytes hash to iksdv6BqF3XgJ5IK2sGaLGTTjPQso7mdxEUHRBZZ48c="
+        }
+      ]
+    },
+    {
+      "name": "gff3",
+      "kind": "GFF3",
+      "status": "INVALID",
+      "stated": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "computed": "9zHdcmC72Zl94B6DMWiYoZoipe8IoXkpTNnCOpnrgy0=",
+      "metadata": {
+        "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+        "schemaVersion": "2.1",
+        "genome": "fingerprint-test-genome",
+        "taxon": {
+          "name": "Homo sapiens",
+          "uri": "https://identifiers.org/taxonomy:9606"
+        },
+        "version": "1.0.0",
+        "metadataAuthor": [
+          {
+            "name": "Synthetic fingerprint author"
+          }
+        ],
+        "assemblyAuthor": [
+          {
+            "name": "Synthetic assembly author"
+          }
+        ],
+        "dateCreated": "2026-01-01",
+        "masking": "not-masked",
+        "checksum": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      },
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R3",
+          "message": "checksum mismatch: the file states AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= but the covered bytes hash to 9zHdcmC72Zl94B6DMWiYoZoipe8IoXkpTNnCOpnrgy0="
+        }
+      ]
+    },
+    {
+      "name": "bom",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": null,
+      "computed": null,
+      "metadata": null,
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R7",
+          "message": "file must not begin with a UTF-8 byte order mark"
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": null,
+      "computed": null,
+      "metadata": null,
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R2",
+          "message": "expected exactly one root-level checksum line, found 0"
+        }
+      ]
+    },
+    {
+      "name": "no-header",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": null,
+      "computed": null,
+      "metadata": null,
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R2",
+          "message": "expected exactly one root-level checksum line, found 0"
+        }
+      ]
+    },
+    {
+      "name": "late-header",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": null,
+      "computed": null,
+      "metadata": null,
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R10",
+          "message": "FHR header line after the header block at line 4"
+        }
+      ]
+    },
+    {
+      "name": "two-checksum-lines",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": null,
+      "computed": null,
+      "metadata": null,
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R5",
+          "message": "checksum line at line 1 must hold the value and nothing else"
+        }
+      ]
+    },
+    {
+      "name": "raw-markers",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "computed": "GAX50LhLsVM0rt0jbfsUjPoQI4lMoHAXc1PuDTKkLcc=",
+      "metadata": {
+        "genome": "a>b",
+        "checksum": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      },
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R3",
+          "message": "checksum mismatch: the file states AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= but the covered bytes hash to GAX50LhLsVM0rt0jbfsUjPoQI4lMoHAXc1PuDTKkLcc="
+        },
+        {
+          "severity": "WARNING",
+          "rule": "R11",
+          "message": "FASTA header line contains a raw record marker: ;~ genome: a>b"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'schema' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'schemaVersion' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'taxon' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'version' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'metadataAuthor' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'assemblyAuthor' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'dateCreated' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'masking' not found"
+        }
+      ]
+    },
+    {
+      "name": "duplicate-key",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": null,
+      "computed": null,
+      "metadata": null,
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R2",
+          "message": "expected exactly one root-level checksum line, found 0"
+        }
+      ]
+    },
+    {
+      "name": "yaml-anchor",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": null,
+      "computed": null,
+      "metadata": null,
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R2",
+          "message": "expected exactly one root-level checksum line, found 0"
+        }
+      ]
+    },
+    {
+      "name": "yaml-tag",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": null,
+      "computed": null,
+      "metadata": null,
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R2",
+          "message": "expected exactly one root-level checksum line, found 0"
+        }
+      ]
+    },
+    {
+      "name": "leading-zero",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": null,
+      "computed": null,
+      "metadata": null,
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R2",
+          "message": "expected exactly one root-level checksum line, found 0"
+        }
+      ]
+    },
+    {
+      "name": "yes-bool",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": null,
+      "computed": null,
+      "metadata": null,
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R2",
+          "message": "expected exactly one root-level checksum line, found 0"
+        }
+      ]
+    },
+    {
+      "name": "inf-number",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": null,
+      "computed": null,
+      "metadata": null,
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R2",
+          "message": "expected exactly one root-level checksum line, found 0"
+        }
+      ]
+    },
+    {
+      "name": "u2028",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": null,
+      "computed": null,
+      "metadata": null,
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R6",
+          "message": "FHR header lines must not contain U+0085, U+2028, or U+2029"
+        }
+      ]
+    },
+    {
+      "name": "nested-checksum",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": null,
+      "computed": null,
+      "metadata": null,
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R2",
+          "message": "expected exactly one root-level checksum line, found 0"
+        }
+      ]
+    },
+    {
+      "name": "block-literal-checksum",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": null,
+      "computed": null,
+      "metadata": null,
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R5",
+          "message": "checksum line at line 1 must hold the value and nothing else"
+        }
+      ]
+    },
+    {
+      "name": "quoted-checksum",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "computed": "xnK40e9W7Sirh8NiLFEUBpvdOte4+XN0mNDAHs7wlno=",
+      "metadata": {
+        "checksum": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      },
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R3",
+          "message": "checksum mismatch: the file states AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= but the covered bytes hash to xnK40e9W7Sirh8NiLFEUBpvdOte4+XN0mNDAHs7wlno="
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'schema' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'schemaVersion' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'genome' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'taxon' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'version' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'metadataAuthor' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'assemblyAuthor' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'dateCreated' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'masking' not found"
+        }
+      ]
+    },
+    {
+      "name": "checksum-comment",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": null,
+      "computed": null,
+      "metadata": null,
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R5",
+          "message": "checksum line at line 1 must hold the value and nothing else"
+        }
+      ]
+    },
+    {
+      "name": "checksum-indented",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": null,
+      "computed": null,
+      "metadata": null,
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R2",
+          "message": "expected exactly one root-level checksum line, found 0"
+        }
+      ]
+    },
+    {
+      "name": "space-before-colon",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "computed": "xnK40e9W7Sirh8NiLFEUBpvdOte4+XN0mNDAHs7wlno=",
+      "metadata": {
+        "checksum": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      },
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R3",
+          "message": "checksum mismatch: the file states AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= but the covered bytes hash to xnK40e9W7Sirh8NiLFEUBpvdOte4+XN0mNDAHs7wlno="
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'schema' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'schemaVersion' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'genome' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'taxon' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'version' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'metadataAuthor' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'assemblyAuthor' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'dateCreated' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'masking' not found"
+        }
+      ]
+    },
+    {
+      "name": "fhp-minimal",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "computed": "VWlmUxX+UIEdSmegtJUyKFV+dloKgHf3QLj6Q788xTs=",
+      "metadata": {
+        "schema": "https://w3id.org/fair-bioheaders/fhp/v0.6.0",
+        "schemaVersion": "1.2",
+        "proteinSet": "fingerprint-proteins",
+        "checksum": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      },
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R3",
+          "message": "checksum mismatch: the file states AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= but the covered bytes hash to VWlmUxX+UIEdSmegtJUyKFV+dloKgHf3QLj6Q788xTs="
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "property 'proteinSet' is not defined in the schema and the schema does not allow additional properties"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'proteome' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'sourceType' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'taxon' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'version' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'metadataAuthor' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'dateCreated' not found"
+        }
+      ]
+    },
+    {
+      "name": "fhgff3-minimal",
+      "kind": "GFF3",
+      "status": "INVALID",
+      "stated": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "computed": "0aln6TFnLbE1RSgiR1q02W/iJKHyV24P/+30HEyhBUA=",
+      "metadata": {
+        "schema": "https://w3id.org/fair-bioheaders/fhgff3/v0.6.0",
+        "schemaVersion": "1.2",
+        "checksum": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      },
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R3",
+          "message": "checksum mismatch: the file states AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= but the covered bytes hash to 0aln6TFnLbE1RSgiR1q02W/iJKHyV24P/+30HEyhBUA="
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'annotation' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'taxon' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'version' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'metadataAuthor' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'dateCreated' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'genomeReference' not found"
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "required property 'derivedFrom' not found"
+        }
+      ]
+    },
+    {
+      "name": "extension-key-2.1",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "computed": "2P6HPAT8d3KVQ/gQbjTNUdwKh9V8xUHF73j6YNXe5o4=",
+      "metadata": {
+        "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+        "schemaVersion": "2.1",
+        "genome": "fingerprint-test-genome",
+        "taxon": {
+          "name": "Homo sapiens",
+          "uri": "https://identifiers.org/taxonomy:9606"
+        },
+        "version": "1.0.0",
+        "metadataAuthor": [
+          {
+            "name": "Synthetic fingerprint author"
+          }
+        ],
+        "assemblyAuthor": [
+          {
+            "name": "Synthetic assembly author"
+          }
+        ],
+        "dateCreated": "2026-01-01",
+        "masking": "not-masked",
+        "checksum": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "x-fingerprint": {
+          "a": 1
+        }
+      },
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R3",
+          "message": "checksum mismatch: the file states AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= but the covered bytes hash to 2P6HPAT8d3KVQ/gQbjTNUdwKh9V8xUHF73j6YNXe5o4="
+        }
+      ]
+    },
+    {
+      "name": "extension-key-nested",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": null,
+      "computed": null,
+      "metadata": null,
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R2",
+          "message": "expected exactly one root-level checksum line, found 0"
+        }
+      ]
+    },
+    {
+      "name": "extension-uppercase",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "computed": "LIw1ZC7w1wPz3YVpEVgo2WRFfGUoV1PiotYKT24ygxc=",
+      "metadata": {
+        "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+        "schemaVersion": "2.1",
+        "genome": "fingerprint-test-genome",
+        "taxon": {
+          "name": "Homo sapiens",
+          "uri": "https://identifiers.org/taxonomy:9606"
+        },
+        "version": "1.0.0",
+        "metadataAuthor": [
+          {
+            "name": "Synthetic fingerprint author"
+          }
+        ],
+        "assemblyAuthor": [
+          {
+            "name": "Synthetic assembly author"
+          }
+        ],
+        "dateCreated": "2026-01-01",
+        "masking": "not-masked",
+        "checksum": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "X-Fingerprint": 1
+      },
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R3",
+          "message": "checksum mismatch: the file states AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= but the covered bytes hash to LIw1ZC7w1wPz3YVpEVgo2WRFfGUoV1PiotYKT24ygxc="
+        },
+        {
+          "severity": "ERROR",
+          "rule": "schema",
+          "message": "property 'X-Fingerprint' is not defined in the schema and the schema does not allow additional properties"
+        }
+      ]
+    },
+    {
+      "name": "fhr1-numeric-version",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": null,
+      "computed": null,
+      "metadata": null,
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R2",
+          "message": "expected exactly one root-level checksum line, found 0"
+        }
+      ]
+    },
+    {
+      "name": "draft-citation-lane-off",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": null,
+      "computed": null,
+      "metadata": null,
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R2",
+          "message": "expected exactly one root-level checksum line, found 0"
+        }
+      ]
+    },
+    {
+      "name": "fhgm-citation-lane-off",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": null,
+      "computed": null,
+      "metadata": null,
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R2",
+          "message": "expected exactly one root-level checksum line, found 0"
+        }
+      ]
+    },
+    {
+      "name": "gzip-member-prefix-as-text",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": null,
+      "computed": null,
+      "metadata": null,
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R2",
+          "message": "expected exactly one root-level checksum line, found 0"
+        }
+      ]
+    },
+    {
+      "name": "fasta-lf-crlf",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "computed": "FLJJsanMJvtIPoaowYeRLeXCPgu33j4DfCpA70T6pcM=",
+      "metadata": {
+        "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+        "schemaVersion": "2.1",
+        "genome": "fingerprint-test-genome",
+        "taxon": {
+          "name": "Homo sapiens",
+          "uri": "https://identifiers.org/taxonomy:9606"
+        },
+        "version": "1.0.0",
+        "metadataAuthor": [
+          {
+            "name": "Synthetic fingerprint author"
+          }
+        ],
+        "assemblyAuthor": [
+          {
+            "name": "Synthetic assembly author"
+          }
+        ],
+        "dateCreated": "2026-01-01",
+        "masking": "not-masked",
+        "checksum": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      },
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R3",
+          "message": "checksum mismatch: the file states AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= but the covered bytes hash to FLJJsanMJvtIPoaowYeRLeXCPgu33j4DfCpA70T6pcM="
+        }
+      ]
+    },
+    {
+      "name": "gfa-crlf",
+      "kind": "GFA",
+      "status": "INVALID",
+      "stated": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "computed": "0h3E9LUwRFeKj7aeH3Zeqj5RXM/4lqTK7DRZG/pO3uc=",
+      "metadata": {
+        "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+        "schemaVersion": "2.1",
+        "genome": "fingerprint-test-genome",
+        "taxon": {
+          "name": "Homo sapiens",
+          "uri": "https://identifiers.org/taxonomy:9606"
+        },
+        "version": "1.0.0",
+        "metadataAuthor": [
+          {
+            "name": "Synthetic fingerprint author"
+          }
+        ],
+        "assemblyAuthor": [
+          {
+            "name": "Synthetic assembly author"
+          }
+        ],
+        "dateCreated": "2026-01-01",
+        "masking": "not-masked",
+        "checksum": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      },
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R3",
+          "message": "checksum mismatch: the file states AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= but the covered bytes hash to 0h3E9LUwRFeKj7aeH3Zeqj5RXM/4lqTK7DRZG/pO3uc="
+        }
+      ]
+    },
+    {
+      "name": "gff3-crlf",
+      "kind": "GFF3",
+      "status": "INVALID",
+      "stated": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "computed": "BkOedv6BwxFEUBjgqW9rx40+PmKHqYQzTl7sgUj34mI=",
+      "metadata": {
+        "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+        "schemaVersion": "2.1",
+        "genome": "fingerprint-test-genome",
+        "taxon": {
+          "name": "Homo sapiens",
+          "uri": "https://identifiers.org/taxonomy:9606"
+        },
+        "version": "1.0.0",
+        "metadataAuthor": [
+          {
+            "name": "Synthetic fingerprint author"
+          }
+        ],
+        "assemblyAuthor": [
+          {
+            "name": "Synthetic assembly author"
+          }
+        ],
+        "dateCreated": "2026-01-01",
+        "masking": "not-masked",
+        "checksum": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      },
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R3",
+          "message": "checksum mismatch: the file states AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= but the covered bytes hash to BkOedv6BwxFEUBjgqW9rx40+PmKHqYQzTl7sgUj34mI="
+        }
+      ]
+    },
+    {
+      "name": "fasta-lf-cr",
+      "kind": "FASTA",
+      "status": "INVALID",
+      "stated": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "computed": "tK7qPbAWLdAX2hiht48CvGmoKXjWSTeu1QfIUcOjg4I=",
+      "metadata": {
+        "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+        "schemaVersion": "2.1",
+        "genome": "fingerprint-test-genome",
+        "taxon": {
+          "name": "Homo sapiens",
+          "uri": "https://identifiers.org/taxonomy:9606"
+        },
+        "version": "1.0.0",
+        "metadataAuthor": [
+          {
+            "name": "Synthetic fingerprint author"
+          }
+        ],
+        "assemblyAuthor": [
+          {
+            "name": "Synthetic assembly author"
+          }
+        ],
+        "dateCreated": "2026-01-01",
+        "masking": "not-masked",
+        "checksum": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      },
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R3",
+          "message": "checksum mismatch: the file states AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= but the covered bytes hash to tK7qPbAWLdAX2hiht48CvGmoKXjWSTeu1QfIUcOjg4I="
+        }
+      ]
+    },
+    {
+      "name": "gfa-cr",
+      "kind": "GFA",
+      "status": "INVALID",
+      "stated": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "computed": "guiSvssvud2MwNIaOc9xWGMzxQYGmucYIK9CY9UPymM=",
+      "metadata": {
+        "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+        "schemaVersion": "2.1",
+        "genome": "fingerprint-test-genome",
+        "taxon": {
+          "name": "Homo sapiens",
+          "uri": "https://identifiers.org/taxonomy:9606"
+        },
+        "version": "1.0.0",
+        "metadataAuthor": [
+          {
+            "name": "Synthetic fingerprint author"
+          }
+        ],
+        "assemblyAuthor": [
+          {
+            "name": "Synthetic assembly author"
+          }
+        ],
+        "dateCreated": "2026-01-01",
+        "masking": "not-masked",
+        "checksum": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      },
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R3",
+          "message": "checksum mismatch: the file states AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= but the covered bytes hash to guiSvssvud2MwNIaOc9xWGMzxQYGmucYIK9CY9UPymM="
+        }
+      ]
+    },
+    {
+      "name": "gff3-cr",
+      "kind": "GFF3",
+      "status": "INVALID",
+      "stated": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "computed": "j1hitrynAW5KvlXGFUmWDjmDTUuGqEz5jmIoJ8ZSyGI=",
+      "metadata": {
+        "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+        "schemaVersion": "2.1",
+        "genome": "fingerprint-test-genome",
+        "taxon": {
+          "name": "Homo sapiens",
+          "uri": "https://identifiers.org/taxonomy:9606"
+        },
+        "version": "1.0.0",
+        "metadataAuthor": [
+          {
+            "name": "Synthetic fingerprint author"
+          }
+        ],
+        "assemblyAuthor": [
+          {
+            "name": "Synthetic assembly author"
+          }
+        ],
+        "dateCreated": "2026-01-01",
+        "masking": "not-masked",
+        "checksum": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      },
+      "issues": [
+        {
+          "severity": "ERROR",
+          "rule": "R3",
+          "message": "checksum mismatch: the file states AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= but the covered bytes hash to j1hitrynAW5KvlXGFUmWDjmDTUuGqEz5jmIoJ8ZSyGI="
+        }
+      ]
+    }
+  ],
+  "vectors": [
+    {
+      "id": "fasta-lf",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-crlf",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-cr",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-mixed-endings",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-no-final-newline",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-comments-and-blank-lines",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-root-indented",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-space-before-colon",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-nested-checksum",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-quoted-value",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-checksum-trailing-spaces",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-checksum-first",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-non-utf8-outside-header",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-utf8-metadata",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-yaml-indicators-in-strings",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-yaml-portable-types",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-escaped-record-markers",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-raw-record-markers",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-link-scheme-warning",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-lf",
+      "format": "gfa",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-crlf",
+      "format": "gfa",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-cr",
+      "format": "gfa",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-mixed-endings",
+      "format": "gfa",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-no-final-newline",
+      "format": "gfa",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-comments-and-blank-lines",
+      "format": "gfa",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-root-indented",
+      "format": "gfa",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-space-before-colon",
+      "format": "gfa",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-nested-checksum",
+      "format": "gfa",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-quoted-value",
+      "format": "gfa",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-checksum-trailing-spaces",
+      "format": "gfa",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-checksum-first",
+      "format": "gfa",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-non-utf8-outside-header",
+      "format": "gfa",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-utf8-metadata",
+      "format": "gfa",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-yaml-indicators-in-strings",
+      "format": "gfa",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-yaml-portable-types",
+      "format": "gfa",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-gzip",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-bgzf",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-gzip-multimember",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-gzip",
+      "format": "gfa",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-bgzf",
+      "format": "gfa",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-gzip-multimember",
+      "format": "gfa",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-lf",
+      "format": "fhp-fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-crlf",
+      "format": "fhp-fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-no-final-newline",
+      "format": "fhp-fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-comments-and-blank-lines",
+      "format": "fhp-fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-escaped-record-markers",
+      "format": "fhp-fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-gzip",
+      "format": "fhp-fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-bgzf",
+      "format": "fhp-fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-database-source",
+      "format": "fhp-fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-mixed-sources",
+      "format": "fhp-fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-rich",
+      "format": "fhp-fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-busco-lineage-dotted",
+      "format": "fhp-fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-minimal-checksum-link",
+      "format": "fhgff3",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-minimal-reference-link",
+      "format": "fhgff3",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-both-links",
+      "format": "fhgff3",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-directives-interleaved",
+      "format": "fhgff3",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-directives-after-header",
+      "format": "fhgff3",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-triple-hash-before-features",
+      "format": "fhgff3",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-embedded-fasta",
+      "format": "fhgff3",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-header-only",
+      "format": "fhgff3",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-version-3-1-26",
+      "format": "fhgff3",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-version-3-trailing-whitespace",
+      "format": "fhgff3",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-crlf",
+      "format": "fhgff3",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-gzip",
+      "format": "fhgff3",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-bgzf",
+      "format": "fhgff3",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-nested-parent-checksum",
+      "format": "fhgff3",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-busco-lineage-dotted",
+      "format": "fhgff3",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-schema-raw-main",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-schema-raw-main-version-1-0",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-schema-raw-main-version-1-integer",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-schema-canonical-raw-main-version-1",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-schema-raw-tag",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-schema-w3id-trailing-slash",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-schema-v0.3.1",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-schema-other-value",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-schema-canonical-raw-main",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-schema-canonical-raw-tag",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-schema-canonical-raw-main",
+      "format": "fhp-fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-schema-canonical-raw-main",
+      "format": "fhgff3",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-schema-raw-tag",
+      "format": "fhp-fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-schema-raw-main",
+      "format": "fhgff3",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-extension-fields",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-extension-fields",
+      "format": "gfa",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-extension-fields-raw-main",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-extension-named-like-standard-field",
+      "format": "fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-extension-fields",
+      "format": "fhp-fasta",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-extension-fields",
+      "format": "fhgff3",
+      "expected": "valid",
+      "passed": true,
+      "status": "VALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-tab-on-checksum-line",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-crlf-normalized-checksum",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-missing-checksum",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-two-checksum-lines",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-quoted-key",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-only-nested-checksum",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-metadata-tampered",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-sequence-tampered",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-checksum-terminator-hashed",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-comment-tampered",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-truncated-sha512",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-sha256",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-block-literal-checksum",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-folded-checksum",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-continued-checksum",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-quoted-continued-checksum",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-comment-on-checksum-line",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-record-marker-on-checksum-line",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-tagged-checksum",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-noncanonical-checksum",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-yaml-leading-zero",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-yaml-underscore",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-yaml-sexagesimal",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-yaml-boolean-word",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-yaml-tag",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-u0085-in-header",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-u2028-in-header",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-u2029-in-header",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-non-utf8-header",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-utf8-bom",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-duplicate-key",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-yaml-anchor",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-yaml-alias",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-yaml-merge-key",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-fhr-line-after-sequence",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-concatenated",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-nan-vital-stats",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-infinity-vital-stats",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-tab-on-checksum-line",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-crlf-normalized-checksum",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-missing-checksum",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-two-checksum-lines",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-quoted-key",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-only-nested-checksum",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-metadata-tampered",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-sequence-tampered",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-checksum-terminator-hashed",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-comment-tampered",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-truncated-sha512",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-sha256",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-block-literal-checksum",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-folded-checksum",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-continued-checksum",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-quoted-continued-checksum",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-comment-on-checksum-line",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-tagged-checksum",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-noncanonical-checksum",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-yaml-leading-zero",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-yaml-underscore",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-yaml-sexagesimal",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-yaml-boolean-word",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-yaml-tag",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-u0085-in-header",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-u2028-in-header",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-u2029-in-header",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-non-utf8-header",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-utf8-bom",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-duplicate-key",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-yaml-anchor",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-yaml-alias",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-yaml-merge-key",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-fhr-line-after-sequence",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-concatenated",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-gzip-sequence-tampered",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-sequence-tampered",
+      "format": "fhp-fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-stop-normalized-checksum",
+      "format": "fhp-fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-case-normalized-checksum",
+      "format": "fhp-fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-two-checksum-lines",
+      "format": "fhp-fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-header-after-record",
+      "format": "fhp-fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-missing-source-type",
+      "format": "fhp-fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-curated-source-type",
+      "format": "fhp-fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-genome-key",
+      "format": "fhp-fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-derived-from-no-checksum",
+      "format": "fhp-fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-derived-from-bad-relationship",
+      "format": "fhp-fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-source-without-name",
+      "format": "fhp-fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-unused-genetic-code",
+      "format": "fhp-fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-busco-no-lineage-version",
+      "format": "fhp-fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-busco-lineage-trailing-dot",
+      "format": "fhp-fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-busco-lineage-leading-dot",
+      "format": "fhp-fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-busco-lineage-letter-component",
+      "format": "fhp-fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-busco-lineage-uppercase",
+      "format": "fhp-fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-cites-fhr-schema",
+      "format": "fhp-fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-fasta-tampered",
+      "format": "fhgff3",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-two-checksum-lines",
+      "format": "fhgff3",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-header-after-feature",
+      "format": "fhgff3",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-header-after-fasta",
+      "format": "fhgff3",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-concatenated",
+      "format": "fhgff3",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-header-before-version",
+      "format": "fhgff3",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-version-30",
+      "format": "fhgff3",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-version-3x",
+      "format": "fhgff3",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-version-3-1",
+      "format": "fhgff3",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-no-genome-link",
+      "format": "fhgff3",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-half-reference",
+      "format": "fhgff3",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-two-annotates",
+      "format": "fhgff3",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-annotates-fhp",
+      "format": "fhgff3",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-fhr-only-key",
+      "format": "fhgff3",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-busco-lineage-trailing-dot",
+      "format": "fhgff3",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-cites-fhr-schema",
+      "format": "fhgff3",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-schema-raw-main-version-1-invalid",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-schema-raw-main-version-string-1",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-schema-raw-main-version-true",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-schema-raw-tag-version-1",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-schema-v0.3.1-version-2.0",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-schema-unknown-release",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "UNSUPPORTED_VERSION",
+      "detail": ""
+    },
+    {
+      "id": "fasta-schema-branch-ref",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "UNSUPPORTED_VERSION",
+      "detail": ""
+    },
+    {
+      "id": "fasta-schema-other-value-version-1",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-schema-release-without-type",
+      "format": "fhp-fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "UNSUPPORTED_VERSION",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-schema-unknown-release",
+      "format": "fhgff3",
+      "expected": "invalid",
+      "passed": true,
+      "status": "UNSUPPORTED_VERSION",
+      "detail": ""
+    },
+    {
+      "id": "fasta-unknown-key",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-extension-key-uppercase-prefix",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-extension-key-empty-name",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-extension-key-punctuation-first",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-extension-key-space",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-extension-key-non-ascii",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-extension-key-trailing-line-feed",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-extension-nested",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-extension-nested-author",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-extension-older-version",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-extension-older-release",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-extension-older-release-new-version",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "gfa-extension-older-version",
+      "format": "gfa",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-extension-older-version-raw-main",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-extension-yaml-boolean-word",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-extension-nan",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fasta-extension-duplicate-key",
+      "format": "fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-extension-older-version",
+      "format": "fhp-fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-extension-older-version",
+      "format": "fhgff3",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-extension-older-release",
+      "format": "fhp-fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-extension-older-release",
+      "format": "fhgff3",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhp-fasta-extension-nested",
+      "format": "fhp-fasta",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    },
+    {
+      "id": "fhgff3-extension-nested",
+      "format": "fhgff3",
+      "expected": "invalid",
+      "passed": true,
+      "status": "INVALID",
+      "detail": ""
+    }
+  ]
+}
