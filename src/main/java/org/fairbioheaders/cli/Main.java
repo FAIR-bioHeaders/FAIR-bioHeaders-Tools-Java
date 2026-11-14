@@ -6,81 +6,255 @@
 package org.fairbioheaders.cli;
 
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.UncheckedIOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.fairbioheaders.BioHeaders;
 import org.fairbioheaders.Issue;
+import org.fairbioheaders.Kind;
+import org.fairbioheaders.Options;
+import org.fairbioheaders.ParentLinks;
+import org.fairbioheaders.SchemaBundle;
 import org.fairbioheaders.VerifyResult;
 
 /**
- * Minimal command line: {@code bioheaders-java verify FILE...} and
- * {@code bioheaders-java version}. Exits 0 when every file verifies, 1 otherwise.
- * This is a convenience wrapper over {@link BioHeaders}; the reference CLI with
+ * Minimal command line: {@code bioheaders-java verify [flags] FILE...} and
+ * {@code bioheaders-java version}. Exit 0 when every file verifies, 1 otherwise, 2 on a usage error.
+ *
+ * <p>This is a convenience wrapper over {@link BioHeaders}; the reference CLI with
  * combine/strip/convert stays the Python toolkit ({@code pip install fair-bioheaders}).
+ *
+ * <p>{@link #run(String[], PrintStream)} holds the behaviour and returns the exit code;
+ * {@link #main(String[])} only turns that into {@code System.exit}, so the CLI is testable from
+ * Java without spawning a process ({@code CliTest}).
  */
 public final class Main {
+
+    /** The version string this build reports; {@code 0.1.0-SNAPSHOT} is a development marker. */
+    static final String VERSION = "0.1.0-SNAPSHOT";
 
     private Main() {
     }
 
-    public static void main(String[] args) throws IOException {
-        if (args.length == 0) {
-            usage();
-            System.exit(2);
-        }
-        switch (args[0]) {
-            case "version":
-                System.out.println("fair-bioheaders-java 0.1.0-SNAPSHOT "
-                    + "(bundled schemas: current = " + org.fairbioheaders.SchemaBundle.getDefault().currentRelease() + ")");
-                System.exit(0);
-                break;
-            case "verify": {
-                if (args.length < 2) {
-                    usage();
-                    System.exit(2);
+    public static void main(String[] args) {
+        System.exit(run(args, System.out));
+    }
+
+    /** Parse, verify and report; returns the process exit code. */
+    public static int run(String[] args, PrintStream out) {
+        List<String> files = new ArrayList<>();
+        List<String> parents = new ArrayList<>();
+        List<String> draftNames = new ArrayList<>();
+        boolean draftFlag = false;
+        String command = null;
+
+        for (int i = 0; i < args.length; i++) {
+            String arg = args[i];
+            switch (arg) {
+                case "verify", "version", "help" -> command = command == null ? arg : command;
+                case "--experimental-drafts" -> draftFlag = true;
+                case "--draft" -> {
+                    if (i + 1 >= args.length) {
+                        out.println("--draft needs a type name");
+                        return 2;
+                    }
+                    draftNames.add(args[++i]);
                 }
-                BioHeaders verifier = new BioHeaders();
-                boolean allValid = true;
-                for (int i = 1; i < args.length; i++) {
-                    Path file = Path.of(args[i]);
-                    VerifyResult result;
-                    try {
-                        result = verifier.verifyFile(file);
-                    } catch (IOException e) {
-                        allValid = false;
-                        System.out.println(args[i] + ": cannot read file: " + e.getMessage());
-                        continue;
+                case "--parent" -> {
+                    if (i + 1 >= args.length) {
+                        out.println("--parent needs a file");
+                        return 2;
                     }
-                    for (Issue issue : result.issues()) {
-                        System.out.println(args[i] + ": " + issue);
-                    }
-                    if (result.isValid()) {
-                        System.out.println(args[i] + ": checksum verified; metadata valid ("
-                            + result.computedChecksum() + ")");
-                    } else {
-                        allValid = false;
-                        System.out.println(args[i] + ": " + result.status());
-                    }
+                    parents.add(args[++i]);
                 }
-                System.exit(allValid ? 0 : 1);
-                break;
+                case "-h", "--help" -> {
+                    usage(out);
+                    return 0;
+                }
+                default -> {
+                    if (arg.startsWith("-")) {
+                        out.println("unknown flag: " + arg);
+                        usage(out);
+                        return 2;
+                    }
+                    files.add(arg);
+                }
             }
-            default:
-                usage();
-                System.exit(2);
+        }
+
+        if (command == null) {
+            usage(out);
+            return 2;
+        }
+        if (command.equals("help")) {
+            usage(out);
+            return 0;
+        }
+        if (command.equals("version")) {
+            version(out);
+            return 0;
+        }
+        if (files.isEmpty()) {
+            out.println("verify needs at least one file");
+            usage(out);
+            return 2;
+        }
+
+        Options.Builder builder = Options.builder();
+        if (draftFlag) {
+            builder.enableDraftContracts(true);
+        }
+        builder.enableDrafts(draftNames);
+        Options options = draftFlag || !draftNames.isEmpty() ? builder.build() : Options.fromEnvironment();
+        BioHeaders verifier = new BioHeaders(options);
+        if (options.draftContractsEnabled()) {
+            out.println("note: the rule V7 draft lane is ON; a record read through an unreleased"
+                + " contract carries a V7 warning naming the pinned commit and SHA-256, and is not"
+                + " a released-contract result.");
+        }
+        ParentLinks.ParentSource source = parentSource(parents);
+        boolean allValid = true;
+        for (String name : files) {
+            VerifyResult result;
+            try {
+                result = verifier.verifyFile(Path.of(name), source);
+            } catch (IOException | IllegalArgumentException e) {
+                allValid = false;
+                out.println(name + ": cannot read file: " + e.getMessage());
+                continue;
+            }
+            for (Issue issue : result.issues()) {
+                out.println(name + ": " + issue);
+            }
+            for (ParentLinks.Verdict verdict : result.parentLinkVerdicts()) {
+                out.println(name + ": parent link " + verdict.index() + " (" + verdict.relationship()
+                    + " " + verdict.headerType() + ") " + verdict.state());
+            }
+            if (result.isValid()) {
+                out.println(name + ": checksum verified; metadata valid ("
+                    + result.computedChecksum() + ")");
+            } else {
+                allValid = false;
+                out.println(name + ": " + result.status());
+            }
+        }
+        return allValid ? 0 : 1;
+    }
+
+    /** What {@code version} prints, as one line plus the draft registrations. */
+    static void version(PrintStream out) {
+        SchemaBundle bundle = SchemaBundle.getDefault();
+        StringBuilder sb = new StringBuilder("fair-bioheaders-java ").append(VERSION)
+            .append(" (bundled schemas: current = ").append(bundle.currentRelease());
+        List<SchemaBundle.Draft> drafts = bundle.drafts();
+        if (!drafts.isEmpty()) {
+            sb.append("; registered drafts (rule V7, opt-in, not released):");
+            for (SchemaBundle.Draft draft : drafts) {
+                sb.append(' ').append(draft.type()).append('@')
+                    .append(draft.commit(), 0, 7)
+                    .append(" (sha256 ").append(draft.sha256(), 0, 12).append(" of ")
+                    .append(draft.file()).append(" from ")
+                    .append(draft.repository()).append(" main)");
+            }
+        }
+        out.println(sb.append(')').toString());
+    }
+
+    /**
+     * Resolves {@code --parent} arguments. Two forms, because a link states only a checksum:
+     *
+     * <ul>
+     *   <li>{@code FILE} - a candidate parent. A link whose stated checksum equals the digest of a
+     *       candidate is {@code CHECKED_PASS}; a link no candidate satisfies stays
+     *       {@code UNCHECKED}, which is the truth about it.</li>
+     *   <li>{@code CHECKSUM=FILE} - an explicit pairing: "this file is the parent that link
+     *       names". Then a difference is a real {@code CHECKED_FAIL}, which is the only way a
+     *       caller can turn a stale link into a rejection.</li>
+     * </ul>
+     */
+    private static ParentLinks.ParentSource parentSource(List<String> specs) {
+        if (specs.isEmpty()) {
+            return null;
+        }
+        Map<String, ParentLinks.Parent> explicit = new java.util.LinkedHashMap<>();
+        List<ParentLinks.Parent> candidates = new ArrayList<>();
+        BioHeaders probe = new BioHeaders();
+        for (String spec : specs) {
+            // A checksum is exactly 44 characters ending in '=', so the explicit form is the one
+            // where character 45 is the separator; a plain path (however it is spelled) never is.
+            boolean explicitForm = spec.length() > 45 && spec.charAt(44) == '='
+                && spec.charAt(43) == '=';
+            String stated = explicitForm ? spec.substring(0, 44) : null;
+            String path = explicitForm ? spec.substring(45) : spec;
+            ParentLinks.Parent parent = load(Path.of(path));
+            if (stated == null) {
+                candidates.add(parent);
+            } else {
+                explicit.put(stated, parent);
+            }
+        }
+        return (checksum, headerType, linkIndex) -> {
+            ParentLinks.Parent named = explicit.get(checksum);
+            if (named != null) {
+                return Optional.of(named);
+            }
+            for (ParentLinks.Parent candidate : candidates) {
+                if (checksum.equals(probe.verify(candidate.data(), candidate.kind())
+                    .computedChecksum())) {
+                    return Optional.of(candidate);
+                }
+            }
+            return Optional.empty();
+        };
+    }
+
+    private static ParentLinks.Parent load(Path file) {
+        try {
+            Kind kind = BioHeaders.kindFor(file.getFileName().toString());
+            return new ParentLinks.Parent(kind, BioHeaders.readAll(file));
+        } catch (IOException e) {
+            throw new UncheckedIOException("cannot read --parent file " + file, e);
         }
     }
 
-    private static void usage() {
-        System.out.println("""
-            usage: bioheaders-java <command> [args]
+    private static void usage(PrintStream out) {
+        out.println("""
+            usage: bioheaders-java <command> [flags] [args]
 
             commands:
-              verify FILE...   read, checksum-verify and schema-validate a
-                               headed FASTA (.fasta/.fa/.fna/.fhr/.fhp), GFA (.gfa)
-                               or GFF3 (.gff3) file; gzip and bgzip are decompressed
-                               for the checksum (FORMAT.md R1)
-              version          print this library version and the bundled schema release
+              verify [flags] FILE...   read, checksum-verify and schema-validate a
+                                       headed FASTA (.fasta/.fa/.fna/.fhr/.fhp/.fht),
+                                       GFA (.gfa) or GFF3 (.gff3) file; gzip and bgzip
+                                       are decompressed for the checksum (FORMAT.md R1)
+              version                  print this library version, the bundled schema
+                                       release and any registered draft contract
+              help                     print this text
+
+            verify flags:
+              --experimental-drafts    opt in to the rule V7 draft lane: read the pinned
+                                       unreleased contract (see `version`) instead of
+                                       falling back to rule V5. Records read this way
+                                       carry a V7 warning naming the commit and SHA-256
+                                       and are not released-contract results. The same
+                                       opt-in is available through
+                                       -Dorg.fairbioheaders.experimental.drafts=1 or
+                                       FAIR_BIOHEADERS_EXPERIMENTAL_DRAFTS=1.
+              --draft TYPE             opt in to one named draft only (repeatable), e.g.
+                                       --draft FHT; implies --experimental-drafts
+              --parent FILE            offer a candidate parent file (repeatable). A
+                                       link whose stated checksum equals a candidate's
+                                       digest is CHECKED_PASS; a link no candidate
+                                       satisfies stays UNCHECKED, never "verified".
+              --parent CHECKSUM=FILE   name the parent of a link explicitly (repeatable):
+                                       "this file is the parent that checksum refers to".
+                                       A difference is then CHECKED_FAIL, which is a
+                                       rejection - the only way a stale link can be
+                                       reported as one.
             """);
     }
 }

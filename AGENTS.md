@@ -52,14 +52,15 @@ Check the adoption decision and released support before implementing a
 proposal; an issue or PR's existence does not establish adoption. **FHT and
 FHGM are drafts (rule V7): they have no released contract, no `schemaVersion`,
 no w3id URL, no entry in the shared registry, and no support claim — and a
-draft never takes a release form.** This repository registers no draft: the
-shipped `schemas/bundled.json` has no draft row, so no draft citation is
-recognised and rule V5 governs such a value. The reader does carry the V7
-lane *machinery* (`Options.enableDraftContracts`, a registry `types` row with
-`status: draft` and pinned bytes, a digest check at bundle build, and a V7
-warning on every record read that way); using it for a real type is a
-deliberate change with its own review, pinned commit and SHA-256, and still
-not a support or release claim.
+draft never takes a release form.** This repository registers **one**
+draft, FHT, as a pinned row of `schemas/bundled.json` (the commit and SHA-256 of
+FHT-Specification's `fht.json`), readable only through the explicit V7 opt-in and
+warned on for every record read that way. `FHGM` is registered nowhere and has no
+support of any kind here. Registration is not adoption, support or release: with
+the gate closed a draft citation is still rule V5 material, and the FHT vectors are
+counted in their own labelled job, never inside the 291. Adding a draft row, or
+widening what one does, is a deliberate change with its own review, pinned commit
+and SHA-256, and a stated reason.
 
 ## Technical constraints of this tree
 
@@ -145,9 +146,12 @@ This section applies only to FAIR-bioHeaders-Tools-Java.
   (bundled contracts + networknt validation + draft digest verification),
   `TypeRegistry`/`HeaderTypeDef` (header types as registry data), `Options`
   (the V7 opt-in knob), `DraftLog` (the `java.util.logging` channel for lane
-  warnings), `UriSchemes` (R14), `BioHeaders` (facade), `cli.Main` (verify).
-  Public API is `org.fairbioheaders.BioHeaders`, `VerifyResult`, `Issue`,
-  `Kind`, `FhType`, `Options`; everything else is internal.
+  warnings), `UriSchemes`/`UriFields` (R14, field list derived from the contract
+  being applied), `ParentLinks` (per-entry `derivedFrom` verdicts), `BioHeaders`
+  (facade), `cli.Main` (verify/version; `Main.run` is testable in-process).
+  Public API is `org.fairbioheaders.BioHeaders`, `VerifyResult`, `Issue`, `Kind`,
+  `FhType`, `Options`, `ParentLinks`, `SchemaBundle.Draft`; everything else is
+  internal.
 - **Default behavior is pinned by a golden.**
   `src/test/resources/golden/default-behavior-v0.6.0.json` is the canonical
   fingerprint generated from commit `237da6c` (released-contract behavior: 228
@@ -162,10 +166,21 @@ This section applies only to FAIR-bioHeaders-Tools-Java.
 - The vector tests locate the specification checkout via `-Dfh.spec.dir`,
   `FH_SPEC_DIR` or a sibling directory; without one they skip (never pass).
   CI clones the specification at a pinned tag and passes it explicitly.
+- Draft evidence is a separate tagged test group: `./mvnw test
+  -DexcludedGroups=draft` is released-contract acceptance, `./mvnw test
+  -Dgroups=draft -Dfh.fht.dir=<FHT-Specification>/conformance` is rule V7
+  evidence, and CI runs them as separate labelled jobs. The receipts
+  (`target/default-behavior-golden.properties`,
+  `target/fht-draft-vectors.properties`) plus
+  `.github/scripts/assert-reports.sh` keep a zero-test, missing-fixture or
+  silent-skip outcome from reading as a pass. Never merge the two counts into one
+  support number.
 - Do not "upgrade" this slice into writing headers, microdata/JSON-LD or
   feature validation in a mixed PR — those are separately scoped issues;
-  update `docs/STATUS.md` (implemented / not implemented / not verified)
-  with every behavior change.
+  update `docs/STATUS.md` (implemented / not implemented / not verified) and the
+  cell in `docs/CAPABILITY-MATRIX.md` with every behavior change. A matrix cell may
+  only move to `yes` when a named test or vector set backs it; an unfillable cell
+  stays published as not-supported-yet with its reason.
 - Publishing releases, tags, Maven Central deployment, Zenodo records or
   GitHub Release objects is a separate maintainer action; agents push branches
   and open PRs only.

@@ -1,9 +1,28 @@
 {
-  "description": "Header types and schema copies bundled with fair-bioheaders-java, by FAIR-bioHeaders-Specification release (docs/SCHEMA-VERSIONS.md). 'types' is the header-type registry: one row per type this reader knows, with the URL key rules V1-V3 match, the file key used in 'current'/'releases', the status ('released' for a contract published under a release tag with a row in the shared schemas/versions.json, 'draft' for a development contract readable only through the rule V7 opt-in lane), the transport (embedded-header for a file-bound ';~'/'#~' header, embedded-records for records carried inside another type's header under an x- key) and, for a draft, the pinned bytes under 'draft'. 'current' are the copies of the specification main that raw-main URLs select; the release named there is the one they belong to. Each release entry points at a frozen copy of that release's schema. This file registers no draft today: FHT and FHGM have no released schema, no w3id alias and no entry in the shared schemas/versions.json registry (docs/STATUS.md), and a draft row added later can only ever be read through explicit opt-in, never by default.",
+  "description": "Header types and schema copies bundled with fair-bioheaders-java, by FAIR-bioHeaders-Specification release (docs/SCHEMA-VERSIONS.md). 'types' is the header-type registry: one row per type this reader knows, with the URL key rules V1-V3 match, the file key used in 'current'/'releases', the status ('released' for a contract published under a release tag with a row in the shared schemas/versions.json, 'draft' for a development contract readable only through the rule V7 opt-in lane), the transport (embedded-header for a file-bound ';~'/'#~' header, embedded-records for records carried inside another type's header under an x- key) and, for a draft, the pinned bytes under 'draft'. 'current' are the copies of the specification main that raw-main URLs select; the release named there is the one they belong to. Each release entry points at a frozen copy of that release's schema. One draft row is registered (FHT): FHT has no released schema, no w3id alias and no entry in the shared schemas/versions.json registry, so its bytes are readable ONLY through the explicit rule V7 opt-in, only at the pinned commit and digest recorded in the row, and only with a warning on every record read that way; registering the row is not a support or release claim (docs/STATUS.md, docs/CAPABILITY-MATRIX.md). FHGM is not registered at all - it is not a header type, and its model-level rules are not implemented here. A draft row never appears under 'current' or 'releases'.",
   "types": [
     { "fileKey": "FHR",    "urlKey": "fhr",    "status": "released", "transport": "embedded-header" },
     { "fileKey": "FHP",    "urlKey": "fhp",    "status": "released", "transport": "embedded-header" },
-    { "fileKey": "FHGFF3", "urlKey": "fhgff3", "status": "released", "transport": "embedded-header" }
+    { "fileKey": "FHGFF3", "urlKey": "fhgff3", "status": "released", "transport": "embedded-header" },
+    {
+      "fileKey": "FHT",
+      "urlKey": "fht",
+      "status": "draft",
+      "transport": "embedded-header",
+      "draft": {
+        "status": "draft",
+        "file": "fht-draft.json",
+        "citation": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "repository": "FHT-Specification",
+        "commit": "226f923c28b680edb3c546e99a751482d06aef1a",
+        "sha256": "59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e",
+        "retrieved": "2026-11-14",
+        "suiteCommit": "24d3b033ab951ef79ee9f6d17419d8ba700f1b0a",
+        "suiteManifestSha256": "9b07179497bdc7247d6ead2404d9d5fdee48308a58b385bd4cd9a7e91450053a",
+        "source": "FHT-Specification (development repository; no released contract, no w3id alias, no row in the shared schemas/versions.json)",
+        "enable": "Options.enableDraftContracts(true) / -Dorg.fairbioheaders.experimental.drafts=1 / FAIR_BIOHEADERS_EXPERIMENTAL_DRAFTS=1 (opt-in only; docs/STATUS.md)"
+      }
+    }
   ],
   "current": {
     "release": "v0.6.0",

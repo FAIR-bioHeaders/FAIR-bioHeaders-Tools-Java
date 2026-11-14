@@ -9,6 +9,9 @@ permissions:
   contents: read
 
 jobs:
+  # Primary acceptance: the released contracts, read natively. No Python, no pip, no reference
+  # toolkit anywhere in this job - the only inputs are the JDK, Maven, this repository and a
+  # read-only checkout of the specification's language-neutral conformance data.
   build:
     runs-on: ubuntu-latest
     strategy:
@@ -30,10 +33,9 @@ jobs:
           distribution: temurin
           java-version: ${{ matrix.java }}
 
-      # Acceptance comes from the shared, language-neutral conformance suite;
-      # pinned to the released tag whose manifest this library's results were
-      # recorded against (docs/STATUS.md). Bump deliberately with a schema
-      # release, never as drive-by drift.
+      # Acceptance comes from the shared, language-neutral conformance suite; pinned to the
+      # released tag whose manifest this library's results were recorded against (docs/STATUS.md).
+      # Bump deliberately with a schema release, never as drive-by drift.
       - name: Check out FAIR-bioHeaders-Specification at v0.6.0
         uses: actions/checkout@v4
         with:
@@ -41,9 +43,35 @@ jobs:
           ref: v0.6.0
           path: fair-bioheaders-specification
 
-      - name: Test (unit + shared conformance vectors)
+      - name: Assert the acceptance path is native
+        run: |
+          # This job's acceptance path is Java only: the JDK, Maven, this repository's sources and
+          # a read-only checkout of the specification's language-neutral data. The check is that
+          # nothing in the build or the tests can invoke another implementation - no subprocess from
+          # any source file, no interpreter plugin in the POM, and no foreign project file in the
+          # tree that a test could reach for. The reference toolkit is never a dependency here; the
+          # Python differentials in docs/STATUS.md were recorded once, outside CI.
+          set -e
+          if grep -rn -E "ProcessBuilder|Runtime\.getRuntime\(\)|getRuntime\(\)\.exec|System\.loadLibrary|javax\.script|ScriptEngine" src/ ; then
+            echo "^ native acceptance must not shell out to, embed or load another implementation" >&2
+            exit 1
+          fi
+          if grep -n -E "exec-maven-plugin|ant|groovy|python" pom.xml ; then
+            echo "^ the build must not wire in a foreign interpreter plugin" >&2
+            exit 1
+          fi
+          for f in requirements.txt pyproject.toml setup.py environment.yml Pipfile Cargo.toml package.json DESCRIPTION NAMESPACE Project.toml; do
+            if [ -e "$f" ]; then
+              echo "unexpected foreign project file in a Java library: $f" >&2
+              exit 1
+            fi
+          done
+          echo "no subprocess use, no foreign interpreter plugin, no foreign project files"
+
+      - name: Test (unit + shared conformance vectors, released contracts only)
         run: >
           ./mvnw -B -ntp test
+          -DexcludedGroups=draft
           -Dfh.spec.dir=${{ github.workspace }}/fair-bioheaders-specification
 
       - name: Assert the vector tests actually ran (not silently skipped)
@@ -55,9 +83,9 @@ jobs:
             exit 1
           fi
 
-      # The registry refactor (PR #4) promises that the default reading is unchanged. That is
-      # only evidence if the comparison ran against the vectors too, so the receipt the golden
-      # test writes is asserted here rather than trusted from a green build.
+      # The registry refactor (PR #4) promises that the default reading is unchanged. That is only
+      # evidence if the comparison ran against the vectors too, so the receipt the golden test
+      # writes is asserted here rather than trusted from a green build.
       - name: Assert the default-behavior golden compared everything
         run: |
           receipt=target/default-behavior-golden.properties
@@ -75,5 +103,137 @@ jobs:
             fi
           done
 
+      - name: Assert nothing was skipped and no report is empty
+        run: |
+          # Zero-test and skip guards: a green build with a quiet skip is not acceptance.
+          sh .github/scripts/assert-reports.sh 304
+
       - name: Package
         run: ./mvnw -B -ntp -DskipTests package
+
+      - name: Upload native test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports-java${{ matrix.java }}
+          path: target/surefire-reports/
+          if-no-files-found: error
+
+  # Rule V7 evidence, separate and labelled: the FHT development contract and its own vector suite.
+  # Still native (JDK + Maven only), still no Python. A pass here is "the pinned draft bytes behave
+  # as their own suite expects", never "FHT is supported": FHT has no released contract, no
+  # schemaVersion row and no w3id URL (docs/CAPABILITY-MATRIX.md).
+  draft-vectors:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        java: ['17', '21']
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+
+      # The suite revision the registry pins (schemas/bundled.json drafts entry "suiteCommit").
+      # The contract bytes themselves are inside this jar and re-digest-checked at run time, so a
+      # checkout that no longer matches the pin fails the job instead of reporting stale evidence.
+      - name: Check out FHT-Specification at the pinned suite commit
+        uses: actions/checkout@v4
+        with:
+          repository: FAIR-bioHeaders/FHT-Specification
+          ref: 24d3b033ab951ef79ee9f6d17419d8ba700f1b0a
+          path: fht-specification
+
+      - name: Test the rule V7 draft lane
+        run: >
+          ./mvnw -B -ntp test
+          -Dgroups=draft
+          -Dfh.fht.dir=${{ github.workspace }}/fht-specification/conformance
+
+      - name: Assert the draft suite ran in full, against the pinned bytes
+        run: |
+          # Counts are checked here; the identity of what was measured (contract commit + digest,
+          # suite commit + manifest digest, the checkout's own bytes) is checked inside the Java
+          # run: DraftHarness re-digests the checkout against the registry pin before it will read
+          # a single vector, and DraftProvenanceTest pins the registry values themselves. The
+          # literals below are a second statement of the same pin, so drift in either place fails.
+          receipt=target/fht-draft-vectors.properties
+          if [ ! -s "$receipt" ]; then
+            echo "missing $receipt - DraftLedgerTest did not run" >&2
+            exit 1
+          fi
+          cat "$receipt"
+          grep -qx 'vectorsInManifest=66' "$receipt" || { echo "expected 66 vectors in the manifest" >&2; exit 1; }
+          grep -qx 'vectorsRan=66' "$receipt" || { echo "expected 66 draft vectors to run" >&2; exit 1; }
+          grep -qx 'vectorsPassed=66' "$receipt" || { echo "expected 66 draft vectors to pass" >&2; exit 1; }
+          grep -qx 'contractCommit=226f923c28b680edb3c546e99a751482d06aef1a' "$receipt" \
+            || { echo "the draft suite did not run against the pinned contract commit" >&2; exit 1; }
+          grep -qx 'contractSha256=59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e' "$receipt" \
+            || { echo "the draft suite did not run against the pinned contract digest" >&2; exit 1; }
+          grep -qx 'suiteCommit=24d3b033ab951ef79ee9f6d17419d8ba700f1b0a' "$receipt" \
+            || { echo "the suite is not the pinned revision" >&2; exit 1; }
+          grep -qx 'note=' "$receipt" || { echo "the receipt carries a note: $receipt" >&2; exit 1; }
+          count=$(grep -h 'tests=' target/surefire-reports/TEST-org.fairbioheaders.conformance.FhtDraftVectorTest.xml | head -1 | sed -E 's/.*tests="([0-9]+)".*/\1/')
+          echo "FhtDraftVectorTest executed $count tests"
+          [ "$count" -eq 66 ] || { echo "expected 66 FHT draft vectors to run (got $count)" >&2; exit 1; }
+
+      - name: Assert nothing was skipped in the draft job
+        run: sh .github/scripts/assert-reports.sh 133
+
+      - name: Upload draft reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: draft-reports-java${{ matrix.java }}
+          path: |
+            target/surefire-reports/
+            target/fht-draft-vectors.properties
+          if-no-files-found: error
+
+  # Draft-pin freshness, the check that earns its keep (workspace guide): the recorded commit and
+  # SHA-256 against the owning repository's live raw-main bytes. Advisory by design - a moved
+  # draft must be re-pinned deliberately, and released acceptance never depends on it - so this
+  # job reports the drift loudly without gating the released-contract result.
+  draft-pin-freshness:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compare the pinned draft bytes with live raw main
+        run: |
+          # Every value is read with grep -oE (no BRE interval escapes, which the earlier version of
+          # this step got wrong) and cross-checked three ways: the pin inside the registry, the bytes
+          # shipped in this jar, and the owning repository's live raw-main bytes.
+          set -e
+          registry=src/main/resources/org/fairbioheaders/schemas/bundled.json
+          url=$(grep -oE '"citation": "https[^"]*"' "$registry" | head -1 | cut -d'"' -f4)
+          pin=$(grep -oE '"sha256": "[0-9a-f]{64}"' "$registry" | head -1 | cut -d'"' -f4)
+          commit=$(grep -oE '"commit": "[0-9a-f]{40}"' "$registry" | head -1 | cut -d'"' -f4)
+          echo "pinned citation=$url"
+          echo "pinned commit=$commit"
+          echo "pinned sha256=$pin"
+          [ -n "$url" ] && [ -n "$pin" ] && [ -n "$commit" ] || { echo "registry pin fields missing" >&2; exit 1; }
+          shipped=src/main/resources/org/fairbioheaders/schemas/fht-draft.json
+          shipped_digest=$(sha256sum "$shipped" | cut -d' ' -f1)
+          echo "shipped bytes: $shipped_digest ($(wc -c < "$shipped") bytes)"
+          [ "$shipped_digest" = "$pin" ] || { echo "the shipped copy does not match its own pin" >&2; exit 1; }
+          # Positive control first: a nonsense path under the same repository must read 404, so the
+          # 200 below means the endpoint answered for real rather than a redirect or a portal page.
+          control=$(curl -s -o /dev/null -w '%{http_code}' \
+            https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/no-such-file.json)
+          echo "control (expect 404): $control"
+          [ "$control" = "404" ] || { echo "probe control failed; any result below is meaningless" >&2; exit 1; }
+          code=$(curl -s -o live.json -w '%{http_code}' "$url")
+          echo "GET $url -> $code"
+          [ "$code" = "200" ] || { echo "draft citation did not resolve (got $code)" >&2; exit 1; }
+          live=$(sha256sum live.json | cut -d' ' -f1)
+          echo "live raw main: $live"
+          if [ "$live" != "$pin" ]; then
+            echo "::warning title=Stale FHT draft pin::FHT-Specification main now has sha256 $live; this jar pins $pin (commit $commit). Re-pin deliberately (issue #2)."
+            echo "the pinned revision is no longer main: the reading is still valid evidence about $pin, not about main"
+          else
+            echo "pin is current"
+          fi

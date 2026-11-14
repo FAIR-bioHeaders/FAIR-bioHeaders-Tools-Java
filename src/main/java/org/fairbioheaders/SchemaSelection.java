@@ -75,7 +75,7 @@ public final class SchemaSelection {
     private final Pattern release;
 
     SchemaSelection(SchemaBundle bundle) {
-        this(bundle, TypeRegistry.releasedOnly(bundle.registry()));
+        this(bundle, bundle.types());
     }
 
     SchemaSelection(SchemaBundle bundle, TypeRegistry types) {

@@ -52,11 +52,11 @@ final class TypeRegistry {
     }
 
     /** The released types only - exactly the default behavior. */
-    static TypeRegistry releasedOnly(JsonNode registry) {
-        return of(registry, Options.defaults());
+    static TypeRegistry releasedOnly(SchemaBundle bundle, JsonNode registry) {
+        return of(bundle, registry, Options.defaults());
     }
 
-    static TypeRegistry of(JsonNode registry, Options options) {
+    static TypeRegistry of(SchemaBundle bundle, JsonNode registry, Options options) {
         JsonNode types = registry.get("types");
         if (types == null || !types.isArray() || types.size() == 0) {
             throw new IllegalStateException("bundled registry has no 'types' array");
@@ -80,7 +80,14 @@ final class TypeRegistry {
                 case "draft" -> {
                     FhType type = FhType.of(urlKey, fileKey, FhType.Status.DRAFT, transport);
                     if (options.draftEnabled(fileKey)) {
-                        active.add(new HeaderTypeDef(type, uriFields, pin(fileKey, entry.get("draft"))));
+                        HeaderTypeDef.DraftPin draftPin = pin(fileKey, entry.get("draft"));
+                        // A draft's R14 field list is read off the draft's own bytes unless the row
+                        // states one, so registering a type never means hand-copying a table from
+                        // a schema nobody diffed it against.
+                        List<String> derivedFields = uriFields.isEmpty()
+                            ? UriFields.derive(bundle, draftPin.file())
+                            : uriFields;
+                        active.add(new HeaderTypeDef(type, derivedFields, draftPin));
                     }
                 }
                 default -> throw new IllegalStateException(
