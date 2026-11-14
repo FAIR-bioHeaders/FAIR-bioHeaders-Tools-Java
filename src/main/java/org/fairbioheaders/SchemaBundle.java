@@ -5,11 +5,14 @@
  */
 package org.fairbioheaders;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.EnumMap;
+import java.util.HexFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,17 +29,25 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
 /**
- * The released FAIR-bioHeaders contract copies bundled with this jar, keyed by
- * specification release. The registry is {@code schemas/bundled.json}; the provenance
- * of every byte is {@code schemas/provenance.json} (source tags, commits and SHA-256
- * digests — the copies were additionally verified byte-identical to the frozen copies
- * in the released fair-bioheaders 0.11.0 package on 2026-11-14).
+ * The FAIR-bioHeaders contract copies this jar carries, keyed by specification release and by
+ * header type. The registry is {@code schemas/bundled.json}: its {@code types} array declares
+ * the header types (see {@link TypeRegistry}) and its {@code releases} object maps each release
+ * tag to the frozen copy it published. The provenance of every byte - source tag, commit and
+ * SHA-256 - is {@code schemas/provenance.json}; the copies were additionally verified
+ * byte-identical to the frozen copies in the released fair-bioheaders 0.11.0 package on
+ * 2026-11-14.
  *
- * <p>Contracts are draft/2020-12 (all released {@code fhr.json}, {@code fhp.json} and
- * {@code fhgff3.json} declare {@code "$schema":
- * "https://json-schema.org/draft/2020-12/schema"}); they are evaluated with
- * networknt json-schema-validator with format assertions enabled, because the
- * contracts rely on the {@code date} and {@code uri} formats.
+ * <p>Contracts are draft/2020-12 (every released {@code fhr.json}, {@code fhp.json} and
+ * {@code fhgff3.json} declares {@code "$schema":
+ * "https://json-schema.org/draft/2020-12/schema"}); they are evaluated with networknt
+ * json-schema-validator with format assertions enabled, because the contracts rely on the
+ * {@code date} and {@code uri} formats.
+ *
+ * <p>A bundle built with {@link Options} enabling the rule V7 draft lane also carries the
+ * development-repository bytes its registry pins. Those bytes are loaded and their SHA-256
+ * re-computed when the bundle is built: if the shipped bytes no longer match the digest the
+ * registry states, constructing the bundle fails loudly rather than letting a reading that
+ * claims to be current move out of sight.
  */
 public final class SchemaBundle {
 
@@ -44,6 +55,9 @@ public final class SchemaBundle {
     private static final String RESOURCE_DIR = "/org/fairbioheaders/schemas/";
 
     private final JsonNode registry;
+    private final Options options;
+    private final String resourceDir;
+    private final TypeRegistry types;
     private final List<String> releaseOrder;
     private final Map<String, Map<FhType, String>> releaseIndex = new LinkedHashMap<>();
     private final Map<String, Schema> cache = new ConcurrentHashMap<>();
@@ -53,42 +67,106 @@ public final class SchemaBundle {
                 .formatAssertionsEnabled(Boolean.TRUE)
                 .build()));
 
-    /** The shared instance backed by the schemas inside this jar. */
+    /** The shared instance backed by the schemas inside this jar, released contracts only. */
     public static SchemaBundle getDefault() {
         return Holder.DEFAULT;
     }
 
     private static final class Holder {
-        static final SchemaBundle DEFAULT = new SchemaBundle();
+        static final SchemaBundle DEFAULT = new SchemaBundle(Options.defaults());
     }
 
-    private SchemaBundle() {
-        registry = readResource("bundled.json");
-        JsonNode releases = registry.get("releases");
+    /** A bundle of the contracts inside this jar, with the default (released-only) options. */
+    public SchemaBundle() {
+        this(Options.defaults());
+    }
+
+    /**
+     * A bundle honouring {@code options}. Draft contracts pinned by the registry are loaded and
+     * digest-verified eagerly when the draft lane is enabled.
+     */
+    public SchemaBundle(Options options) {
+        this(options, RESOURCE_DIR, "bundled.json", RESOURCE_DIR);
+    }
+
+    /**
+     * A bundle whose registry and contract bytes come from elsewhere. Used by the test that
+     * proves a new header type is a registry row rather than a code change: the registry lives in
+     * one resource directory, the contract bytes it names in another (the shipped ones), and the
+     * layout rules are the same as the production bundle.
+     */
+    SchemaBundle(Options options, String registryDir, String registryName, String contractDir) {
+        this.options = options;
+        this.resourceDir = contractDir;
+        JsonNode loaded;
+        try (InputStream in = SchemaBundle.class.getResourceAsStream(registryDir + registryName)) {
+            if (in == null) {
+                throw new IOException("missing registry resource " + registryDir + registryName);
+            }
+            loaded = JSON.readTree(in);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        this.registry = loaded;
+        this.types = TypeRegistry.of(loaded, options);
+        JsonNode releases = loaded.get("releases");
         releaseOrder = new ArrayList<>();
         for (String release : releases.propertyNames()) {
             releaseOrder.add(release);
-            Map<FhType, String> byType = new EnumMap<>(FhType.class);
-            JsonNode types = releases.get(release);
-            for (FhType type : FhType.values()) {
-                JsonNode file = types.get(type.fileKey());
+            Map<FhType, String> byType = new LinkedHashMap<>();
+            JsonNode entry = releases.get(release);
+            for (HeaderTypeDef def : types.released()) {
+                JsonNode file = entry.get(def.type().fileKey());
                 if (file != null) {
-                    byType.put(type, file.asString());
+                    byType.put(def.type(), file.asString());
                 }
             }
             releaseIndex.put(release, byType);
         }
+        for (HeaderTypeDef draft : types.drafts()) {
+            // Fail before reading a single record if the pinned draft bytes are not what the
+            // registry says they are.
+            contract(draft.type(), "main");
+        }
     }
 
-    private static JsonNode readResource(String name) {
-        try (InputStream in = SchemaBundle.class.getResourceAsStream(RESOURCE_DIR + name)) {
-            if (in == null) {
-                throw new IOException("missing bundled resource " + name);
-            }
-            return JSON.readTree(in);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+    InputStream open(String name) {
+        InputStream in = SchemaBundle.class.getResourceAsStream(resourceDir + name);
+        if (in == null && !RESOURCE_DIR.equals(resourceDir)) {
+            // A registry built from another directory (the extensibility-proof test) still
+            // resolves the released copies shipped inside this jar.
+            in = SchemaBundle.class.getResourceAsStream(RESOURCE_DIR + name);
         }
+        return in;
+    }
+
+    /** The registry document ({@code types}, {@code current}, {@code releases}). */
+    JsonNode registry() {
+        return registry;
+    }
+
+    /** The options this bundle was built with. */
+    public Options options() {
+        return options;
+    }
+
+    /** The header types this bundle can select: the released ones, plus opted-in drafts. */
+    TypeRegistry types() {
+        return types;
+    }
+
+    /**
+     * The draft types the shipped registry declares, whether or not this instance was opted in:
+     * the discovery API callers use to decide what to enable. Names carry no release meaning.
+     */
+    public List<String> declaredDraftTypes() {
+        List<String> names = new ArrayList<>();
+        for (JsonNode entry : registry.path("types")) {
+            if ("draft".equals(entry.path("status").asString(""))) {
+                names.add(entry.path("fileKey").asString(""));
+            }
+        }
+        return names;
     }
 
     /** The release whose copies {@code main} currently equals, e.g. {@code v0.6.0}. */
@@ -99,7 +177,12 @@ public final class SchemaBundle {
 
     /** The bundled file name of the current copy of a type's schema. */
     public String currentFile(FhType type) {
-        return registry.get("current").get("files").get(type.fileKey()).asString();
+        JsonNode files = registry.get("current").get("files");
+        JsonNode file = files.get(type.fileKey());
+        if (file == null) {
+            throw new IllegalArgumentException("registry carries no current " + type.fileKey() + " copy");
+        }
+        return file.asString();
     }
 
     public boolean has(FhType type, String release) {
@@ -128,20 +211,46 @@ public final class SchemaBundle {
 
     /** The compiled contract for a (type, release) selection. */
     Schema contract(FhType type, String release) {
+        if (type.isDraft()) {
+            HeaderTypeDef def = types.def(type);
+            return cache.computeIfAbsent("draft@" + def.draft().file(), key -> {
+                byte[] bytes = readBytes(def.draft().file());
+                String actual = sha256Hex(bytes);
+                if (!actual.equals(def.draft().sha256())) {
+                    throw new IllegalStateException("the draft contract bytes this jar ships as "
+                        + def.draft().file() + " have sha256 " + actual + " but the registry pins "
+                        + def.draft().sha256() + " (commit " + def.draft().commit() + " of "
+                        + def.draft().repository() + "); refusing to read drafts that do not match"
+                        + " their own provenance");
+                }
+                return validatorRegistry.getSchema(new ByteArrayInputStream(bytes), InputFormat.JSON);
+            });
+        }
         String file = "main".equals(release) ? currentFile(type) : releaseIndexEntry(release).get(type);
         if (file == null) {
             throw new IllegalArgumentException("no bundled " + type.fileKey() + " schema for " + release);
         }
-        return cache.computeIfAbsent(type + "@" + file, key -> {
-            try (InputStream in = SchemaBundle.class.getResourceAsStream(RESOURCE_DIR + file)) {
-                if (in == null) {
-                    throw new IOException("missing bundled schema " + file);
-                }
-                return validatorRegistry.getSchema(in, InputFormat.JSON);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+        return cache.computeIfAbsent(type + "@" + file, key -> validatorRegistry.getSchema(
+            new ByteArrayInputStream(readBytes(file)), InputFormat.JSON));
+    }
+
+    private byte[] readBytes(String name) {
+        try (InputStream in = open(name)) {
+            if (in == null) {
+                throw new IOException("missing bundled schema " + name);
             }
-        });
+            return in.readAllBytes();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    static String sha256Hex(byte[] bytes) {
+        try {
+            return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(bytes));
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("no SHA-256 in this JDK", e);
+        }
     }
 
     /** Validate metadata against a contract; each schema failure becomes an ERROR issue. */

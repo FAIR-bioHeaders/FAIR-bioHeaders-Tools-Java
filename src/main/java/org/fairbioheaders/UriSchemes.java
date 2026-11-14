@@ -29,7 +29,12 @@ final class UriSchemes {
     // character anywhere, means "no accepted scheme" (R14, checked as written).
     private static final Pattern BIDI = Pattern.compile("[\\u202A-\\u202E\\u2066-\\u2069\\u200E\\u200F]");
 
-    /** Fields whose string values carry {@code format: uri}, per header type. */
+    /**
+     * Fields whose string values carry {@code format: uri}, per header type. The released rows
+     * of the table are the reviewed derivation of the three current contracts (docs/STATUS.md);
+     * a registry row may declare its own list, and a draft type must, because its contract is not
+     * one of the released files this table was derived from.
+     */
     static final Map<FhType, List<String>> URI_FIELDS = Map.of(
         FhType.FHR, List.of(
             "accessionID.url", "assemblyProtocol", "assemblySoftware[].uri",
@@ -42,6 +47,13 @@ final class UriSchemes {
             "accessionID.url", "annotationProtocol", "annotationSoftware[].uri",
             "derivedFrom[].accessionID.url", "metadataAuthor[].uri", "relatedLink[]",
             "source[].url", "taxon.uri"));
+
+    static List<String> fieldsFor(HeaderTypeDef def) {
+        if (!def.uriFields().isEmpty()) {
+            return def.uriFields();
+        }
+        return URI_FIELDS.getOrDefault(def.type(), List.of());
+    }
 
     private UriSchemes() {
     }
@@ -85,11 +97,11 @@ final class UriSchemes {
     }
 
     /** Walk the metadata and warn on R14-rejected values in the checked fields. */
-    static void collect(FhType type, JsonNode metadata, List<Issue> issues) {
+    static void collect(HeaderTypeDef def, JsonNode metadata, List<Issue> issues) {
         if (metadata == null || !metadata.isObject()) {
             return;
         }
-        for (String field : URI_FIELDS.getOrDefault(type, List.of())) {
+        for (String field : fieldsFor(def)) {
             for (JsonNode node : resolve(metadata, field)) {
                 if (node.isString()) {
                     String value = node.asString();

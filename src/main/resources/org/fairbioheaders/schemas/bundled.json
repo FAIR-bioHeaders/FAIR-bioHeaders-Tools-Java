@@ -1,5 +1,10 @@
 {
-  "description": "Schemas bundled with fair-bioheaders-java, by FAIR-bioHeaders-Specification release (docs/SCHEMA-VERSIONS.md). 'current' are the copies of the specification main that raw-main URLs select; the release named there is the one they belong to. Each release entry points at a frozen copy of that release's schema. Only released contracts appear here: FHT and FHGM have no released schema, no w3id alias and no entry in the shared schemas/versions.json registry, and this reader implements no draft lane (rule V7 opt-in is not supported; see docs/STATUS.md).",
+  "description": "Header types and schema copies bundled with fair-bioheaders-java, by FAIR-bioHeaders-Specification release (docs/SCHEMA-VERSIONS.md). 'types' is the header-type registry: one row per type this reader knows, with the URL key rules V1-V3 match, the file key used in 'current'/'releases', the status ('released' for a contract published under a release tag with a row in the shared schemas/versions.json, 'draft' for a development contract readable only through the rule V7 opt-in lane), the transport (embedded-header for a file-bound ';~'/'#~' header, embedded-records for records carried inside another type's header under an x- key) and, for a draft, the pinned bytes under 'draft'. 'current' are the copies of the specification main that raw-main URLs select; the release named there is the one they belong to. Each release entry points at a frozen copy of that release's schema. This file registers no draft today: FHT and FHGM have no released schema, no w3id alias and no entry in the shared schemas/versions.json registry (docs/STATUS.md), and a draft row added later can only ever be read through explicit opt-in, never by default.",
+  "types": [
+    { "fileKey": "FHR",    "urlKey": "fhr",    "status": "released", "transport": "embedded-header" },
+    { "fileKey": "FHP",    "urlKey": "fhp",    "status": "released", "transport": "embedded-header" },
+    { "fileKey": "FHGFF3", "urlKey": "fhgff3", "status": "released", "transport": "embedded-header" }
+  ],
   "current": {
     "release": "v0.6.0",
     "files": {

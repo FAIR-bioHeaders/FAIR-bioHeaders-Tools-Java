@@ -15,28 +15,73 @@ import java.util.Locale;
 import tools.jackson.databind.JsonNode;
 
 /**
- * Entry point for reading, checksum-verifying and schema-validating FAIR-bioHeaders
- * headers (FHR, FHP, FHGFF3) in FASTA, GFA and GFF3 files.
+ * Entry point for reading, checksum-verifying and schema-validating FAIR-bioHeaders headers
+ * (released: FHR, FHP, FHGFF3) in FASTA, GFA and GFF3 files.
  *
- * <p>This slice covers the file-bound header: exact-byte SHA-512/256 coverage
- * (FORMAT.md R1-R7, R10 and FHGFF3.md G1), JSON-compatible YAML loading (R8, R12,
- * R13), schema selection (SCHEMA-VERSIONS.md V1-V6) and validation against the
- * released draft/2020-12 contracts bundled in this jar, plus the R14 link-scheme
- * and R11 record-marker warnings. It does not write, combine, strip or convert
- * headers, and it does not validate GFF3 feature lines; see docs/STATUS.md.
+ * <p>This library covers the file-bound header: exact-byte SHA-512/256 coverage (FORMAT.md
+ * R1-R7, R10 and FHGFF3.md G1), JSON-compatible YAML loading (R8, R12, R13), schema selection
+ * (SCHEMA-VERSIONS.md V1-V6, plus V7 on explicit opt-in) and validation against the
+ * draft/2020-12 contracts bundled in this jar, plus the R14 link-scheme and R11 record-marker
+ * warnings. It does not write, combine, strip or convert headers, and it does not validate GFF3
+ * feature lines; see docs/STATUS.md and docs/CAPABILITY-MATRIX.md.
+ *
+ * <p>An instance built with {@link Options#defaults()} - which is what {@code new BioHeaders()}
+ * uses unless the environment opts in - reads released contracts only. A draft type of the
+ * family (FHT, FHGM) becomes readable only through {@link Options.Builder#enableDraftContracts(
+ * boolean)} and only against the pinned revision its registry entry names, and every record read
+ * that way says so. docs/STATUS.md keeps the current support and non-support list.
  */
 public final class BioHeaders {
 
     private final SchemaBundle bundle;
+    private final TypeRegistry types;
     private final SchemaSelection selection;
+    private final Options options;
 
+    /** The released-contract reader; the environment may opt in to the rule V7 draft lane. */
     public BioHeaders() {
-        this(SchemaBundle.getDefault());
+        this(Options.fromEnvironment());
     }
 
     public BioHeaders(SchemaBundle bundle) {
+        this(bundle, bundle.options());
+    }
+
+    /** A reader configured by {@code options}; released contracts unless the lane is opted in. */
+    public BioHeaders(Options options) {
+        this(new SchemaBundle(options), options);
+    }
+
+    private BioHeaders(SchemaBundle bundle, Options options) {
+        this(bundle, bundle.types(), options);
+    }
+
+    private BioHeaders(SchemaBundle bundle, TypeRegistry types, Options options) {
         this.bundle = bundle;
-        this.selection = new SchemaSelection(bundle);
+        this.types = types;
+        this.options = options;
+        this.selection = new SchemaSelection(bundle, types);
+    }
+
+    /** The configuration this reader was built with. */
+    public Options options() {
+        return options;
+    }
+
+    /**
+     * The header types this reader can select: the released ones, plus any draft it was opted
+     * into. Names of drafts here are not support claims - see docs/CAPABILITY-MATRIX.md.
+     */
+    public List<FhType> readableTypes() {
+        return types.types();
+    }
+
+    /**
+     * The draft types the bundled registry declares, whether or not this reader was opted in:
+     * the discovery call for {@link Options.Builder#enableDraft(String)}.
+     */
+    public List<String> declaredDraftTypes() {
+        return bundle.declaredDraftTypes();
     }
 
     /** Verify a file on disk; the container is inferred from the file name. */
@@ -84,7 +129,7 @@ public final class BioHeaders {
                     stated, computed, metadata, issues);
             }
             issues.addAll(SchemaBundle.validate(bundle.contract(type, release), metadata));
-            UriSchemes.collect(type, metadata, issues);
+            UriSchemes.collect(types.def(type), metadata, issues);
         } catch (ScanException e) {
             issues.add(Issue.error(e.rule(), e.getMessage()));
         }
