@@ -155,30 +155,27 @@ jobs:
 
       - name: Assert the draft suite ran in full, against the pinned bytes
         run: |
+          # Counts are checked here; the identity of what was measured (contract commit + digest,
+          # suite commit + manifest digest, the checkout's own bytes) is checked inside the Java
+          # run: DraftHarness re-digests the checkout against the registry pin before it will read
+          # a single vector, and DraftProvenanceTest pins the registry values themselves. The
+          # literals below are a second statement of the same pin, so drift in either place fails.
           receipt=target/fht-draft-vectors.properties
           if [ ! -s "$receipt" ]; then
             echo "missing $receipt - DraftLedgerTest did not run" >&2
             exit 1
           fi
           cat "$receipt"
-          want_commit=$(sed -n 's/^  "commit": "\([0-9a-f]\{40\)".*/\1/p' \
-            src/main/resources/org/fairbioheaders/schemas/bundled.json | head -1)
-          for pair in vectorsRan=66 vectorsPassed=66 vectorsInManifest=66; do
-            key=${pair%%=*}; want=${pair##*=}
-            got=$(sed -n "s/^$key=//p" "$receipt")
-            if [ "$got" != "$want" ]; then
-              echo "$key=$got, expected $want" >&2
-              exit 1
-            fi
-          done
-          if ! grep -q '^contractSha256=59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e$' "$receipt"; then
-            echo "the draft suite did not run against the pinned contract digest" >&2
-            exit 1
-          fi
-          if ! grep -q "^contractCommit=${want_commit}$" "$receipt"; then
-            echo "the draft suite ran against a contract commit other than the registry pin" >&2
-            exit 1
-          fi
+          grep -qx 'vectorsInManifest=66' "$receipt" || { echo "expected 66 vectors in the manifest" >&2; exit 1; }
+          grep -qx 'vectorsRan=66' "$receipt" || { echo "expected 66 draft vectors to run" >&2; exit 1; }
+          grep -qx 'vectorsPassed=66' "$receipt" || { echo "expected 66 draft vectors to pass" >&2; exit 1; }
+          grep -qx 'contractCommit=226f923c28b680edb3c546e99a751482d06aef1a' "$receipt" \
+            || { echo "the draft suite did not run against the pinned contract commit" >&2; exit 1; }
+          grep -qx 'contractSha256=59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e' "$receipt" \
+            || { echo "the draft suite did not run against the pinned contract digest" >&2; exit 1; }
+          grep -qx 'suiteCommit=24d3b033ab951ef79ee9f6d17419d8ba700f1b0a' "$receipt" \
+            || { echo "the suite is not the pinned revision" >&2; exit 1; }
+          grep -qx 'note=' "$receipt" || { echo "the receipt carries a note: $receipt" >&2; exit 1; }
           count=$(grep -h 'tests=' target/surefire-reports/TEST-org.fairbioheaders.conformance.FhtDraftVectorTest.xml | head -1 | sed -E 's/.*tests="([0-9]+)".*/\1/')
           echo "FhtDraftVectorTest executed $count tests"
           [ "$count" -eq 66 ] || { echo "expected 66 FHT draft vectors to run (got $count)" >&2; exit 1; }
@@ -207,28 +204,36 @@ jobs:
       - uses: actions/checkout@v4
       - name: Compare the pinned draft bytes with live raw main
         run: |
+          # Every value is read with grep -oE (no BRE interval escapes, which the earlier version of
+          # this step got wrong) and cross-checked three ways: the pin inside the registry, the bytes
+          # shipped in this jar, and the owning repository's live raw-main bytes.
           set -e
-          url=$(sed -n 's/.*"citation": "\(https[^"]*\)".*/\1/p' \
-            src/main/resources/org/fairbioheaders/schemas/bundled.json | head -1)
-          pin=$(sed -n 's/.*"sha256": "\([0-9a-f]\{64\)".*/\1/p' \
-            src/main/resources/org/fairbioheaders/schemas/bundled.json | head -1)
-          # Positive control first: a nonsense URL must read 404, so a 200 below means something.
+          registry=src/main/resources/org/fairbioheaders/schemas/bundled.json
+          url=$(grep -oE '"citation": "https[^"]*"' "$registry" | head -1 | cut -d'"' -f4)
+          pin=$(grep -oE '"sha256": "[0-9a-f]{64}"' "$registry" | head -1 | cut -d'"' -f4)
+          commit=$(grep -oE '"commit": "[0-9a-f]{40}"' "$registry" | head -1 | cut -d'"' -f4)
+          echo "pinned citation=$url"
+          echo "pinned commit=$commit"
+          echo "pinned sha256=$pin"
+          [ -n "$url" ] && [ -n "$pin" ] && [ -n "$commit" ] || { echo "registry pin fields missing" >&2; exit 1; }
+          shipped=src/main/resources/org/fairbioheaders/schemas/fht-draft.json
+          shipped_digest=$(sha256sum "$shipped" | cut -d' ' -f1)
+          echo "shipped bytes: $shipped_digest ($(wc -c < "$shipped") bytes)"
+          [ "$shipped_digest" = "$pin" ] || { echo "the shipped copy does not match its own pin" >&2; exit 1; }
+          # Positive control first: a nonsense path under the same repository must read 404, so the
+          # 200 below means the endpoint answered for real rather than a redirect or a portal page.
           control=$(curl -s -o /dev/null -w '%{http_code}' \
             https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/no-such-file.json)
           echo "control (expect 404): $control"
-          [ "$control" = "404" ] || { echo "probe control failed, results here are meaningless" >&2; exit 1; }
+          [ "$control" = "404" ] || { echo "probe control failed; any result below is meaningless" >&2; exit 1; }
           code=$(curl -s -o live.json -w '%{http_code}' "$url")
           echo "GET $url -> $code"
-          [ "$code" = "200" ] || { echo "draft citation did not resolve" >&2; exit 1; }
+          [ "$code" = "200" ] || { echo "draft citation did not resolve (got $code)" >&2; exit 1; }
           live=$(sha256sum live.json | cut -d' ' -f1)
-          echo "pinned: $pin"
-          echo "live  : $live"
-          shipped=$(sha256sum src/main/resources/org/fairbioheaders/schemas/fht-draft.json | cut -d' ' -f1)
-          echo "shipped bytes in this jar: $shipped"
-          [ "$shipped" = "$pin" ] || { echo "the shipped copy does not match its own pin" >&2; exit 1; }
+          echo "live raw main: $live"
           if [ "$live" != "$pin" ]; then
-            echo "::warning title=Stale FHT draft pin::FHT-Specification main now has sha256 $live; this jar pins $pin. Re-pin deliberately (issue #2)."
-            echo "the pinned draft revision is no longer main: reading it is still valid evidence about $pin, not about main"
+            echo "::warning title=Stale FHT draft pin::FHT-Specification main now has sha256 $live; this jar pins $pin (commit $commit). Re-pin deliberately (issue #2)."
+            echo "the pinned revision is no longer main: the reading is still valid evidence about $pin, not about main"
           else
             echo "pin is current"
           fi
