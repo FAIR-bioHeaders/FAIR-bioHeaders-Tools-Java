@@ -26,14 +26,15 @@ echo "live raw main: $live"
 if [ "$live" != "$pin" ]; then echo "DRIFT (advisory)"; else echo "pin is current"; fi
 echo "--- receipt guards ---"
 receipt=target/fht-draft-vectors.properties
-grep -qx 'vectorsInManifest=66' "$receipt"
-grep -qx 'vectorsRan=66' "$receipt"
-grep -qx 'vectorsPassed=66' "$receipt"
+grep -qx 'vectorsInManifest=72' "$receipt"
+grep -qx 'vectorsRan=72' "$receipt"
+grep -qx 'vectorsPassed=72' "$receipt"
 grep -qx 'contractCommit=226f923c28b680edb3c546e99a751482d06aef1a' "$receipt"
 grep -qx 'contractSha256=59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e' "$receipt"
-grep -qx 'suiteCommit=24d3b033ab951ef79ee9f6d17419d8ba700f1b0a' "$receipt"
+grep -qx 'suiteCommit=be9bcc825f55db92852fd882ffba4c1c214f53db' "$receipt"
+grep -qx 'suiteManifestSha256=9fd8c0b2a4638d5ddc0bf9b5d1e96c66778b26bcf8f93975aafb707d8f2b702c' "$receipt"
 grep -qx 'note=' "$receipt"
 count=$(grep -h 'tests=' target/surefire-reports/TEST-org.fairbioheaders.conformance.FhtDraftVectorTest.xml | head -1 | sed -E 's/.*tests="([0-9]+)".*/\1/')
 echo "FhtDraftVectorTest executed $count tests"
-[ "$count" -eq 66 ]
+[ "$count" -eq 72 ]
 echo "ALL LOCAL GUARD CHECKS PASSED"

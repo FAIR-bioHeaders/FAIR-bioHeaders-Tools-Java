@@ -145,6 +145,7 @@ final class TypeRegistry {
             optional(draft, "suiteManifestSha256"),
             optional(draft, "transportFile"),
             optional(draft, "transportSha256"),
+            optional(draft, "transportCommit"),
             optional(draft, "modelsKey"),
             optional(draft, "carrierFileKey"));
     }
