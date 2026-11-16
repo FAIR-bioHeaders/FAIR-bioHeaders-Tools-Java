@@ -1,6 +1,7 @@
 # Native acceptance
 
-Status date: **2026-11-14**. This file is the acceptance statement for
+Status date: **2026-11-15** (draft-suite re-pin; guard counts and pinned suite
+refs moved with it). This file is the acceptance statement for
 FAIR-bioHeaders-Tools-Java#3: what the primary job runs, how to reproduce it
 exactly, which guards can make it fail, and what "native" means here as a checked
 property rather than an intention.
@@ -41,9 +42,9 @@ git -C spec-v0.6.0 checkout v0.6.0
 
 # 2. Rule V7 draft evidence (its own labelled job, never merged into 1's counts).
 git -C .. clone https://github.com/FAIR-bioHeaders/FHT-Specification fht-pin
-git -C fht-pin checkout 24d3b033ab951ef79ee9f6d17419d8ba700f1b0a
+git -C fht-pin checkout be9bcc825f55db92852fd882ffba4c1c214f53db
 git -C .. clone https://github.com/FAIR-bioHeaders/FHGM-Specification fhgm-pin
-git -C fhgm-pin checkout ac3d37b3033312844fc3151217731928ae33aa54
+git -C fhgm-pin checkout 57118c52363990dcaa42640394db84acb089cc24
 ./mvnw -B -ntp test -Dgroups=draft \
   -Dfh.fht.dir=$PWD/../fht-pin/conformance \
   -Dfh.fhgm.dir=$PWD/../fhgm-pin/development/conformance
@@ -52,8 +53,8 @@ git -C fhgm-pin checkout ac3d37b3033312844fc3151217731928ae33aa54
 ./mvnw -B -ntp test -Dfh.spec.dir=/path/to/FAIR-bioHeaders-Specification
 
 # 4. The reports guard, exactly as CI runs it.
-sh .github/scripts/assert-reports.sh 317          # released job
-sh .github/scripts/assert-reports.sh 175 target/surefire-reports   # draft job
+sh .github/scripts/assert-reports.sh 318          # released job
+sh .github/scripts/assert-reports.sh 199 target/surefire-reports   # draft job
 sh .github/scripts/ci-guards-dryrun.sh            # local dry run of the CI shell guards
 ```
 
@@ -97,8 +98,8 @@ run is reported as not tested, not as supported.
 | default-behavior receipt | `build.yml` | `target/default-behavior-golden.properties` is missing, or `vectorsCompared≠228`, `documentsCompared≠47`, `selectionCasesCompared≠304`, `kindsCompared≠18` |
 | golden equality | `DefaultBehaviorGoldenTest` | the recomputed fingerprint differs by even one byte from the golden generated from commit `237da6c` |
 | acceptance ledger | `AcceptanceLedgerTest` + `build.yml` | the shared manifest is not 291 vectors, the run set is not 228, anything fails, or a format is not run without a declared reason |
-| report guard | `.github/scripts/assert-reports.sh` | no report directory, no `TEST-*.xml`, a class that executed 0 tests, any skip, any failure/error, or an aggregate below the job's bound (317 released, 175 draft) |
-| draft receipts | `draft-vectors` job | FHT ran/passed ≠ 66, FHGM ran/passed ≠ 31, a recorded contract or suite pin that differs from the registry's, or a missing `gff3Layer=skipped` statement in the FHGM receipt |
+| report guard | `.github/scripts/assert-reports.sh` | no report directory, no `TEST-*.xml`, a class that executed 0 tests, any skip, any failure/error, or an aggregate below the job's bound (318 released, 199 draft) |
+| draft receipts | `draft-vectors` job | FHT ran/passed ≠ 72, FHGM ran/passed ≠ 43, a recorded contract, transport-overlay or suite pin that differs from the registry's, or a missing `gff3Layer=skipped` statement in the FHGM receipt |
 | draft byte identity | `DraftHarness`, `FhgmHarness`, `DraftProvenanceTest` | a checkout whose `fht.json`, `fhgm-model.schema.json`, `fhgm-draft.schema.json` or suite manifest differs from the registry pins, or a shipped copy that differs from its own recorded SHA-256 |
 | native purity | `NativePurityTest` | any source uses `ProcessBuilder`, `Runtime.getRuntime`, `javax.script`/`ScriptEngine`, `System.load`/`loadLibrary`, `LibraryLoader`, or a Python bridge; or the test classpath holds a jar outside the documented set; or a foreign project file (`requirements.txt`, `pyproject.toml`, `package.json`, `DESCRIPTION`, `Project.toml`, `.venv`, …) appears in the tree |
 | build wiring | `build.yml` | `pom.xml` names an interpreter/exec/foreign plugin, or a foreign project file exists in the tree |
@@ -111,13 +112,23 @@ executed on PR #6, twice, and both runs are cited there and in the #3 status
 comment: once by flipping one vector expectation in a test (red at the test
 phase), once by pointing `-Dfh.spec.dir` at a directory without a manifest (red
 at the skip/report guard). Both breaks were then reverted in a following commit,
-and the green run after the revert is cited too.
+and the green run after the revert is cited too. The 2026-11-15 suite re-pin added
+two more, on the pin machinery itself: pointing both draft lanes at the advanced
+checkouts while the old pins were still recorded produced `vectorsRan=0` with a
+drift line in each receipt and a report-guard exit 1 (never stale green); and a
+one-byte tamper of the shipped `fhgm-transport-draft.json` — byte-verified by
+`cmp` to be a real mutation before any conclusion was drawn — failed
+`DraftProvenanceTest` and made `SchemaBundle` refuse to build the lane at all.
+Both were restored and `cmp`-verified against the pristine bytes before the green
+re-run.
 
 ## What this file does not claim
 
 It does not make FHT or FHGM supported. Draft evidence runs in its own labelled
 job and is reported separately; `docs/CAPABILITY-MATRIX.md` is the capability
-statement, including the 63 shared vectors this library does not run and the
-FHGM lane it does not have. Acceptance for the released types remains the shared
+statement, including the 63 shared vectors this library does not run, the FHGM
+`gff3` feature layer it skips by design and the FHGM 1.2 matrix lane
+(`development/conformance/base_matrix.json`) it does not run. Acceptance for the
+released types remains the shared
 language-neutral manifest, not a per-language suite: this repository adds no
 normative vectors of its own.

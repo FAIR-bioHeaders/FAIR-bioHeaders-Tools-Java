@@ -1,5 +1,5 @@
 {
-  "description": "Header types and schema copies bundled with fair-bioheaders-java, by FAIR-bioHeaders-Specification release (docs/SCHEMA-VERSIONS.md). 'types' is the header-type registry: one row per type this reader knows, with the URL key rules V1-V3 match, the file key used in 'current'/'releases', the status ('released' for a contract published under a release tag with a row in the shared schemas/versions.json, 'draft' for a development contract readable only through the rule V7 opt-in lane), the transport (embedded-header for a file-bound ';~'/'#~' header, embedded-records for records carried inside another type's header under an x- key) and, for a draft, the pinned bytes under 'draft'. 'current' are the copies of the specification main that raw-main URLs select; the release named there is the one they belong to. Each release entry points at a frozen copy of that release's schema. One draft row is registered (FHT): FHT has no released schema, no w3id alias and no entry in the shared schemas/versions.json registry, so its bytes are readable ONLY through the explicit rule V7 opt-in, only at the pinned commit and digest recorded in the row, and only with a warning on every record read that way; registering the row is not a support or release claim (docs/STATUS.md, docs/CAPABILITY-MATRIX.md). FHGM is not registered at all - it is not a header type, and its model-level rules are not implemented here. A draft row never appears under 'current' or 'releases'.",
+  "description": "Header types and schema copies bundled with fair-bioheaders-java, by FAIR-bioHeaders-Specification release (docs/SCHEMA-VERSIONS.md). 'types' is the header-type registry: one row per type this reader knows, with the URL key rules V1-V3 match, the file key used in 'current'/'releases', the status ('released' for a contract published under a release tag with a row in the shared schemas/versions.json, 'draft' for a development contract readable only through the rule V7 opt-in lane), the transport (embedded-header for a file-bound ';~'/'#~' header, embedded-records for records carried inside another type's header under an x- key) and, for a draft, the pinned bytes under 'draft'. 'current' are the copies of the specification main that raw-main URLs select; the release named there is the one they belong to. Each release entry points at a frozen copy of that release's schema. Two draft rows are registered (FHT and FHGM): neither has a released schema, a w3id alias or an entry in the shared schemas/versions.json registry, so their bytes are readable ONLY through the explicit rule V7 opt-in, only at the pinned commits and digests recorded in the rows, and only with a warning on every record read that way; registering a row is not a support or release claim (docs/STATUS.md, docs/CAPABILITY-MATRIX.md). FHGM is a records draft, not a header type: its rows pin the record contract, the transport overlay and the model-level rules (FhgmModels), and a carrier file is still routed by its own released FHGFF3 citation. A draft row never appears under 'current' or 'releases'.",
   "types": [
     { "fileKey": "FHR",    "urlKey": "fhr",    "status": "released", "transport": "embedded-header" },
     { "fileKey": "FHP",    "urlKey": "fhp",    "status": "released", "transport": "embedded-header" },
@@ -18,8 +18,8 @@
         "commit": "226f923c28b680edb3c546e99a751482d06aef1a",
         "sha256": "59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e",
         "retrieved": "2026-11-14",
-        "suiteCommit": "24d3b033ab951ef79ee9f6d17419d8ba700f1b0a",
-        "suiteManifestSha256": "9b07179497bdc7247d6ead2404d9d5fdee48308a58b385bd4cd9a7e91450053a",
+        "suiteCommit": "be9bcc825f55db92852fd882ffba4c1c214f53db",
+        "suiteManifestSha256": "9fd8c0b2a4638d5ddc0bf9b5d1e96c66778b26bcf8f93975aafb707d8f2b702c",
         "source": "FHT-Specification (development repository; no released contract, no w3id alias, no row in the shared schemas/versions.json)",
         "enable": "Options.enableDraftContracts(true) / -Dorg.fairbioheaders.experimental.drafts=1 / FAIR_BIOHEADERS_EXPERIMENTAL_DRAFTS=1 (opt-in only; docs/STATUS.md)"
       }
@@ -36,17 +36,18 @@
         "sha256": "bf1553cac04dc88d8afaff1d39bc50360342e1ebedac4b73dfe3dff570ff410f",
         "transportFile": "fhgm-transport-draft.json",
         "transportSourcePath": "development/model/fhgm-draft.schema.json",
-        "transportSha256": "dd9f69274f26860bbfd71d0e8b2794420c5369fb5d40ce838fb6a9e6d5116e3d",
+        "transportSha256": "d1619cced91b4ef554853bf5512b5b4ad593b1dc571c2beacb5ee92466ea244a",
+        "transportCommit": "5d15ccc122fcb8239787393010364a818a774ee4",
         "modelsKey": "x-fhgm-models",
         "carrierFileKey": "FHGFF3",
         "citation": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json",
         "repository": "FHGM-Specification",
         "commit": "ac3d37b3033312844fc3151217731928ae33aa54",
         "retrieved": "2026-11-14",
-        "suiteCommit": "ac3d37b3033312844fc3151217731928ae33aa54",
-        "suiteManifestSha256": "31f14f022ff0858191170d1c8285bd83c7f943d88fd8cebc70f11712525617db",
-        "carrierContract": "FHGFF3 1.1 (specification v0.5.0, sha256 20ce320f5d706f11ed21cdece4dfb56e3568b50be126e25b4016f46f2e8e416c) is the base schema the draft suite was observed against; the released copy in this jar is byte-identical to it",
-        "source": "FHGM-Specification (development repository; no released contract, no schemaVersion, no w3id alias, no row in the shared schemas/versions.json). FHGM records carry no schema field: they ride inside an FHGFF3 header under x-fhgm-models (FORMAT.md R15), so this row names the record contract, the transport overlay and the carrier type - the file is still routed by its own FHGFF3 citation under V1-V3.",
+        "suiteCommit": "57118c52363990dcaa42640394db84acb089cc24",
+        "suiteManifestSha256": "0d2790151c4a29551e9b92fb6b3c3c62ea062f2889ffbd00b3c425e7b6da3458",
+        "carrierContract": "FHGM carriers are admitted on either released FHGFF3 base by the pinned overlay's closed identity branches (maintainer dual-base decision, 2026-11-15): FHGFF3 1.1 (specification v0.5.0, sha256 20ce320f5d706f11ed21cdece4dfb56e3568b50be126e25b4016f46f2e8e416c) is the base the sealed suite vectors were observed against, and FHGFF3 1.2 (v0.6.0, sha256 1942be4cefc8b3a2537942c2252b45fbcef87a5532486e4fd0f5d4c540e0fbf9) is the base the suite's separate matrix lane (development/conformance/base_matrix.json) re-observes identity-rewritten twins against. Both frozen copies are in this jar, byte-identical to their tags; the matrix lane is not run by this library's draft job (see schemas/provenance.json drafts.FHGM.baseSchemas and docs/STATUS.md).",
+        "source": "FHGM-Specification (development repository; no released contract, no schemaVersion, no w3id alias, no row in the shared schemas/versions.json). FHGM records carry no schema field: they ride inside an FHGFF3 header under x-fhgm-models (FORMAT.md R15), so this row names the record contract, the transport overlay (its own commit and digest) and the carrier type - the file is still routed by its own FHGFF3 citation under V1-V3. The overlay admits both released FHGFF3 bases (1.1 and 1.2) as closed identity branches, per the maintainer dual-base decision of 2026-11-15.",
         "enable": "Options.enableDraftContracts(true) / -Dorg.fairbioheaders.experimental.drafts=1 / FAIR_BIOHEADERS_EXPERIMENTAL_DRAFTS=1 (opt-in only; docs/CAPABILITY-MATRIX.md)"
       }
     }

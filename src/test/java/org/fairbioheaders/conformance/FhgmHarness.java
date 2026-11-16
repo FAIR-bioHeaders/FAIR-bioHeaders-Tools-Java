@@ -141,6 +141,15 @@ public final class FhgmHarness {
         return pin == null ? null : pin.sha256();
     }
 
+    /** The commit the transport overlay's own pinned bytes came from (distinct from the record contract's). */
+    public String transportCommit() {
+        return pin == null ? null : pin.transportCommit();
+    }
+
+    public String transportSha256() {
+        return pin == null ? null : pin.transportSha256();
+    }
+
     public String suiteCommit() {
         return pin == null ? null : pin.suiteCommit();
     }

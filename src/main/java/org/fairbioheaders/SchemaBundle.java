@@ -181,7 +181,8 @@ public final class SchemaBundle {
     public record Draft(String type, String citation, String repository, String commit,
                         String sha256, String retrieved, String file, String source, String enable,
                         String suiteCommit, String suiteManifestSha256, String sourcePath,
-                        String transportFile, String transportSha256, String transportSourcePath,
+                        String transportFile, String transportSha256, String transportCommit,
+                        String transportSourcePath,
                         String modelsKey, String carrierFileKey) {
 
         /**
@@ -225,6 +226,7 @@ public final class SchemaBundle {
                 draft.path("sourcePath").asString(""),
                 draft.path("transportFile").asString(""),
                 draft.path("transportSha256").asString(""),
+                draft.path("transportCommit").asString(""),
                 draft.path("transportSourcePath").asString(""),
                 draft.path("modelsKey").asString(""),
                 draft.path("carrierFileKey").asString("")));
@@ -314,7 +316,7 @@ public final class SchemaBundle {
     Schema transportContract(FhType type) {
         HeaderTypeDef.DraftPin pin = types.def(type).draft();
         pin.requireCompleteFor(type.transport());
-        return pinnedContract(pin.transportFile(), pin.transportSha256(), pin.commit(),
+        return pinnedContract(pin.transportFile(), pin.transportSha256(), pin.transportCommit(),
             pin.repository());
     }
 

@@ -1,6 +1,6 @@
 # Capability matrix: type × operation × serialization × contract version
 
-Status date: **2026-11-14**. This is the honest capability statement of
+Status date: **2026-11-15**. This is the honest capability statement of
 `fair-bioheaders-java`. It exists so that a gap is a named row rather than an
 inference, and so that no summary of "supports FHR, FHP, FHGFF3, FHT and FHGM"
 can be read into this library: **the five-type family is not five types of
@@ -62,8 +62,8 @@ counts and the "not verified" list.
 | FHR | `1` (v0.3.0/v0.3.1), `2.0` (v0.4.0-v0.4.2), `2.1` (v0.5.0/v0.6.0) | `fhr-2.1.json` = v0.6.0 bytes, identical to v0.5.0 | 98 `fasta` vectors (incl. rule V6 FHR 1 paths) |
 | FHP | `1.0` (v0.4.0-v0.4.2), `1.1` (v0.5.0), `1.2` (v0.6.0) | `fhp-1.2.json` | 36 `fhp-fasta` vectors |
 | FHGFF3 | `1.0` (v0.4.0-v0.4.2), `1.1` (v0.5.0), `1.2` (v0.6.0) | `fhgff3-1.2.json` | 38 `fhgff3` vectors |
-| FHT | none - **no released contract** | draft `fht-draft.json`: FHT-Specification commit `226f923c28b680edb3c546e99a751482d06aef1a`, SHA-256 `59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e` | 66 vectors of the FHT **draft** suite, in the labelled `draft-vectors` job only |
-| FHGM | none - **no released contract** | two pinned draft files, both opt-in: record contract `fhgm-model-draft.json` = FHGM-Specification commit `ac3d37b3033312844fc3151217731928ae33aa54`, SHA-256 `bf1553cac04dc88d8afaff1d39bc50360342e1ebedac4b73dfe3dff570ff410f` (9 564 B); transport overlay `fhgm-transport-draft.json`, SHA-256 `dd9f69274f26860bbfd71d0e8b2794420c5369fb5d40ce838fb6a9e6d5116e3d` (1 363 B). The base schema the suite was observed against is released FHGFF3 1.1 (`v0.5.0`), whose frozen copy in this jar is byte-identical to it. Both blobs re-verified against live `main` on 2026-11-14. | 31 vectors of the FHGM **draft** suite (`draft-vectors` job only), plus 10 synthetic rule tests |
+| FHT | none - **no released contract** | draft `fht-draft.json`: FHT-Specification commit `226f923c28b680edb3c546e99a751482d06aef1a`, SHA-256 `59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e` (29 430 B) | 72 vectors of the FHT **draft** suite (suite commit `be9bcc82…`, manifest SHA-256 `9fd8c0b2…`), in the labelled `draft-vectors` job only; 4 of the 72 are the suite's own `candidate-unreviewed` promotion cases |
+| FHGM | none - **no released contract** | two pinned draft files, each with its own commit and digest, both opt-in: record contract `fhgm-model-draft.json` = FHGM-Specification commit `ac3d37b3033312844fc3151217731928ae33aa54`, SHA-256 `bf1553cac04dc88d8afaff1d39bc50360342e1ebedac4b73dfe3dff570ff410f` (9 564 B); transport overlay `fhgm-transport-draft.json` = commit `5d15ccc122fcb8239787393010364a818a774ee4`, SHA-256 `d1619cced91b4ef554853bf5512b5b4ad593b1dc571c2beacb5ee92466ea244a` (2 613 B). The overlay admits **both** released FHGFF3 bases as closed identity branches - 1.1 (`v0.5.0`, `20ce320f…`) sealed lane, 1.2 (`v0.6.0`, `1942be4c…`) matrix lane - each frozen in this jar and tag-resolved to a commit (`schemas/provenance.json` drafts.FHGM.baseSchemas; re-verified 2026-11-15). | 43 vectors of the FHGM **draft** suite (`draft-vectors` job only; suite commit `57118c52…`, manifest SHA-256 `0d279015…`, sealed at `d443073a` with 12 promoted real-data `dmel-*` vectors whose expectations still await independent review upstream), plus 10 synthetic rule tests. The suite's separate 1.2 `base_matrix.json` lane is **not run** here (reason in `docs/STATUS.md`). |
 
 Releases `v0.4.1`/`v0.4.2` repeat the `v0.4.0` bytes and `v0.6.0`'s `fhr.json`
 repeats `v0.5.0`'s: release identity and byte identity are recorded as separate
@@ -122,8 +122,8 @@ Cells a reviewer should not have to guess about:
 
 * Released-contract acceptance: 228 of 291 shared vectors run; 63 declared
   not-run with reason 1 above.
-* Draft evidence, in the labelled `draft-vectors` job only (175 tests: 66 FHT
-  vectors, 66 lane-off controls, 31 FHGM vectors, 10 FHGM rule tests, 2 ledgers),
+* Draft evidence, in the labelled `draft-vectors` job only (199 tests: 72 FHT
+  vectors, 72 lane-off controls, 43 FHGM vectors, 10 FHGM rule tests, 2 ledgers),
   each suite's receipt naming the contract commit and digest and the suite commit
   and manifest digest it measured. Neither count is added to the 291, and neither
   is a support claim.

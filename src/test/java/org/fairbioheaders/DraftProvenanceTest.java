@@ -56,6 +56,9 @@ class DraftProvenanceTest {
                         + " not evaluate another dialect");
             }
             assertEquals(40, draft.commit().length(), "a full commit sha, not an abbreviation");
+            assertEquals(40, draft.suiteCommit().length(), "a full suite commit sha, not an abbreviation");
+            assertEquals(64, draft.suiteManifestSha256().length(),
+                "the suite is pinned by the manifest's SHA-256, not by a vector count");
             assertTrue(draft.citation().startsWith("https://raw.githubusercontent.com/FAIR-bioHeaders/"
                 + draft.repository() + "/main/"),
                 "V7's lane is the owning repository's raw-main URL, never a tag or w3id form: "
@@ -98,6 +101,13 @@ class DraftProvenanceTest {
                     draft.type() + " / " + artifact.file());
                 assertEquals(recorded.get("size").asInt(),
                     read(artifact.file()).length, draft.type() + " byte count drifted silently");
+                // Each pinned file answers to its own commit: the contract pin is not the
+                // transport pin, and neither is the suite pin.
+                String wantCommit = artifact.file().equals(draft.transportFile())
+                    ? draft.transportCommit()
+                    : draft.commit();
+                assertEquals(recorded.get("commit").asString(), wantCommit,
+                    draft.type() + " / " + artifact.file() + " commit");
             }
         }
     }
@@ -117,6 +127,51 @@ class DraftProvenanceTest {
                 "/org/fairbioheaders/testtypes/", "bundled-incomplete-records.json",
                 "/org/fairbioheaders/schemas/"));
         assertTrue(e.getMessage().contains("transportFile"), e.getMessage());
+        // The overlay answers to its own commit: a row that pins overlay bytes without naming where
+        // they came from cannot support the refusal message, so it too is refused at load.
+        IllegalStateException e2 = assertThrows(IllegalStateException.class,
+            () -> new SchemaBundle(Options.builder().enableDraft("PRM").build(),
+                "/org/fairbioheaders/testtypes/", "bundled-missing-transport-commit.json",
+                "/org/fairbioheaders/schemas/"));
+        assertTrue(e2.getMessage().contains("transportCommit"), e2.getMessage());
+        // And the shipped FHGM row really does carry a transport commit distinct from its contract
+        // commit: contract pin is not transport pin, and neither is the suite pin.
+        assertEquals(40, fhgm.transportCommit().length());
+        assertTrue(!fhgm.transportCommit().equals(fhgm.commit()),
+            "the 2026-11-15 re-pin moved the overlay alone; if these coincide again, re-check why");
+    }
+
+    @Test
+    void theBaseRegistryAgreesWithTheFrozenCopiesAndTagCommits() throws IOException {
+        // FHGM carriers ride on released FHGFF3 bases (maintainer dual-base decision, 2026-11-15).
+        // The provenance records them in the shape FHGM-Specification's own base registry uses -
+        // keyed by SHA-256 of the exact release bytes, tag resolved to commit, never a floating
+        // branch - and this test enforces that: every listed base digest must equal the digest of
+        // this jar's frozen copy for the same schemaVersion, and every commit must equal the
+        // tagCommits resolution of the named release.
+        JsonNode provenance = resource("provenance.json");
+        JsonNode bases = provenance.path("drafts").path("FHGM").path("baseSchemas").path("bases");
+        assertTrue(bases.isArray() && bases.size() == 2, "both released FHGFF3 bases are registered");
+        JsonNode tagCommits = provenance.get("tagCommits");
+        for (JsonNode base : bases) {
+            String release = base.get("release").asString();
+            String file = base.get("bundledCopy").asString();
+            assertEquals(tagCommits.get(release).asString(), base.get("commit").asString(),
+                "base " + release + " must resolve its tag to the recorded commit");
+            JsonNode frozen = null;
+            for (JsonNode entry : provenance.get("files")) {
+                if (file.equals(entry.get("file").asString())) {
+                    frozen = entry;
+                }
+            }
+            assertNotNull(frozen, "the base names a frozen copy this jar carries: " + file);
+            assertEquals(frozen.get("sha256").asString(), base.get("sha256").asString(), file);
+            assertEquals(frozen.get("schemaVersion").asString(), base.get("schemaVersion").asString(),
+                file);
+            assertEquals(frozen.get("sha256").asString(), SchemaBundle.sha256(read(file)),
+                file + " shipped bytes vs base registry");
+            assertEquals(base.get("size").asInt(), read(file).length, file + " size");
+        }
     }
 
     @Test

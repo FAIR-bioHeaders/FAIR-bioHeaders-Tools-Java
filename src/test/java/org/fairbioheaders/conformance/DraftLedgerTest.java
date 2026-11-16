@@ -86,6 +86,8 @@ class DraftLedgerTest {
         return "suite=fhgm-draft (rule V7, unreleased development contracts)\n"
             + "recordContractCommit=" + harness.pinnedCommit() + '\n'
             + "recordContractSha256=" + harness.pinnedSha256() + '\n'
+            + "transportContractCommit=" + harness.transportCommit() + '\n'
+            + "transportContractSha256=" + harness.transportSha256() + '\n'
             + "suiteCommit=" + harness.suiteCommit() + '\n'
             + "suiteManifestSha256=" + harness.suiteManifestSha256() + '\n'
             + "gff3Layer=skipped (feature-line validation belongs to gff3-validator;"

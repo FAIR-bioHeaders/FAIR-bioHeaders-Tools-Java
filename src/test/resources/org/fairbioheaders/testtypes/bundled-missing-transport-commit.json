@@ -1,0 +1,43 @@
+{
+  "description": "Test-only registry for FAIR-bioHeaders-Tools-Java#2: a records-carrying draft (embedded-records) whose entry names every transport field EXCEPT the overlay's own commit. Loading it with the lane open must fail: the overlay is pinned by digest and commit, and a row that cannot say which revision its overlay bytes came from cannot state what a refusal is a refusal about. This is the complete row of bundled-proof.json with one field removed - nothing else.",
+  "types": [
+    { "fileKey": "FHR",    "urlKey": "fhr",    "status": "released", "transport": "embedded-header" },
+    { "fileKey": "FHP",    "urlKey": "fhp",    "status": "released", "transport": "embedded-header" },
+    { "fileKey": "FHGFF3", "urlKey": "fhgff3", "status": "released", "transport": "embedded-header" },
+    {
+      "fileKey": "PRM",
+      "urlKey": "prm",
+      "status": "draft",
+      "transport": "embedded-records",
+      "uriFields": [],
+      "draft": {
+        "status": "draft",
+        "file": "proof-draft.json",
+        "transportFile": "proof-transport-draft.json",
+        "transportSha256": "eaa7420daf5630ecbea27453eb2828eb6283772433549326280bed981f538a69",
+        "modelsKey": "x-proof-models",
+        "carrierFileKey": "FHGFF3",
+        "citation": "https://raw.githubusercontent.com/FAIR-bioHeaders/Proof-Specification/main/prm.json",
+        "repository": "Proof-Specification",
+        "commit": "000102030405060708090a0b0c0d0e0f10111213",
+        "sha256": "3490101dc053a38d07399185e6dfd28a3ecbb6bc966b813cf8f8e90359e1fed9",
+        "retrieved": "2026-11-14"
+      }
+    }
+  ],
+  "current": {
+    "release": "v0.6.0",
+    "files": {
+      "FHR": "fhr-2.1.json",
+      "FHP": "fhp-1.2.json",
+      "FHGFF3": "fhgff3-1.2.json"
+    }
+  },
+  "releases": {
+    "v0.6.0": {
+      "FHR": "fhr-2.1.json",
+      "FHP": "fhp-1.2.json",
+      "FHGFF3": "fhgff3-1.2.json"
+    }
+  }
+}

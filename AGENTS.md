@@ -171,15 +171,17 @@ This section applies only to FAIR-bioHeaders-Tools-Java.
   CI clones the specification at a pinned tag and passes it explicitly.
 - Draft evidence is a separate tagged test group: `./mvnw test
   -DexcludedGroups=draft -Dfh.spec.dir=<spec>` is released-contract acceptance
-  (317 tests), and `./mvnw test -Dgroups=draft
+  (318 tests), and `./mvnw test -Dgroups=draft
   -Dfh.fht.dir=<FHT-Specification>/conformance
   -Dfh.fhgm.dir=<FHGM-Specification>/development/conformance` is rule V7 evidence
-  (175 tests). CI runs them as separate labelled jobs. The receipts
+  (199 tests). CI runs them as separate labelled jobs. The receipts
   (`target/default-behavior-golden.properties`,
-  `target/fht-draft-vectors.properties`) plus
+  `target/fht-draft-vectors.properties`,
+  `target/fhgm-draft-vectors.properties`) plus
   `.github/scripts/assert-reports.sh` keep a zero-test, missing-fixture or
   silent-skip outcome from reading as a pass. Never merge the two counts into one
-  support number.
+  support number. Suites are re-pinned deliberately (digest first, count second);
+  never automate a re-pin.
 - Do not "upgrade" this slice into writing headers, microdata/JSON-LD or
   feature validation in a mixed PR — those are separately scoped issues;
   update `docs/STATUS.md` (implemented / not implemented / not verified) and the

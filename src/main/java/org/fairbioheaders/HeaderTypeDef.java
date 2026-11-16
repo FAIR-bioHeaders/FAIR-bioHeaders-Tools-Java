@@ -38,16 +38,18 @@ record HeaderTypeDef(FhType type, List<String> uriFields, DraftPin draft) {
     /**
      * The rule V7 pin of a draft type: the bytes, where they came from, and the citation.
      *
-     * <p>The last six components exist for a records-carrying draft ({@code embedded-records},
+     * <p>The last seven components exist for a records-carrying draft ({@code embedded-records},
      * the FHGM shape). Such a type has no citation of its own in a file: it needs the transport
-     * overlay that admits the records, the extension key that holds them, the type whose header
-     * carries them, and the digest the overlay is pinned to, alongside the record contract above.
-     * They stay null for a file-bound draft, where rules V1-V7 supply the routing.
+     * overlay that admits the records, the digest and the development commit that overlay is
+     * pinned to, the extension key that holds the records, and the type whose header carries
+     * them, alongside the record contract above. The overlay is pinned to its own commit
+     * because its bytes can move on a revision the record contract did not touch. They stay
+     * null for a file-bound draft, where rules V1-V7 supply the routing.
      */
     record DraftPin(String file, String citation, String repository, String commit, String sha256,
                     String retrieved, String source, String enable, String suiteCommit,
                     String suiteManifestSha256, String transportFile, String transportSha256,
-                    String modelsKey, String carrierFileKey) {
+                    String transportCommit, String modelsKey, String carrierFileKey) {
 
         DraftPin {
             for (String required : new String[] {file, citation, repository, commit, sha256, retrieved}) {
@@ -68,6 +70,7 @@ record HeaderTypeDef(FhType type, List<String> uriFields, DraftPin draft) {
             }
             requireNamed(transportFile, "transportFile");
             requireNamed(transportSha256, "transportSha256");
+            requireNamed(transportCommit, "transportCommit");
             requireNamed(modelsKey, "modelsKey");
             requireNamed(carrierFileKey, "carrierFileKey");
         }
