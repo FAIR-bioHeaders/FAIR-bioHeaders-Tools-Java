@@ -36,13 +36,17 @@ import tools.jackson.databind.node.ObjectNode;
  *
  * <p>Written by Java, read by CI: the primary job asserts {@code vectorsTotal=291},
  * {@code vectorsRun=228}, {@code vectorsNotRun=63}, {@code vectorsFailed=0} and that each declared
- * {@code declaredNotRun} reason is non-empty. If the shared suite grows, or a binding is
- * implemented here, this test moves and the CI guard moves with it: a stale declared total is a
- * build failure, never a quiet pass.
+ * {@code declaredNotRun} reason is non-empty. Those numbers are the v0.6.0 baseline and are
+ * asserted here only against that manifest's exact bytes (CI pins the tag). Against any other
+ * manifest - a specification main with new vectors, say - the counts are read from the manifest
+ * itself: every vector of an implemented format must run and pass, every other one must be
+ * declared not-run with a reason, and nothing may be left unaccounted for.
  */
 class AcceptanceLedgerTest {
 
     /** The v0.6.0 baseline this library's claims are written against. */
+    private static final String BASELINE_MANIFEST_SHA256 =
+        "cdbb79b1fbfda52b27a9f54b73d3bae1efb662efcbb4c41ba02b9e3be40a51e1";
     private static final int DECLARED_TOTAL = 291;
     private static final int DECLARED_RUN = 228;
     private static final int DECLARED_NOT_RUN = 63;
@@ -75,6 +79,8 @@ class AcceptanceLedgerTest {
             return;
         }
         List<ConformanceHarness.Outcome> outcomes = run(harness);
+        String manifestSha256 = manifestSha256(harness);
+        boolean baseline = BASELINE_MANIFEST_SHA256.equals(manifestSha256);
 
         ObjectNode ledger = JSON.createObjectNode();
         Map<String, int[]> byFormat = new TreeMap<>();
@@ -123,7 +129,11 @@ class AcceptanceLedgerTest {
         });
         ObjectNode declared = ledger.putObject("declaredNotRun");
         NOT_RUN_REASONS.forEach(declared::put);
-        ledger.put("baseline", "FAIR-bioHeaders-Specification v0.6.0 conformance/manifest.json");
+        ledger.put("baseline", baseline
+            ? "FAIR-bioHeaders-Specification v0.6.0 conformance/manifest.json"
+            : "conformance/manifest.json with sha256 " + manifestSha256 + " (not the v0.6.0 baseline;"
+                + " counts read from the manifest)");
+        ledger.put("manifestSha256", manifestSha256);
         ledger.put("vectorsTotal", outcomes.size());
         ledger.put("vectorsRun", run);
         ledger.put("vectorsPassed", passed);
@@ -139,13 +149,21 @@ class AcceptanceLedgerTest {
             + " not run (reasons: " + NOT_RUN_REASONS.keySet() + ")");
 
         // The ledger is a claim about completeness, so it is checked, not just printed.
-        assertEquals(DECLARED_TOTAL, outcomes.size(),
-            "the shared manifest no longer has the declared baseline count; update the declared"
-                + " numbers and docs/CAPABILITY-MATRIX.md deliberately, never to make a build pass");
-        assertEquals(DECLARED_RUN, run, "the run set is the embedded-header formats");
-        assertEquals(DECLARED_NOT_RUN, notRun, "the not-run set is microdata and JSON-LD");
+        if (baseline) {
+            assertEquals(DECLARED_TOTAL, outcomes.size(),
+                "the v0.6.0 manifest no longer has the declared baseline count");
+            assertEquals(DECLARED_RUN, run, "the run set is the embedded-header formats");
+            assertEquals(DECLARED_NOT_RUN, notRun, "the not-run set is microdata and JSON-LD");
+            assertEquals(DECLARED_RUN, passed);
+        } else {
+            // Another manifest: its own numbers are the claim. Every vector of a format this
+            // library implements runs; the rest are holes with a declared reason (checked below).
+            assertEquals(harness.fileVectors().size(), run,
+                "every vector of an implemented format must run");
+            assertEquals(outcomes.size() - run, notRun);
+            assertEquals(run, passed);
+        }
         assertEquals(0, failed, () -> "a vector that ran must pass: " + failures(outcomes));
-        assertEquals(DECLARED_RUN, passed);
         // Every declared reason must actually explain a hole, and no hole may be undeclared.
         for (ConformanceHarness.Outcome outcome : outcomes) {
             if (!outcome.ran()) {
@@ -158,6 +176,18 @@ class AcceptanceLedgerTest {
         for (String format : NOT_RUN_REASONS.keySet()) {
             assertTrue(byFormat.containsKey(format),
                 "a reason is declared for format " + format + " which the manifest does not list");
+        }
+    }
+
+    private static String manifestSha256(ConformanceHarness harness) {
+        try {
+            byte[] bytes = Files.readAllBytes(harness.specDir().resolve("conformance/manifest.json"));
+            return java.util.HexFormat.of().formatHex(
+                java.security.MessageDigest.getInstance("SHA-256").digest(bytes));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        } catch (java.security.NoSuchAlgorithmException e) {
+            throw new IllegalStateException(e);
         }
     }
 
@@ -213,7 +243,8 @@ class AcceptanceLedgerTest {
         try {
             Files.createDirectories(dir);
             Files.writeString(dir.resolve("acceptance-ledger.json"), text, StandardCharsets.UTF_8);
-            StringBuilder sb = new StringBuilder("baseline=FAIR-bioHeaders-Specification v0.6.0\n");
+            StringBuilder sb = new StringBuilder("baseline=" + ledger.get("baseline").asString() + "\n");
+            sb.append("manifestSha256=").append(ledger.get("manifestSha256").asString()).append('\n');
             receipt.forEach((k, v) -> sb.append(k).append('=').append(v).append('\n'));
             Files.writeString(dir.resolve("acceptance-ledger.properties"), sb.toString(),
                 StandardCharsets.UTF_8);

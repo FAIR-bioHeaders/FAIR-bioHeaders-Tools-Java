@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.fairbioheaders.BioHeaders;
 import org.fairbioheaders.Issue;
@@ -139,6 +140,17 @@ public final class ConformanceHarness {
                     problems.add("computed checksum " + result.computedChecksum() + " != manifest " + want);
                 }
             }
+            JsonNode wantMetadata = v.get("metadata");
+            if (wantMetadata != null && wantMetadata.isObject()) {
+                JsonNode got = result.metadata();
+                for (String key : wantMetadata.propertyNames()) {
+                    JsonNode have = got == null ? null : got.get(key);
+                    if (have == null || !sameValue(wantMetadata.get(key), have)) {
+                        problems.add("metadata " + key + " = " + have + ", manifest says "
+                            + wantMetadata.get(key));
+                    }
+                }
+            }
             if (v.has("warnings")) {
                 for (JsonNode w : v.get("warnings")) {
                     String rule = w.asString();
@@ -155,9 +167,72 @@ public final class ConformanceHarness {
                     && result.status() != VerifyResult.Status.UNSUPPORTED_VERSION) {
                 problems.add("expected unsupported-version, got " + result.status());
             }
+            // Invalid for the right reason: an error must carry the rule the vector breaks.
+            if (v.has("rule") && !result.isValid()) {
+                String rule = v.get("rule").asString();
+                Set<String> accepted = evidenceFor(rule);
+                if (result.errors().stream().noneMatch(i -> accepted.contains(i.rule()))) {
+                    problems.add("expected an error for rule " + rule + " (labels " + accepted
+                        + "), got " + result.errors().stream().map(Issue::rule).distinct().toList());
+                }
+            }
         }
         return new Outcome(id, format, expectedValid, true, problems.isEmpty(),
             result.status(), String.join("; ", problems));
+    }
+
+    /**
+     * The issue labels that count as evidence that a vector failed for the rule the manifest names.
+     * Most rules are checked by name. The rules a released contract enforces (P1, P2, G2, G3, R15,
+     * and the selection rules V1-V3, V5 and V6, whose failure shows as the record not satisfying
+     * the contract it selected) surface as {@code schema} errors from the validator, so a schema
+     * error is their evidence. R1 and R4 define which bytes are hashed and how the digest is
+     * written, so a file that breaks them states a checksum that does not match the covered bytes
+     * (R3) or is not a canonical 44-character value (R5). G1 also defines where the GFF3 header
+     * block ends, and a {@code #~} line after {@code ##FASTA} is reported as the late header line
+     * it is (R10).
+     */
+    public static Set<String> evidenceFor(String rule) {
+        return switch (rule) {
+            case "P1", "P2", "G2", "G3", "R15", "V1", "V2", "V3", "V5", "V6" -> Set.of(rule, "schema");
+            case "R1" -> Set.of("R1", "R3");
+            case "R4" -> Set.of("R4", "R3", "R5");
+            case "G1" -> Set.of("G1", "R10");
+            default -> Set.of(rule);
+        };
+    }
+
+    /**
+     * JSON equality where numbers compare by value, as JSON (and the reference toolkit's Python
+     * comparison) does: the manifest writes the YAML float {@code 1.0} as {@code 1}.
+     */
+    static boolean sameValue(JsonNode want, JsonNode have) {
+        if (want.isNumber() && have.isNumber()) {
+            return want.decimalValue().compareTo(have.decimalValue()) == 0;
+        }
+        if (want.isObject() && have.isObject()) {
+            if (want.size() != have.size()) {
+                return false;
+            }
+            for (String key : want.propertyNames()) {
+                if (!have.has(key) || !sameValue(want.get(key), have.get(key))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        if (want.isArray() && have.isArray()) {
+            if (want.size() != have.size()) {
+                return false;
+            }
+            for (int i = 0; i < want.size(); i++) {
+                if (!sameValue(want.get(i), have.get(i))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return want.equals(have);
     }
 
     /** Human-readable pass/fail summary, per format. */

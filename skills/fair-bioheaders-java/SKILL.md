@@ -45,7 +45,9 @@ released schema**: never cite, version or support-claim them (rule V7).
 ## 1. Add the library
 
 Not yet published to a Maven repository: build from this checkout
-(`./mvnw package`) and depend on the jar plus its runtime dependencies
+(`./mvnw package`, which also copies the runtime jars to `target/lib/` so
+`java -jar target/fair-bioheaders-java-0.1.0-SNAPSHOT.jar verify FILE` works)
+and depend on the jar plus its runtime dependencies
 (declared in `pom.xml`; networknt json-schema-validator 3.0.9, snakeyaml 2.7,
 Jackson 3.1.8 — Java 17+).
 

@@ -1,0 +1,4 @@
+{
+  "description": "Deliberate behavior changes against default-behavior-v0.6.0.json, applied to the golden by DefaultBehaviorGoldenTest before it compares. The golden bytes are never regenerated; each entry here names the golden entry it replaces ('from'), the entry the code now produces ('to') and why. A 'from' that no longer matches the golden fails the test.",
+  "changes": []
+}

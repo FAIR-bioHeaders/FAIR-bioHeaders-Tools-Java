@@ -17,13 +17,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HexFormat;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.fairbioheaders.conformance.ConformanceHarness;
 import org.junit.jupiter.api.Test;
 
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * The default-behavior gate. The fingerprint of released-contract behavior captured from the
@@ -46,13 +49,27 @@ import tools.jackson.databind.ObjectMapper;
  *
  * <p>The vector part needs a FAIR-bioHeaders-Specification checkout; without one only the
  * checkout-free sections are compared and the receipt says {@code vectorsCompared=0} (the same
- * convention as {@link FileVectorTest}: missing fixtures are visible, never a pass). CI requires
- * the receipt to say 228.
+ * convention as {@link FileVectorTest}: missing fixtures are visible, never a pass). Against the
+ * v0.6.0 manifest the golden was made from, all 228 vectors are compared and CI requires the
+ * receipt to say so; against any other manifest (for example the specification's main) the
+ * vectors both share are compared by id, and the rest are left to the manifest-driven tests.
+ *
+ * <p>The golden bytes themselves never change. A deliberate behavior change is recorded as an
+ * entry of {@code src/test/resources/golden/labelled-changes.json} - the golden entry it replaces
+ * ({@code from}), the new entry ({@code to}) and the reason - and is applied to the golden before
+ * the comparison. An entry whose {@code from} no longer matches the golden fails the test, so the
+ * list cannot go stale silently, and every change stays readable as a reviewed diff.
  */
 class DefaultBehaviorGoldenTest {
 
     private static final ObjectMapper JSON = new ObjectMapper();
     private static final String GOLDEN = "/golden/default-behavior-v0.6.0.json";
+    /** Reviewed, reasoned edits to the golden: see {@link LabelledChanges}. */
+    private static final String CHANGES = "/golden/labelled-changes.json";
+    /** SHA-256 of the specification v0.6.0 {@code conformance/manifest.json} the golden was made from. */
+    static final String GOLDEN_MANIFEST_SHA256 =
+        "cdbb79b1fbfda52b27a9f54b73d3bae1efb662efcbb4c41ba02b9e3be40a51e1";
+    private static final int GOLDEN_VECTORS = 228;
     private static final List<String> SECTIONS =
         List.of("fingerprintVersion", "configuration", "vectorsAvailable", "bundle", "selection",
             "kinds", "documents", "vectors");
@@ -60,15 +77,23 @@ class DefaultBehaviorGoldenTest {
     @Test
     void defaultBehaviorMatchesThePreRefactorGolden() {
         ConformanceHarness harness = new ConformanceHarness();
-        boolean vectorsCompared = harness.vectorsAvailable();
+        boolean vectorsAvailable = harness.vectorsAvailable();
+        String manifestSha256 = vectorsAvailable ? manifestSha256(harness) : "";
+        // The golden's vector section was recorded against one manifest. Against those exact bytes
+        // the whole section is compared; against any other manifest (a newer specification main,
+        // say) the vectors the two have in common are compared by id, and the ones the golden has
+        // never seen are left to FileVectorTest and AcceptanceLedgerTest, which read the manifest.
+        boolean pinnedManifest = GOLDEN_MANIFEST_SHA256.equals(manifestSha256);
         JsonNode actual = GoldenFingerprint.build(harness);
         byte[] actualBytes = GoldenFingerprint.toBytes(actual);
         byte[] expectedBytes = goldenBytes();
 
-        JsonNode expected = JSON.readTree(new String(expectedBytes, StandardCharsets.UTF_8));
+        ObjectNode expected = (ObjectNode) JSON.readTree(new String(expectedBytes, StandardCharsets.UTF_8));
         List<String> differences = new ArrayList<>();
+        int applied = LabelledChanges.apply(expected, labelledChanges(), differences);
+        int vectorsCompared = 0;
         for (String section : SECTIONS) {
-            if (!vectorsCompared && (section.equals("vectors") || section.equals("vectorsAvailable"))) {
+            if (!vectorsAvailable && (section.equals("vectors") || section.equals("vectorsAvailable"))) {
                 // No specification checkout: the vector part is reported as not compared, by the
                 // same convention as FileVectorTest (never a silent pass - CI asserts the receipt).
                 continue;
@@ -79,6 +104,13 @@ class DefaultBehaviorGoldenTest {
                 differences.add(section + ": missing section (golden=" + (want != null)
                     + " actual=" + (got != null) + ")");
                 continue;
+            }
+            if (section.equals("vectors") && !pinnedManifest) {
+                vectorsCompared = compareCommonVectors(want, got, differences);
+                continue;
+            }
+            if (section.equals("vectors")) {
+                vectorsCompared = got.size();
             }
             // Canonical bytes, not JsonNode.equals: the claim is that the rendered behavior is the
             // same text, and node-type equality (a decimal read back from an integer, say) is not
@@ -93,10 +125,13 @@ class DefaultBehaviorGoldenTest {
             System.out.println("default-behavior fingerprint differs from the golden ("
                 + actualBytes.length + " bytes now, sha256 " + sha256(actualBytes) + ")");
             differences.forEach(System.out::println);
+            LabelledChanges.writeSuggestions(expected, actual,
+                Path.of(System.getProperty("fh.report.dir", "target"), "golden-suggested-changes.json"));
         }
         assertTrue(differences.isEmpty(),
-            () -> "default behavior changed against golden " + GOLDEN + ": " + differences.size()
-                + " differing section(s), first: " + differences);
+            () -> "default behavior changed against golden " + GOLDEN + " (after " + applied
+                + " labelled change(s) from " + CHANGES + "): " + differences.size()
+                + " difference(s), first: " + differences);
 
         // Positive controls on the fingerprint itself: a vacuous match must not read as a pass.
         assertTrue(actual.get("documents").size() >= 47,
@@ -111,22 +146,81 @@ class DefaultBehaviorGoldenTest {
         }
         assertTrue(anyValid, "at least one battery document must read VALID, or the valid-header"
             + " path is not covered here at all");
-        if (vectorsCompared) {
-            assertEquals(expected.get("vectors").size(), actual.get("vectors").size(),
-                "every golden vector must be re-run");
-            assertEquals(228, actual.get("vectors").size(), "the embedded-header vector count");
+        if (vectorsAvailable) {
             long passed = 0;
             for (JsonNode vector : actual.get("vectors")) {
                 if (vector.get("passed").asBoolean()) {
                     passed++;
                 }
             }
-            assertEquals(228, passed, "all embedded-header vectors must pass");
+            assertEquals(actual.get("vectors").size(), passed, "every embedded-header vector must pass");
+        }
+        if (pinnedManifest) {
+            assertEquals(expected.get("vectors").size(), actual.get("vectors").size(),
+                "every golden vector must be re-run");
+            assertEquals(GOLDEN_VECTORS, actual.get("vectors").size(), "the embedded-header vector count");
+        } else if (vectorsAvailable) {
+            assertTrue(vectorsCompared > 0, "a newer manifest must still share vectors with the golden");
         }
         System.out.println("default-behavior golden verified: " + actualBytes.length + " bytes"
             + ", sha256 " + sha256(actualBytes) + ", golden sha256 " + sha256(expectedBytes)
-            + ", vectors compared: " + (vectorsCompared ? "228" : "no specification checkout"));
-        writeReport(actual, actualBytes, expectedBytes.length, vectorsCompared);
+            + ", labelled changes applied: " + applied
+            + ", vectors compared: " + (vectorsAvailable ? vectorsCompared
+                + (pinnedManifest ? " (the golden's own manifest)" : " (shared with manifest " + manifestSha256 + ")")
+                : "no specification checkout"));
+        writeReport(actual, actualBytes, expectedBytes.length, vectorsCompared, applied,
+            vectorsAvailable ? manifestSha256 : "none");
+    }
+
+    /**
+     * Compare the golden's vector entries with the actual ones for the ids both runs have. A
+     * golden vector the newer manifest no longer lists is reported, not failed: retiring a vector
+     * is the specification's call, and the ledger accounts for whatever the manifest lists now.
+     */
+    private static int compareCommonVectors(JsonNode want, JsonNode got, List<String> differences) {
+        Map<String, JsonNode> byId = new LinkedHashMap<>();
+        for (JsonNode entry : got) {
+            byId.put(entry.get("id").asString(), entry);
+        }
+        int compared = 0;
+        List<String> gone = new ArrayList<>();
+        for (JsonNode entry : want) {
+            String id = entry.get("id").asString();
+            JsonNode now = byId.get(id);
+            if (now == null) {
+                gone.add(id);
+                continue;
+            }
+            compared++;
+            String wantText = new String(GoldenFingerprint.toBytes(entry), StandardCharsets.UTF_8);
+            String gotText = new String(GoldenFingerprint.toBytes(now), StandardCharsets.UTF_8);
+            if (!wantText.equals(gotText)) {
+                differences.add(firstTextualDifference("vectors[" + id + "]", wantText, gotText));
+            }
+        }
+        if (!gone.isEmpty()) {
+            System.out.println("golden vectors not in this manifest (not compared): " + gone);
+        }
+        return compared;
+    }
+
+    private static String manifestSha256(ConformanceHarness harness) {
+        try {
+            return sha256(Files.readAllBytes(harness.specDir().resolve("conformance/manifest.json")));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    private static JsonNode labelledChanges() {
+        try (InputStream in = DefaultBehaviorGoldenTest.class.getResourceAsStream(CHANGES)) {
+            if (in == null) {
+                throw new IllegalStateException("missing labelled-change resource " + CHANGES);
+            }
+            return JSON.readTree(in);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     /**
@@ -135,13 +229,15 @@ class DefaultBehaviorGoldenTest {
      * {@code -Dfh.report.dir} (default {@code target}), beside the surefire reports.
      */
     private static void writeReport(JsonNode actual, byte[] actualBytes, int goldenBytes,
-                                boolean vectorsCompared) {
+                                    int vectorsCompared, int labelledChanges, String manifestSha256) {
         Path dir = Path.of(System.getProperty("fh.report.dir", "target"));
         String text = "golden=" + GOLDEN + '\n'
             + "goldenBytes=" + goldenBytes + '\n'
             + "actualBytes=" + actualBytes.length + '\n'
             + "actualSha256=" + sha256(actualBytes) + '\n'
-            + "vectorsCompared=" + (vectorsCompared ? 228 : 0) + '\n'
+            + "labelledChangesApplied=" + labelledChanges + '\n'
+            + "manifestSha256=" + manifestSha256 + '\n'
+            + "vectorsCompared=" + vectorsCompared + '\n'
             + "documentsCompared=" + actual.get("documents").size() + '\n'
             + "selectionCasesCompared=" + actual.get("selection").size() + '\n'
             + "kindsCompared=" + actual.get("kinds").size() + '\n';

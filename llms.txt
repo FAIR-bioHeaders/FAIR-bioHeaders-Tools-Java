@@ -27,13 +27,13 @@ r.issues();                       // rule-labelled errors and warnings (R11, R14
 r.parentLinkVerdicts();           // CHECKED_PASS | CHECKED_FAIL | UNCHECKED, per derivedFrom entry
 ```
 
-CLI: `java -cp target/classes:<deps> org.fairbioheaders.cli.Main verify FILE...` (exit 0 only when every file verifies).
+CLI: `./mvnw -DskipTests package`, then `java -jar target/fair-bioheaders-java-0.1.0-SNAPSHOT.jar verify FILE...` (runtime dependencies are copied to `target/lib/`, which the jar's manifest references; exit 0 only when every file verifies).
 
 ## Scope boundaries
 
 - Implemented: containers FASTA/GFA/GFF3, FORMAT.md R1-R8 and R10-R14, FHGFF3.md G1-G3 placement and contract checks, SCHEMA-VERSIONS.md V1-V6 selection plus the opt-in V7 draft lane (FHT and FHGM, pinned), draft/2020-12 validation with format assertions, per-entry `derivedFrom` parent-link verdicts (`ParentLinks`, `verify --parent`), bundled frozen schema copies v0.3.0-v0.6.0 and three pinned draft contract files, all with SHA-256 provenance.
 - Not implemented: header writing, conversion, stripping, faidx, HTML microdata and JSON-LD bindings, and GFF3 feature-line validation (use gff3-validator). FHGM records are read only through the pinned opt-in draft lane - never as support. `docs/STATUS.md` records the shared-conformance results (228 embedded-header vectors run; the 63 microdata/JSON-LD vectors are declared not run) and the separate draft-lane results (72 FHT vectors, 43 FHGM vectors, plus FHGM's 1.2 matrix lane declared not run); `docs/CAPABILITY-MATRIX.md` is the type × operation × serialization × version statement with every hole named.
-- Acceptance is the shared 291-vector conformance suite of FAIR-bioHeaders-Specification (`conformance/manifest.json`); run with `./mvnw test -Dfh.spec.dir=<spec-checkout>`. Default behavior is additionally pinned by a committed fingerprint of the released-contract reading (`src/test/resources/golden/default-behavior-v0.6.0.json`, `DefaultBehaviorGoldenTest`).
+- Acceptance is the shared conformance suite (291 vectors at the v0.6.0 tag CI pins; the ledger reads newer manifests' own counts) of FAIR-bioHeaders-Specification (`conformance/manifest.json`); run with `./mvnw test -Dfh.spec.dir=<spec-checkout>`. Default behavior is additionally pinned by a committed fingerprint of the released-contract reading (`src/test/resources/golden/default-behavior-v0.6.0.json`, `DefaultBehaviorGoldenTest`).
 
 ## References
 

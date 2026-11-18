@@ -34,7 +34,10 @@ its POM and are not resolved or required by this project.
 
 Maven wrapper (`mvnw`) pinned to Apache Maven 3.9.11 (Apache-2.0);
 `maven-compiler-plugin` with `release=17`, `maven-surefire-plugin` 3.5.2,
-`maven-jar-plugin` 3.4.2. Java 17 is the minimum supported JDK (the
+`maven-jar-plugin` 3.4.2 (its manifest names `lib/*.jar` on the class path so
+`java -jar` works), `maven-dependency-plugin` 3.8.1 (copies the runtime jars above
+to `target/lib/` at `package`; nothing is shaded or repackaged, so each jar keeps
+its own license files). Java 17 is the minimum supported JDK (the
 json-schema-validator 3.x line targets Java 17); builds run on the current
 LTS and newer JDKs — CI pins 17 and 21.
 

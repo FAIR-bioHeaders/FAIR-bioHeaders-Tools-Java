@@ -33,7 +33,7 @@ through an explicit opt-in:
 new BioHeaders(Options.builder().enableDraftContracts(true).build());
 ```
 ```bash
-bioheaders-java verify --experimental-drafts transcripts.fht.fasta
+java -jar target/fair-bioheaders-java-0.1.0-SNAPSHOT.jar verify --experimental-drafts transcripts.fht.fasta
 # or: -Dorg.fairbioheaders.experimental.drafts=1, FAIR_BIOHEADERS_EXPERIMENTAL_DRAFTS=1
 ```
 
@@ -100,11 +100,14 @@ for (var issue : result.issues()) {
 }
 ```
 
-CLI (after `./mvnw package`; put the dependency jars on the classpath or use a
-shaded build of your own):
+CLI: `./mvnw -DskipTests package` builds the jar and copies its runtime
+dependencies to `target/lib/`, which the jar's manifest names on its class path,
+so it runs directly (keep `lib/` next to the jar if you move it):
 
 ```bash
-java -cp target/classes:<deps> org.fairbioheaders.cli.Main verify genome.fhr.fasta
+./mvnw -DskipTests package
+java -jar target/fair-bioheaders-java-0.1.0-SNAPSHOT.jar verify genome.fhr.fasta
+java -jar target/fair-bioheaders-java-0.1.0-SNAPSHOT.jar version
 ```
 
 Gzip and bgzip inputs are decompressed transparently for checksum coverage
