@@ -114,9 +114,10 @@ Cells a reviewer should not have to guess about:
    here). No `schemaVersion`, registry row, alias or support claim is invented
    for a draft.
 7. **Microdata `R14`/`R15` per-type divergence, `assess`, `--online` resolution,
-   directive cross-checks (`#!genome-build`), the toolkit's streaming bounds and
-   its size limits as bounds (not whole-buffer checks):** not implemented; see
-   `docs/STATUS.md`.
+   directive cross-checks (`#!genome-build`):** not implemented; see
+   `docs/STATUS.md`. (Streaming is implemented: `verifyFile` reads a file once
+   and holds only the bounded header block, as the toolkit's `SequenceScan`
+   does.)
 
 ## 5. How to read a count in this repository
 

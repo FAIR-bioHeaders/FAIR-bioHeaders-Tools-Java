@@ -314,7 +314,20 @@ was then restored and `cmp`-verified byte-identical before the green re-run.
 ## What this library does
 
 - R1 byte model (LF/CRLF/lone CR, no normalization) incl. gzip and multi-member
-  bgzip decompression for the checksum; R7 BOM rejection (FASTA/GFA).
+  bgzip decompression for the checksum (NUL padding after the last member is
+  skipped, as Python's `gzip` does; corrupt or truncated gzip is an `R1` error);
+  R7 BOM rejection (FASTA/GFA).
+- Streaming (`HeaderScan`, `Gunzip`): `verifyFile` reads the file once, holds only
+  the header block (the toolkit's 1 MiB / 10 000-line bounds, applied as streaming
+  bounds) and hashes everything else on the way through, keeping a digest copy from
+  just before the candidate checksum line as the toolkit's `SequenceScan` does.
+  Memory use is independent of file size (`StreamingScanTest` verifies a generated
+  stream larger than any Java array). `readAll` and `verify(byte[])` remain for
+  in-memory use; `readAll` refuses more than 1 GiB decompressed.
+- Container inference follows the toolkit's extension table
+  (`.fa .fasta .fas .fna .faa .ffn .frn .fsa .mpfa` FASTA, `.gfa` GFA, `.gff3 .gff`
+  GFF3, after one trailing `.gz` or `.bgz`); any other name is refused as an
+  unsupported extension (labelled golden changes `kind-unsupported-*`).
 - R2/R5 exactly-one root-level checksum line, root-indent and quoting rules.
 - R3/R4 SHA-512/256 coverage over exact bytes with canonical padded base64.
 - R6 (UTF-8 header lines, U+0085/U+2028/U+2029 rejection), R10 (leading header
@@ -377,10 +390,8 @@ was then restored and `cmp`-verified byte-identical before the green re-run.
   repository; version `0.1.0-SNAPSHOT` is a development marker only.
 - Non-string YAML mapping keys are rejected outright (the reference loader's
   JSON round-trip of such keys is out of scope; no shared vector covers it).
-- Directive cross-checking (`#!genome-build` etc. compared with metadata),
-  the toolkit's `MAX_*` streaming architecture, and its 1 MiB/10 000-line
-  limits are ported as whole-buffer checks, not as streaming bounds; the
-  limits match the toolkit values but memory use is O(file).
+- Directive cross-checking (`#!genome-build` etc. compared with metadata) is
+  not implemented.
 
 ## Known wording divergence from the reference toolkit (open, deliberately unfixed here)
 

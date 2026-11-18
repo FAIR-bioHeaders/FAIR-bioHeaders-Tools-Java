@@ -16,7 +16,6 @@ import java.util.Optional;
 
 import org.fairbioheaders.BioHeaders;
 import org.fairbioheaders.Issue;
-import org.fairbioheaders.Kind;
 import org.fairbioheaders.Options;
 import org.fairbioheaders.ParentLinks;
 import org.fairbioheaders.SchemaBundle;
@@ -83,7 +82,7 @@ public final class Main {
                 }
                 default -> {
                     if (arg.startsWith("-")) {
-                        out.println("unknown flag: " + arg);
+                        print(out, "unknown flag: " + arg);
                         usage(out);
                         return 2;
                     }
@@ -122,33 +121,77 @@ public final class Main {
                 + " contract carries a V7 warning naming the pinned commit and SHA-256, and is not"
                 + " a released-contract result.");
         }
-        ParentLinks.ParentSource source = parentSource(parents);
+        ParentLinks.ParentSource source;
+        try {
+            source = parentSource(parents);
+        } catch (IllegalArgumentException e) {
+            print(out, "cannot use --parent: " + e.getMessage());
+            return 2;
+        }
         boolean allValid = true;
         for (String name : files) {
             VerifyResult result;
             try {
                 result = verifier.verifyFile(Path.of(name), source);
-            } catch (IOException | IllegalArgumentException e) {
+            } catch (IOException | UncheckedIOException | IllegalArgumentException e) {
                 allValid = false;
-                out.println(name + ": cannot read file: " + e.getMessage());
+                print(out, name + ": cannot read file: " + e.getMessage());
+                continue;
+            } catch (OutOfMemoryError e) {
+                // Verification streams the file and holds only the bounded header, so this is a
+                // pathological input or a very small heap; report it as a failure, not a crash.
+                allValid = false;
+                print(out, name + ": cannot verify file: ran out of memory (" + e.getMessage()
+                    + "); raise the heap with -Xmx or check the input");
                 continue;
             }
             for (Issue issue : result.issues()) {
-                out.println(name + ": " + issue);
+                print(out, name + ": " + issue);
             }
             for (ParentLinks.Verdict verdict : result.parentLinkVerdicts()) {
-                out.println(name + ": parent link " + verdict.index() + " (" + verdict.relationship()
+                print(out, name + ": parent link " + verdict.index() + " (" + verdict.relationship()
                     + " " + verdict.headerType() + ") " + verdict.state());
             }
             if (result.isValid()) {
-                out.println(name + ": checksum verified; metadata valid ("
+                print(out, name + ": checksum verified; metadata valid ("
                     + result.computedChecksum() + ")");
             } else {
                 allValid = false;
-                out.println(name + ": " + result.status());
+                print(out, name + ": " + result.status());
             }
         }
         return allValid ? 0 : 1;
+    }
+
+    /**
+     * Print one line with terminal control characters made visible. File names and header values
+     * come from untrusted input; printed raw, an ESC or CR in them could rewrite the terminal or
+     * forge a line of this report.
+     */
+    static void print(PrintStream out, String line) {
+        out.println(printable(line));
+    }
+
+    /** {@code text} with C0/C1 controls, DEL, line/paragraph separators and bidi controls escaped. */
+    static String printable(String text) {
+        StringBuilder sb = null;
+        for (int k = 0; k < text.length(); k++) {
+            char c = text.charAt(k);
+            boolean control = c < 0x20 || (c >= 0x7F && c <= 0x9F) || c == '\u2028' || c == '\u2029'
+                || (c >= '\u202A' && c <= '\u202E') || (c >= '\u2066' && c <= '\u2069')
+                || c == '\u200E' || c == '\u200F';
+            if (control && sb == null) {
+                sb = new StringBuilder(text.length() + 8).append(text, 0, k);
+            }
+            if (sb != null) {
+                if (control) {
+                    sb.append(c <= 0xFF ? String.format("\\x%02X", (int) c) : String.format("\\u%04X", (int) c));
+                } else {
+                    sb.append(c);
+                }
+            }
+        }
+        return sb == null ? text : sb.toString();
     }
 
     /** What {@code version} prints, as one line plus the draft registrations. */
@@ -188,7 +231,6 @@ public final class Main {
         }
         Map<String, ParentLinks.Parent> explicit = new java.util.LinkedHashMap<>();
         List<ParentLinks.Parent> candidates = new ArrayList<>();
-        BioHeaders probe = new BioHeaders();
         for (String spec : specs) {
             // A checksum is exactly 44 characters ending in '=', so the explicit form is the one
             // where character 45 is the separator; a plain path (however it is spelled) never is.
@@ -203,14 +245,23 @@ public final class Main {
                 explicit.put(stated, parent);
             }
         }
+        // Each candidate is hashed once, streamed, the first time a link asks; an unreadable or
+        // unheaded candidate simply satisfies no link.
+        Map<ParentLinks.Parent, Optional<String>> digests = new java.util.IdentityHashMap<>();
         return (checksum, headerType, linkIndex) -> {
             ParentLinks.Parent named = explicit.get(checksum);
             if (named != null) {
                 return Optional.of(named);
             }
             for (ParentLinks.Parent candidate : candidates) {
-                if (checksum.equals(probe.verify(candidate.data(), candidate.kind())
-                    .computedChecksum())) {
+                Optional<String> digest = digests.computeIfAbsent(candidate, c -> {
+                    try {
+                        return Optional.of(ParentLinks.checksumOf(c));
+                    } catch (IllegalArgumentException | UncheckedIOException e) {
+                        return Optional.empty();
+                    }
+                });
+                if (digest.isPresent() && checksum.equals(digest.get())) {
                     return Optional.of(candidate);
                 }
             }
@@ -219,23 +270,23 @@ public final class Main {
     }
 
     private static ParentLinks.Parent load(Path file) {
-        try {
-            Kind kind = BioHeaders.kindFor(file.getFileName().toString());
-            return new ParentLinks.Parent(kind, BioHeaders.readAll(file));
-        } catch (IOException e) {
-            throw new UncheckedIOException("cannot read --parent file " + file, e);
+        if (!java.nio.file.Files.isReadable(file)) {
+            throw new IllegalArgumentException("cannot read --parent file " + file);
         }
+        return ParentLinks.Parent.ofFile(file);
     }
 
     private static void usage(PrintStream out) {
         out.println("""
-            usage: bioheaders-java <command> [flags] [args]
+            usage: java -jar fair-bioheaders-java.jar <command> [flags] [args]
 
             commands:
               verify [flags] FILE...   read, checksum-verify and schema-validate a
-                                       headed FASTA (.fasta/.fa/.fna/.fhr/.fhp/.fht),
-                                       GFA (.gfa) or GFF3 (.gff3) file; gzip and bgzip
-                                       are decompressed for the checksum (FORMAT.md R1)
+                                       headed FASTA (.fa .fasta .fas .fna .faa .ffn
+                                       .frn .fsa .mpfa), GFA (.gfa) or GFF3 (.gff3
+                                       .gff) file, optionally ending .gz or .bgz; gzip
+                                       and bgzip are decompressed as the file streams
+                                       (FORMAT.md R1)
               version                  print this library version, the bundled schema
                                        release and any registered draft contract
               help                     print this text

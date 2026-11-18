@@ -5,12 +5,16 @@
  */
 package org.fairbioheaders;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import tools.jackson.databind.JsonNode;
 
@@ -84,7 +88,17 @@ public final class BioHeaders {
         return bundle.declaredDraftTypes();
     }
 
-    /** Verify a file on disk; the container is inferred from the file name. */
+    /**
+     * Verify a file on disk; the container is inferred from the file name ({@link #kindFor}).
+     *
+     * <p>The file is read once, as a stream: gzip and bgzip input is decompressed on the fly, the
+     * header block is held (at most 1 MiB and 10 000 lines) and every other byte goes through the
+     * SHA-512/256 digest and is dropped, so memory use does not grow with the file. Corrupt or
+     * truncated gzip input is an {@code R1} error in the result, not an exception.
+     *
+     * @throws IOException when the file cannot be read
+     * @throws IllegalArgumentException when the file name has no FASTA, GFA or GFF3 extension
+     */
     public VerifyResult verifyFile(Path file) throws IOException {
         return verifyFile(file, null);
     }
@@ -94,7 +108,21 @@ public final class BioHeaders {
      * links too. {@code null} is exactly {@link #verifyFile(Path)}.
      */
     public VerifyResult verifyFile(Path file, ParentLinks.ParentSource parents) throws IOException {
-        return verify(readAll(file), kindFor(file.getFileName().toString()), parents);
+        Kind kind = kindFor(file.getFileName().toString());
+        try (InputStream in = open(file)) {
+            return verify(() -> HeaderScan.of(kind, in), kind, parents);
+        }
+    }
+
+    /** A file's bytes as a stream, decompressed when they are gzip (R1: compression is transport). */
+    static InputStream open(Path file) throws IOException {
+        InputStream raw = Files.newInputStream(file);
+        try {
+            return Gunzip.maybeDecompress(new BufferedInputStream(raw, 1 << 16));
+        } catch (IOException | RuntimeException e) {
+            raw.close();
+            throw e;
+        }
     }
 
     /** Verify already-read (decompressed) bytes of a given container. */
@@ -115,14 +143,33 @@ public final class BioHeaders {
      * rule C3.
      */
     public VerifyResult verify(byte[] data, Kind kind, ParentLinks.ParentSource parents) {
+        try {
+            return verify(() -> HeaderScan.of(kind, data), kind, parents);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e); // not reachable: the bytes are already in memory
+        }
+    }
+
+    private interface Scanner {
+        HeaderScan scan() throws IOException;
+    }
+
+    private VerifyResult verify(Scanner scanner, Kind kind, ParentLinks.ParentSource parents)
+            throws IOException {
         List<Issue> issues = new ArrayList<>();
         String stated = null;
         String computed = null;
         JsonNode metadata = null;
         List<ParentLinks.Verdict> verdicts = List.of();
         try {
-            HeaderScan.checkBom(kind, data);
-            HeaderScan scan = HeaderScan.of(kind, data);
+            HeaderScan scan;
+            try {
+                scan = scanner.scan();
+            } catch (Gunzip.FormatException e) {
+                // A broken compressed stream has no decompressed bytes to hash (R1).
+                issues.add(Issue.error("R1", "invalid gzip input: " + e.getMessage()));
+                return new VerifyResult(VerifyResult.Status.INVALID, null, null, null, issues);
+            }
             stated = scan.statedChecksum();
             computed = scan.computedChecksum();
             if (!computed.equals(stated)) {
@@ -167,32 +214,58 @@ public final class BioHeaders {
             stated, computed, metadata, issues, verdicts);
     }
 
-    /** Infer the container from a file name (extension comparisons are case-insensitive). */
-    public static Kind kindFor(String name) {
-        String lower = name.toLowerCase(Locale.ROOT);
-        if (lower.endsWith(".gz")) {
-            lower = lower.substring(0, lower.length() - 3);
-        }
-        if (lower.endsWith(".gfa") || lower.endsWith(".gfa.gz")) {
-            return Kind.GFA;
-        }
-        if (lower.endsWith(".gff3")) {
-            return Kind.GFF3;
-        }
-        return Kind.FASTA;
-    }
+    /**
+     * Sequence file extensions and their containers, as the reference toolkit names them
+     * ({@code bioheaders.cli.FORMATS}). One trailing {@code .gz} or {@code .bgz} is transport
+     * and is ignored first.
+     */
+    private static final Map<String, Kind> EXTENSIONS = Map.ofEntries(
+        Map.entry(".fa", Kind.FASTA), Map.entry(".fasta", Kind.FASTA), Map.entry(".fas", Kind.FASTA),
+        Map.entry(".fna", Kind.FASTA), Map.entry(".faa", Kind.FASTA), Map.entry(".ffn", Kind.FASTA),
+        Map.entry(".frn", Kind.FASTA), Map.entry(".fsa", Kind.FASTA), Map.entry(".mpfa", Kind.FASTA),
+        Map.entry(".gfa", Kind.GFA),
+        Map.entry(".gff3", Kind.GFF3), Map.entry(".gff", Kind.GFF3));
 
     /**
-     * Read a file, inflating gzip (including multi-member/bgzip streams, which are
-     * concatenations of gzip members) transparently: compression is transport, so the
-     * checksum covers the decompressed bytes (R1).
+     * Infer the container from a file name, as the reference toolkit does: drop one trailing
+     * {@code .gz} or {@code .bgz}, then read the last extension (case-insensitively).
+     *
+     * @throws IllegalArgumentException for a name with no FASTA, GFA or GFF3 extension
+     */
+    public static Kind kindFor(String name) {
+        String lower = name.toLowerCase(Locale.ROOT);
+        for (String compressed : new String[] {".gz", ".bgz"}) {
+            if (lower.endsWith(compressed)) {
+                lower = lower.substring(0, lower.length() - compressed.length());
+                break;
+            }
+        }
+        int dot = lower.lastIndexOf('.');
+        Kind kind = dot <= 0 ? null : EXTENSIONS.get(lower.substring(dot));
+        if (kind == null) {
+            throw new IllegalArgumentException("unsupported file extension: " + name
+                + " (expected a FASTA .fa/.fasta/.fas/.fna/.faa/.ffn/.frn/.fsa/.mpfa, GFA .gfa or"
+                + " GFF3 .gff3/.gff name, optionally with .gz or .bgz)");
+        }
+        return kind;
+    }
+
+    /** Largest decompressed input {@link #readAll} will hold in memory. */
+    public static final long MAX_IN_MEMORY_BYTES = 1L << 30;
+
+    /**
+     * Read a whole file into memory, inflating gzip (including multi-member/bgzip streams)
+     * transparently: compression is transport, so the checksum covers the decompressed bytes
+     * (R1). For in-memory use only; it refuses input that decompresses past
+     * {@link #MAX_IN_MEMORY_BYTES}. {@link #verifyFile} does not use it: it streams.
      */
     public static byte[] readAll(Path file) throws IOException {
-        byte[] raw = Files.readAllBytes(file);
-        return inflateIfNeeded(raw);
+        try (InputStream in = open(file)) {
+            return Gunzip.readBounded(in, MAX_IN_MEMORY_BYTES);
+        }
     }
 
     static byte[] inflateIfNeeded(byte[] raw) throws IOException {
-        return Gunzip.isGzip(raw) ? Gunzip.decompress(raw) : raw;
+        return Gunzip.isGzip(raw) ? Gunzip.decompress(raw, MAX_IN_MEMORY_BYTES) : raw;
     }
 }

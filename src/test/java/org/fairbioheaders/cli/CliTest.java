@@ -157,4 +157,36 @@ class CliTest {
         assertTrue(candidateOnly.out().contains("UNCHECKED"), candidateOnly.out());
         assertFalse(candidateOnly.out().contains("CHECKED_PASS"), candidateOnly.out());
     }
+
+    @Test
+    void untrustedTextIsPrintedWithControlsEscaped(@TempDir Path dir) {
+        Path file = write(dir, "evil\u001b[2J.fasta",
+            Fixtures.fhrFasta(">c\nA\n", "relatedLink:", "- \"javascript:\\e]0;x\\a\""));
+        Result r = run("verify", file.toString());
+        assertFalse(r.out().chars().anyMatch(c -> c == 0x1B || c == 0x07), r.out());
+        assertTrue(r.out().contains("evil\\x1B[2J.fasta"), r.out());
+        assertTrue(r.out().contains("\\x1B]0;x\\x07"), r.out());
+    }
+
+    @Test
+    void anUnsupportedExtensionIsACleanError(@TempDir Path dir) {
+        Path file = write(dir, "genome.txt", Fixtures.fhrFasta(">c\nA\n"));
+        Result r = run("verify", file.toString());
+        assertEquals(1, r.code());
+        assertTrue(r.out().contains("cannot read file: unsupported file extension"), r.out());
+    }
+
+    @Test
+    void aMissingParentIsAUsageErrorNotAStackTrace(@TempDir Path dir) {
+        Path file = write(dir, "child.fasta", Fixtures.fhrFasta(">c\nA\n"));
+        Result r = run("verify", "--parent", dir.resolve("absent.fasta").toString(), file.toString());
+        assertEquals(2, r.code());
+        assertTrue(r.out().contains("cannot use --parent"), r.out());
+    }
+
+    @Test
+    void printableLeavesOrdinaryTextAlone() {
+        assertEquals("plain ACGT \u00e9", Main.printable("plain ACGT \u00e9"));
+        assertEquals("a\\x0Db\\x0Ac\\u202Ed", Main.printable("a\rb\nc\u202Ed"));
+    }
 }

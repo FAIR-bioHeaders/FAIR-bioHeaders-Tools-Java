@@ -1,4 +1,85 @@
 {
   "description": "Deliberate behavior changes against default-behavior-v0.6.0.json, applied to the golden by DefaultBehaviorGoldenTest before it compares. The golden bytes are never regenerated; each entry here names the golden entry it replaces ('from'), the entry the code now produces ('to') and why. A 'from' that no longer matches the golden fails the test.",
-  "changes": []
+  "changes": [
+    {
+      "id": "kind-unsupported-x-fa-bgzip",
+      "reason": "J4 fix: container inference follows the reference toolkit's extension table (bioheaders.cli.FORMATS); a name with no FASTA/GFA/GFF3 extension is refused as unsupported instead of being read as FASTA.",
+      "section": "kinds",
+      "match": {
+        "name": "x.fa.bgzip"
+      },
+      "from": {
+        "name": "x.fa.bgzip",
+        "kind": "FASTA"
+      },
+      "to": {
+        "name": "x.fa.bgzip",
+        "kind": "unsupported"
+      }
+    },
+    {
+      "id": "kind-unsupported-noext",
+      "reason": "J4 fix: container inference follows the reference toolkit's extension table (bioheaders.cli.FORMATS); a name with no FASTA/GFA/GFF3 extension is refused as unsupported instead of being read as FASTA.",
+      "section": "kinds",
+      "match": {
+        "name": "noext"
+      },
+      "from": {
+        "name": "noext",
+        "kind": "FASTA"
+      },
+      "to": {
+        "name": "noext",
+        "kind": "unsupported"
+      }
+    },
+    {
+      "id": "kind-unsupported-x-txt",
+      "reason": "J4 fix: container inference follows the reference toolkit's extension table (bioheaders.cli.FORMATS); a name with no FASTA/GFA/GFF3 extension is refused as unsupported instead of being read as FASTA.",
+      "section": "kinds",
+      "match": {
+        "name": "x.txt"
+      },
+      "from": {
+        "name": "x.txt",
+        "kind": "FASTA"
+      },
+      "to": {
+        "name": "x.txt",
+        "kind": "unsupported"
+      }
+    },
+    {
+      "id": "kind-unsupported-x-json",
+      "reason": "J4 fix: container inference follows the reference toolkit's extension table (bioheaders.cli.FORMATS); a name with no FASTA/GFA/GFF3 extension is refused as unsupported instead of being read as FASTA.",
+      "section": "kinds",
+      "match": {
+        "name": "x.json"
+      },
+      "from": {
+        "name": "x.json",
+        "kind": "FASTA"
+      },
+      "to": {
+        "name": "x.json",
+        "kind": "unsupported"
+      }
+    },
+    {
+      "id": "kind-unsupported-x-gz",
+      "reason": "J4 fix: container inference follows the reference toolkit's extension table (bioheaders.cli.FORMATS); a name with no FASTA/GFA/GFF3 extension is refused as unsupported instead of being read as FASTA.",
+      "section": "kinds",
+      "match": {
+        "name": "x.gz"
+      },
+      "from": {
+        "name": "x.gz",
+        "kind": "FASTA"
+      },
+      "to": {
+        "name": "x.gz",
+        "kind": "unsupported"
+      }
+    }
+  ]
 }

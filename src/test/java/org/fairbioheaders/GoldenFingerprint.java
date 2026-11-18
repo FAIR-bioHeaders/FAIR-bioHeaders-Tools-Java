@@ -188,7 +188,13 @@ final class GoldenFingerprint {
         for (String name : List.of("a.fa", "A.FA", "x.fasta", "x.fna", "x.fhr.fa", "x.fhp.fasta",
                 "x.gfa", "x.GFA", "x.gff3", "x.gff3.gz", "x.fasta.gz", "x.fa.bgzip", "noext",
                 "x.txt", "x.json", "x.fhgff3.gff3", "x.gfa.gz", "x.gz")) {
-            out.addObject().put("name", name).put("kind", BioHeaders.kindFor(name).name());
+            String kind;
+            try {
+                kind = BioHeaders.kindFor(name).name();
+            } catch (IllegalArgumentException e) {
+                kind = "unsupported";
+            }
+            out.addObject().put("name", name).put("kind", kind);
         }
     }
 
