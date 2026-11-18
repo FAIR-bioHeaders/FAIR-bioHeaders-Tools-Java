@@ -7,18 +7,20 @@ package org.fairbioheaders;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * One row of the header-type registry: the type, the {@code format: uri} fields rule R14
- * warns about, and, for a draft, the pinned development bytes that give the type its
+ * warns about, the containers a header of the type may be embedded in, and, for a draft, the pinned development bytes that give the type its
  * contract. Registry rows are data ({@code schemas/bundled.json}); this is what makes a new
  * family type additive instead of a change to the reader.
  */
-record HeaderTypeDef(FhType type, List<String> uriFields, DraftPin draft) {
+record HeaderTypeDef(FhType type, List<String> uriFields, DraftPin draft, Set<Kind> containers) {
 
     HeaderTypeDef {
         Objects.requireNonNull(type, "type");
         uriFields = List.copyOf(uriFields);
+        containers = Set.copyOf(containers);
         if (type.isDraft() && draft == null) {
             throw new IllegalStateException("draft type " + type.fileKey() + " has no pin");
         }
@@ -27,8 +29,21 @@ record HeaderTypeDef(FhType type, List<String> uriFields, DraftPin draft) {
         }
     }
 
+    HeaderTypeDef(FhType type, List<String> uriFields, DraftPin draft) {
+        this(type, uriFields, draft, Set.of());
+    }
+
     static HeaderTypeDef released(FhType type, List<String> uriFields) {
         return new HeaderTypeDef(type, uriFields, null);
+    }
+
+    /**
+     * Whether a header of this type may be embedded in {@code kind}: the row's {@code containers}
+     * (the toolkit's {@code validate_header_family} table, docs/CAPABILITY-MATRIX.md section 2).
+     * A row that declares none is not restricted.
+     */
+    boolean carriedBy(Kind kind) {
+        return containers.isEmpty() || containers.contains(kind);
     }
 
     boolean isDraft() {

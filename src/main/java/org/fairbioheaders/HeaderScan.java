@@ -482,6 +482,11 @@ final class HeaderScan {
         return rawHeaderLines;
     }
 
+    /** The excluded line's text after the prefix, or null when there is no single candidate. */
+    String checksumLineText() {
+        return checksumLineText;
+    }
+
     String statedChecksum() {
         return statedChecksum;
     }

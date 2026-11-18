@@ -34,21 +34,14 @@ class UriFieldsTest {
     }
 
     @Test
-    void fhrTableMissesTwoAuthorUriFieldsAndStaysAsReviewedForNow() {
-        // The reviewed released table was derived field-by-field from the current contracts and
-        // left out the two author ORCID fields, which the contract does declare `format: uri`.
-        // Widening what R14 warns about changes observable output (it is inside the
-        // default-behavior golden), so the released behavior stays as reviewed and the difference
-        // is recorded here instead of being silently absorbed. docs/STATUS.md tracks it.
+    void fhrTableNowCoversEveryUriFieldTheContractDeclares() {
+        // The reviewed FHR table used to leave out the two author ORCID fields, which the
+        // contract declares `format: uri` and the reference toolkit checks. They are in the table
+        // now (labelled golden change; docs/STATUS.md), so the derivation and the table agree.
         List<String> derived = UriFields.derive(SchemaBundle.getDefault(),
             SchemaBundle.getDefault().currentFile(FhType.FHR));
-        List<String> extra = UriFields.sorted(derived).stream()
-            .filter(f -> !FHR_TABLE.contains(f))
-            .toList();
-        assertEquals(List.of("assemblyAuthor[].uri", "metadataAuthor[].uri"), extra,
-            "the derivation's only disagreement with the reviewed FHR table");
-        assertTrue(FHR_TABLE.containsAll(derived.stream().filter(f -> false).toList()),
-            "no field is in the table but missing from the derivation");
+        assertEquals(new java.util.TreeSet<>(derived), new java.util.TreeSet<>(FHR_TABLE));
+        assertEquals(FHR_TABLE.size(), new java.util.TreeSet<>(FHR_TABLE).size());
     }
 
     @Test

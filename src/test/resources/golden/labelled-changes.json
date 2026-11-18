@@ -80,6 +80,786 @@
         "name": "x.gz",
         "kind": "unsupported"
       }
+    },
+    {
+      "id": "container-gff3",
+      "reason": "J2 fix: a header type is accepted only in the containers its registry row names (FHR: FASTA/GFA, FHP: FASTA, FHGFF3: GFF3, FHT: FASTA), as the reference toolkit's validate_header_family; this FHR battery document embedded in GFF3 now also carries the container error.",
+      "section": "documents",
+      "match": {
+        "name": "gff3"
+      },
+      "from": {
+        "name": "gff3",
+        "kind": "GFF3",
+        "status": "INVALID",
+        "stated": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "computed": "9zHdcmC72Zl94B6DMWiYoZoipe8IoXkpTNnCOpnrgy0=",
+        "metadata": {
+          "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+          "schemaVersion": "2.1",
+          "genome": "fingerprint-test-genome",
+          "taxon": {
+            "name": "Homo sapiens",
+            "uri": "https://identifiers.org/taxonomy:9606"
+          },
+          "version": "1.0.0",
+          "metadataAuthor": [
+            {
+              "name": "Synthetic fingerprint author"
+            }
+          ],
+          "assemblyAuthor": [
+            {
+              "name": "Synthetic assembly author"
+            }
+          ],
+          "dateCreated": "2026-01-01",
+          "masking": "not-masked",
+          "checksum": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+        },
+        "issues": [
+          {
+            "severity": "ERROR",
+            "rule": "R3",
+            "message": "checksum mismatch: the file states AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= but the covered bytes hash to 9zHdcmC72Zl94B6DMWiYoZoipe8IoXkpTNnCOpnrgy0="
+          }
+        ]
+      },
+      "to": {
+        "name": "gff3",
+        "kind": "GFF3",
+        "status": "INVALID",
+        "stated": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "computed": "9zHdcmC72Zl94B6DMWiYoZoipe8IoXkpTNnCOpnrgy0=",
+        "metadata": {
+          "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+          "schemaVersion": "2.1",
+          "genome": "fingerprint-test-genome",
+          "taxon": {
+            "name": "Homo sapiens",
+            "uri": "https://identifiers.org/taxonomy:9606"
+          },
+          "version": "1.0.0",
+          "metadataAuthor": [
+            {
+              "name": "Synthetic fingerprint author"
+            }
+          ],
+          "assemblyAuthor": [
+            {
+              "name": "Synthetic assembly author"
+            }
+          ],
+          "dateCreated": "2026-01-01",
+          "masking": "not-masked",
+          "checksum": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+        },
+        "issues": [
+          {
+            "severity": "ERROR",
+            "rule": "R3",
+            "message": "checksum mismatch: the file states AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= but the covered bytes hash to 9zHdcmC72Zl94B6DMWiYoZoipe8IoXkpTNnCOpnrgy0="
+          },
+          {
+            "severity": "ERROR",
+            "rule": "container",
+            "message": "FHR metadata is incompatible with GFF3; expected FHGFF3 metadata"
+          }
+        ]
+      }
+    },
+    {
+      "id": "container-gff3-crlf",
+      "reason": "J2 fix: a header type is accepted only in the containers its registry row names (FHR: FASTA/GFA, FHP: FASTA, FHGFF3: GFF3, FHT: FASTA), as the reference toolkit's validate_header_family; this FHR battery document embedded in GFF3 now also carries the container error.",
+      "section": "documents",
+      "match": {
+        "name": "gff3-crlf"
+      },
+      "from": {
+        "name": "gff3-crlf",
+        "kind": "GFF3",
+        "status": "INVALID",
+        "stated": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "computed": "BkOedv6BwxFEUBjgqW9rx40+PmKHqYQzTl7sgUj34mI=",
+        "metadata": {
+          "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+          "schemaVersion": "2.1",
+          "genome": "fingerprint-test-genome",
+          "taxon": {
+            "name": "Homo sapiens",
+            "uri": "https://identifiers.org/taxonomy:9606"
+          },
+          "version": "1.0.0",
+          "metadataAuthor": [
+            {
+              "name": "Synthetic fingerprint author"
+            }
+          ],
+          "assemblyAuthor": [
+            {
+              "name": "Synthetic assembly author"
+            }
+          ],
+          "dateCreated": "2026-01-01",
+          "masking": "not-masked",
+          "checksum": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+        },
+        "issues": [
+          {
+            "severity": "ERROR",
+            "rule": "R3",
+            "message": "checksum mismatch: the file states AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= but the covered bytes hash to BkOedv6BwxFEUBjgqW9rx40+PmKHqYQzTl7sgUj34mI="
+          }
+        ]
+      },
+      "to": {
+        "name": "gff3-crlf",
+        "kind": "GFF3",
+        "status": "INVALID",
+        "stated": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "computed": "BkOedv6BwxFEUBjgqW9rx40+PmKHqYQzTl7sgUj34mI=",
+        "metadata": {
+          "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+          "schemaVersion": "2.1",
+          "genome": "fingerprint-test-genome",
+          "taxon": {
+            "name": "Homo sapiens",
+            "uri": "https://identifiers.org/taxonomy:9606"
+          },
+          "version": "1.0.0",
+          "metadataAuthor": [
+            {
+              "name": "Synthetic fingerprint author"
+            }
+          ],
+          "assemblyAuthor": [
+            {
+              "name": "Synthetic assembly author"
+            }
+          ],
+          "dateCreated": "2026-01-01",
+          "masking": "not-masked",
+          "checksum": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+        },
+        "issues": [
+          {
+            "severity": "ERROR",
+            "rule": "R3",
+            "message": "checksum mismatch: the file states AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= but the covered bytes hash to BkOedv6BwxFEUBjgqW9rx40+PmKHqYQzTl7sgUj34mI="
+          },
+          {
+            "severity": "ERROR",
+            "rule": "container",
+            "message": "FHR metadata is incompatible with GFF3; expected FHGFF3 metadata"
+          }
+        ]
+      }
+    },
+    {
+      "id": "container-gff3-cr",
+      "reason": "J2 fix: a header type is accepted only in the containers its registry row names (FHR: FASTA/GFA, FHP: FASTA, FHGFF3: GFF3, FHT: FASTA), as the reference toolkit's validate_header_family; this FHR battery document embedded in GFF3 now also carries the container error.",
+      "section": "documents",
+      "match": {
+        "name": "gff3-cr"
+      },
+      "from": {
+        "name": "gff3-cr",
+        "kind": "GFF3",
+        "status": "INVALID",
+        "stated": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "computed": "j1hitrynAW5KvlXGFUmWDjmDTUuGqEz5jmIoJ8ZSyGI=",
+        "metadata": {
+          "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+          "schemaVersion": "2.1",
+          "genome": "fingerprint-test-genome",
+          "taxon": {
+            "name": "Homo sapiens",
+            "uri": "https://identifiers.org/taxonomy:9606"
+          },
+          "version": "1.0.0",
+          "metadataAuthor": [
+            {
+              "name": "Synthetic fingerprint author"
+            }
+          ],
+          "assemblyAuthor": [
+            {
+              "name": "Synthetic assembly author"
+            }
+          ],
+          "dateCreated": "2026-01-01",
+          "masking": "not-masked",
+          "checksum": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+        },
+        "issues": [
+          {
+            "severity": "ERROR",
+            "rule": "R3",
+            "message": "checksum mismatch: the file states AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= but the covered bytes hash to j1hitrynAW5KvlXGFUmWDjmDTUuGqEz5jmIoJ8ZSyGI="
+          }
+        ]
+      },
+      "to": {
+        "name": "gff3-cr",
+        "kind": "GFF3",
+        "status": "INVALID",
+        "stated": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "computed": "j1hitrynAW5KvlXGFUmWDjmDTUuGqEz5jmIoJ8ZSyGI=",
+        "metadata": {
+          "schema": "https://w3id.org/fair-bioheaders/fhr/v0.6.0",
+          "schemaVersion": "2.1",
+          "genome": "fingerprint-test-genome",
+          "taxon": {
+            "name": "Homo sapiens",
+            "uri": "https://identifiers.org/taxonomy:9606"
+          },
+          "version": "1.0.0",
+          "metadataAuthor": [
+            {
+              "name": "Synthetic fingerprint author"
+            }
+          ],
+          "assemblyAuthor": [
+            {
+              "name": "Synthetic assembly author"
+            }
+          ],
+          "dateCreated": "2026-01-01",
+          "masking": "not-masked",
+          "checksum": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+        },
+        "issues": [
+          {
+            "severity": "ERROR",
+            "rule": "R3",
+            "message": "checksum mismatch: the file states AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= but the covered bytes hash to j1hitrynAW5KvlXGFUmWDjmDTUuGqEz5jmIoJ8ZSyGI="
+          },
+          {
+            "severity": "ERROR",
+            "rule": "container",
+            "message": "FHR metadata is incompatible with GFF3; expected FHGFF3 metadata"
+          }
+        ]
+      }
+    },
+    {
+      "id": "near-miss-fht-dc3efb27fb",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "select",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0"
+      },
+      "from": {
+        "section": "select",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+        "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "select",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+        "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
+    },
+    {
+      "id": "near-miss-fht-7dd28004e3",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "selectRecord",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+        "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\"}"
+      },
+      "from": {
+        "section": "selectRecord",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+        "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\"}",
+        "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "selectRecord",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+        "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\"}",
+        "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
+    },
+    {
+      "id": "near-miss-fht-e8b1abf76f",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "selectRecord",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+        "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":\"1\"}"
+      },
+      "from": {
+        "section": "selectRecord",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+        "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":\"1\"}",
+        "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "selectRecord",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+        "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":\"1\"}",
+        "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
+    },
+    {
+      "id": "near-miss-fht-132786160b",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "selectRecord",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+        "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":1}"
+      },
+      "from": {
+        "section": "selectRecord",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+        "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":1}",
+        "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "selectRecord",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+        "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":1}",
+        "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
+    },
+    {
+      "id": "near-miss-fht-416d301c90",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "selectRecord",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+        "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":1.0}"
+      },
+      "from": {
+        "section": "selectRecord",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+        "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":1.0}",
+        "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "selectRecord",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+        "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":1.0}",
+        "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
+    },
+    {
+      "id": "near-miss-fht-9eb8802187",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "selectRecord",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+        "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":true}"
+      },
+      "from": {
+        "section": "selectRecord",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+        "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":true}",
+        "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "selectRecord",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+        "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":true}",
+        "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
+    },
+    {
+      "id": "near-miss-fht-eb60e5efba",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "selectRecord",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+        "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":\"2.0\"}"
+      },
+      "from": {
+        "section": "selectRecord",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+        "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":\"2.0\"}",
+        "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "selectRecord",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+        "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":\"2.0\"}",
+        "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
+    },
+    {
+      "id": "near-miss-fht-f063869026",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "selectRecord",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+        "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":2}"
+      },
+      "from": {
+        "section": "selectRecord",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+        "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":2}",
+        "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "selectRecord",
+        "input": "https://w3id.org/fair-bioheaders/fht/v0.7.0",
+        "record": "{\"schema\":\"https://w3id.org/fair-bioheaders/fht/v0.7.0\",\"schemaVersion\":2}",
+        "outcome": "FHR@main | WARNING V5: schema https://w3id.org/fair-bioheaders/fht/v0.7.0 is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
+    },
+    {
+      "id": "near-miss-fht-1d5e495687",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "select",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json"
+      },
+      "from": {
+        "section": "select",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "select",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
+    },
+    {
+      "id": "near-miss-fht-b9fd6cda9b",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\"}"
+      },
+      "from": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\"}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\"}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
+    },
+    {
+      "id": "near-miss-fht-0662dc4c52",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":\"1\"}"
+      },
+      "from": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":\"1\"}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":\"1\"}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
+    },
+    {
+      "id": "near-miss-fht-c06bf64699",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":1}"
+      },
+      "from": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":1}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":1}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
+    },
+    {
+      "id": "near-miss-fht-11d9d12d1e",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":1.0}"
+      },
+      "from": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":1.0}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":1.0}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
+    },
+    {
+      "id": "near-miss-fht-ec56aaa7b6",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":true}"
+      },
+      "from": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":true}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":true}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
+    },
+    {
+      "id": "near-miss-fht-1cbb85a35e",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":\"2.0\"}"
+      },
+      "from": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":\"2.0\"}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":\"2.0\"}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
+    },
+    {
+      "id": "near-miss-fht-d2c99e6259",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":2}"
+      },
+      "from": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":2}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json\",\"schemaVersion\":2}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
+    },
+    {
+      "id": "near-miss-fht-599a5f5d4a",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "select",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json"
+      },
+      "from": {
+        "section": "select",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "select",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
+    },
+    {
+      "id": "near-miss-fht-cc7f9e96ab",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\"}"
+      },
+      "from": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\"}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\"}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
+    },
+    {
+      "id": "near-miss-fht-e8963d97d2",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":\"1\"}"
+      },
+      "from": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":\"1\"}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":\"1\"}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
+    },
+    {
+      "id": "near-miss-fht-184b945c4f",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":1}"
+      },
+      "from": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":1}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":1}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
+    },
+    {
+      "id": "near-miss-fht-37ed49c783",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":1.0}"
+      },
+      "from": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":1.0}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":1.0}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
+    },
+    {
+      "id": "near-miss-fht-1c4ff37322",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":true}"
+      },
+      "from": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":true}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":true}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
+    },
+    {
+      "id": "near-miss-fht-278bdf370c",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":\"2.0\"}"
+      },
+      "from": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":\"2.0\"}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":\"2.0\"}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
+    },
+    {
+      "id": "near-miss-fht-399b2d8831",
+      "reason": "Java#2 fix: the V5 near-miss warning names the type the URL names. An fht URL was reported as 'not FHGFF3' because of a default branch in the old type lookup; the reference toolkit says 'not FHT'. Message only: type, release and validity are unchanged.",
+      "section": "selection",
+      "match": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":2}"
+      },
+      "from": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":2}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHGFF3, against the current schema (rule V5)"
+      },
+      "to": {
+        "section": "selectRecord",
+        "input": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json",
+        "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":2}",
+        "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
+      }
     }
   ]
 }

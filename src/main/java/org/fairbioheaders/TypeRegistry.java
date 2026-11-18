@@ -74,9 +74,16 @@ final class TypeRegistry {
                     uriFields.add(field.asString());
                 }
             }
+            java.util.Set<Kind> containers = new java.util.LinkedHashSet<>();
+            JsonNode declared = entry.get("containers");
+            if (declared != null) {
+                for (JsonNode container : declared) {
+                    containers.add(Kind.valueOf(container.asString().toUpperCase(Locale.ROOT)));
+                }
+            }
             switch (status) {
-                case "released" -> active.add(
-                    HeaderTypeDef.released(releasedConstant(urlKey, fileKey, transport), uriFields));
+                case "released" -> active.add(new HeaderTypeDef(
+                    releasedConstant(urlKey, fileKey, transport), uriFields, null, containers));
                 case "draft" -> {
                     FhType type = FhType.of(urlKey, fileKey, FhType.Status.DRAFT, transport);
                     if (options.draftEnabled(fileKey)) {
@@ -88,7 +95,7 @@ final class TypeRegistry {
                         List<String> derivedFields = uriFields.isEmpty()
                             ? UriFields.derive(bundle, draftPin.file())
                             : uriFields;
-                        active.add(new HeaderTypeDef(type, derivedFields, draftPin));
+                        active.add(new HeaderTypeDef(type, derivedFields, draftPin, containers));
                     }
                 }
                 default -> throw new IllegalStateException(
