@@ -42,6 +42,11 @@ public final class Main {
     }
 
     public static void main(String[] args) {
+        // The schema validator logs through the SLF4J API, and no logging backend ships with this
+        // command; without this, SLF4J prints a three-line "no providers" notice on every run.
+        if (System.getProperty("slf4j.internal.verbosity") == null) {
+            System.setProperty("slf4j.internal.verbosity", "ERROR");
+        }
         System.exit(run(args, System.out));
     }
 

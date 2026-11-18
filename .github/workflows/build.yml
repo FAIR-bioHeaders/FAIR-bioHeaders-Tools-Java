@@ -159,6 +159,12 @@ jobs:
       - name: Package
         run: ./mvnw -B -ntp -DskipTests package
 
+      - name: The packaged jar runs with java -jar
+        run: |
+          jar=target/fair-bioheaders-java-0.1.0-SNAPSHOT.jar
+          java -jar "$jar" version
+          java -jar "$jar" verify fair-bioheaders-specification/conformance/valid/fasta-lf.fhr.fasta
+
       - name: Upload native test reports
         if: always()
         uses: actions/upload-artifact@v4
