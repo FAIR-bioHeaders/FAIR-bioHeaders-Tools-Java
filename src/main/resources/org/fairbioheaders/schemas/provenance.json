@@ -111,9 +111,9 @@
       "release": null,
       "repository": "FHT-Specification",
       "url": "https://github.com/FAIR-bioHeaders/FHT-Specification",
-      "commit": "226f923c28b680edb3c546e99a751482d06aef1a",
+      "commit": "86438f21c3a17a58334c97aed4955be1a2393522",
       "citation": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
-      "retrieved": "2026-11-14",
+      "retrieved": "2026-11-18",
       "transport": {
         "modelsKey": null,
         "carrierFileKey": "FHT"
@@ -122,24 +122,24 @@
         {
           "path": "fht-draft.json",
           "sourcePath": "fht.json",
-          "commit": "226f923c28b680edb3c546e99a751482d06aef1a",
-          "retrieved": "2026-11-14",
-          "size": 29430,
-          "sha256": "59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e",
+          "commit": "86438f21c3a17a58334c97aed4955be1a2393522",
+          "retrieved": "2026-11-18",
+          "size": 34396,
+          "sha256": "4156353aa6d077fee2d2c69be4e17859b8e4f81bb10824f3c87f6701de196e7a",
           "role": "the draft file-bound header contract (rules V7, C1-C3 of the FHT suite)"
         }
       ],
-      "suiteCommit": "be9bcc825f55db92852fd882ffba4c1c214f53db",
-      "suiteManifestSha256": "9fd8c0b2a4638d5ddc0bf9b5d1e96c66778b26bcf8f93975aafb707d8f2b702c",
+      "suiteCommit": "86438f21c3a17a58334c97aed4955be1a2393522",
+      "suiteManifestSha256": "e5a4a5d027259e29a7e3cfb42da5e1ef07fa78d4a0e604ef73f28b8e5a59a508",
       "suitePinAnnotation": {
         "note": "Advisory measurements, recorded beside the pin but never a substitute for it: the suite is pinned by digest first and count second. A count-only assertion cannot see drift that does not move the count.",
-        "previous": { "commit": "24d3b033ab951ef79ee9f6d17419d8ba700f1b0a", "manifestSha256": "9b07179497bdc7247d6ead2404d9d5fdee48308a58b385bd4cd9a7e91450053a", "manifestSize": 56250, "vectors": 66 },
-        "asRecorded": { "manifestSize": 65615, "vectors": 72 },
-        "delta": "66 -> 72 vectors (all format fht-fasta): 2 gzip-framing vectors (multi-member split, compressed sequence tamper) and 4 real-data promotion candidates from pilot #45 that the suite itself marks promotion=candidate-unreviewed; the contract bytes fht.json did not move.",
-        "resolution": "be9bcc825f55db92852fd882ffba4c1c214f53db resolves both ways: it is FHT-Specification origin/main on 2026-11-15 and the last commit that touched conformance/manifest.json. Measured from the content-addressed blob (git show), not from raw.githubusercontent.com."
+        "previous": { "commit": "be9bcc825f55db92852fd882ffba4c1c214f53db", "manifestSha256": "9fd8c0b2a4638d5ddc0bf9b5d1e96c66778b26bcf8f93975aafb707d8f2b702c", "manifestSize": 65615, "vectors": 72, "contractCommit": "226f923c28b680edb3c546e99a751482d06aef1a", "contractSha256": "59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e", "contractSize": 29430 },
+        "asRecorded": { "manifestSize": 76939, "vectors": 82, "contractSize": 34396 },
+        "delta": "FIRST PASS IN WHICH THE CONTRACT BYTES MOVED, not only the suite: fht.json 29 430 -> 34 396 B (59ad9641 -> 4156353a, last touched by 86438f21, the FHT draft PR #54 pass: raw-main-only schema URL, regex-dialect-portable patterns, git-verified HTML binding pin) beside suite 72 -> 82 vectors (0 removed; 28 -> 30 valid, 44 -> 52 invalid; rule census C1 24 -> 31, C2 3 -> 4, C3 10 -> 10; 75 of the 77 recorded vector files byte-identical - only manifest.json and README.md moved). The two pins are not interchangeable - measured on this jar's evaluator, the suite's fht-fasta-molecule-type-mixed (expected valid) is REJECTED by the previous contract bytes because the MoleculeType enum grew 4 -> 5 with 'mixed', while fht-fasta-blank-version-separator (expected invalid) is ACCEPTED by them and rejected only by this one - so contract, manifest and the frozen copy in this jar move atomically; a suite-only re-pin ships a red or a lying draft job. Four of the 82 vectors remain the suite's own promotion=candidate-unreviewed cases; they are executed as the suite states them and are not presented as reviewed.",
+        "resolution": "86438f21c3a17a58334c97aed4955be1a2393522 is the last commit that touched BOTH fht.json and conformance/manifest.json, measured 2026-11-18 in a fresh full clone (FHT-Specification origin/main head 0311ddacbf7559d4160054d23db6fd06898f45a9; 86438f21 is its ancestor). Digests were taken with shasum -a 256 over full downloads and cross-checked against the contents-API blobs (git hash-object identity); every pinned digest reproduces byte-identically at 86438f21 via git show. Under the round-13 convention unified across the four native libraries, the commit recorded for a pinned file is that file's last-touch commit - never a floating default-branch head; the advisory freshness job compares digests against live main and does not depend on the label. The superseded annotation of 2026-11-15 (previous 66-vector era at 24d3b033, asRecorded 72 at be9bcc82) is preserved in this file's git history rather than erased."
       },
-      "retrievalCommand": "git -C /path/to/FHT-Specification show 226f923c28b680edb3c546e99a751482d06aef1a:fht.json > src/main/resources/org/fairbioheaders/schemas/fht-draft.json",
-      "crossCheck": "The pinned contract commit is unchanged: the 226f923c blob was re-measured on 2026-11-15 (git show, 29 430 bytes, sha256 59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e) and cmp-matches origin/main's fht.json at suite commit be9bcc82 - the contract record stays where it is; only the suite record advanced. The reference toolkit pins the same contract commit and digest (FAIR-bioHeaders-Tools bioheaders/schemas/bundled.json, its #154 re-pin), verified 2026-11-14. The contract bytes live in this jar; the vectors come from the suite revision above, and DraftHarness re-digests both against these values before reading a vector.",
+      "retrievalCommand": "git -C /path/to/FHT-Specification show 86438f21c3a17a58334c97aed4955be1a2393522:fht.json > src/main/resources/org/fairbioheaders/schemas/fht-draft.json",
+      "crossCheck": "Round-13 coordinated re-pin, measured 2026-11-18: the contract and manifest digests above were taken with shasum -a 256 over full downloads, cross-checked against the contents-API blobs, and re-confirmed byte-identical at 86438f21 (git show), cmp-verified against the frozen copy shipped in this jar. The contract record MOVED this pass: the previous record (contract 59ad9641, 29 430 B, at 226f923c of 2026-11-14, suite 9fd8c0b2 at be9bcc82 of 2026-11-15) is preserved in suitePinAnnotation.previous rather than erased. This re-pin is one PR of the round-13 coordinated pass across the four native libraries, whose targets are the identical byte digests recorded in section 1 of that pass's specification; byte identity across the libraries is re-measured per repository, never inferred from another's prose. The contract bytes live in this jar; the vectors come from the suite revision above, and DraftHarness re-digests both against these values before reading a vector.",
       "meaning": "Unreleased development contract, readable only through the rule V7 opt-in lane and warned on for every record read that way. Not a released contract: no schemaVersion row in the shared schemas/versions.json, no w3id alias, no release tag, no support claim. Publication moves it out of the lane (FHT is scheduled as specification v0.7.0)."
     },
     "FHGM": {
@@ -147,9 +147,9 @@
       "release": null,
       "repository": "FHGM-Specification",
       "url": "https://github.com/FAIR-bioHeaders/FHGM-Specification",
-      "commit": "ac3d37b3033312844fc3151217731928ae33aa54",
+      "commit": "06176262f9824f26d974a15d8feeebde1fbeb0a8",
       "citation": "https://raw.githubusercontent.com/FAIR-bioHeaders/FHGM-Specification/main/development/model/fhgm-model.schema.json",
-      "retrieved": "2026-11-14",
+      "retrieved": "2026-11-18",
       "transport": {
         "modelsKey": "x-fhgm-models",
         "carrierFileKey": "FHGFF3",
@@ -159,25 +159,25 @@
         {
           "path": "fhgm-model-draft.json",
           "sourcePath": "development/model/fhgm-model.schema.json",
-          "commit": "ac3d37b3033312844fc3151217731928ae33aa54",
-          "retrieved": "2026-11-14",
-          "size": 9564,
-          "sha256": "bf1553cac04dc88d8afaff1d39bc50360342e1ebedac4b73dfe3dff570ff410f",
-          "role": "native record contract (the suite's K2)"
+          "commit": "06176262f9824f26d974a15d8feeebde1fbeb0a8",
+          "retrieved": "2026-11-18",
+          "size": 11522,
+          "sha256": "b7075e5872e0a5ffce5ae61c590ce182f1f219fa269413cad3b1a966753cfeae",
+          "role": "native record contract (the suite's K2); supersedes bf1553cac04dc88d8afaff1d39bc50360342e1ebedac4b73dfe3dff570ff410f (9 564 B, 2026-11-14 pin), the last contract movement being FHGM#29's widening of the model-layer expectations"
         },
         {
           "path": "fhgm-transport-draft.json",
           "sourcePath": "development/model/fhgm-draft.schema.json",
-          "commit": "5d15ccc122fcb8239787393010364a818a774ee4",
-          "retrieved": "2026-11-15",
-          "size": 2613,
-          "sha256": "d1619cced91b4ef554853bf5512b5b4ad593b1dc571c2beacb5ee92466ea244a",
-          "role": "transport overlay (the suite's K1): admits either released FHGFF3 file identity as a closed branch (v0.5.0 URI set + schemaVersion 1.1, or v0.6.0 URI set + schemaVersion 1.2) plus the non-empty x-fhgm-models array; superseded dd9f69274f26860bbfd71d0e8b2794420c5369fb5d40ce838fb6a9e6d5116e3d (1 363 B), the 1.1-only pin from 2026-11-14"
+          "commit": "019bc29e32ce225791053dd2ce323bb91f304ce1",
+          "retrieved": "2026-11-18",
+          "size": 3191,
+          "sha256": "533b3120f4a86590f1b60a2175487597c99b646b3d092b7818b1f682c6cecf9b",
+          "role": "transport overlay (the suite's K1): admits either released FHGFF3 file identity as a closed branch, selected by the carrier's cited schema URL - v0.5.0 URI set with schemaVersion 1.1, or v0.6.0 URI set with schemaVersion 1.1 or 1.2 (the 1.1 pairing and the FHR-Specification v0.6.0 alias URL are this revision's additions, FHGM#26) - plus the non-empty x-fhgm-models array; superseded d1619cced91b4ef554853bf5512b5b4ad593b1dc571c2beacb5ee92466ea244a (2 613 B, the 2026-11-15 dual-base pin at 5d15ccc1) and before it dd9f69274f26860bbfd71d0e8b2794420c5369fb5d40ce838fb6a9e6d5116e3d (1 363 B), the 1.1-only pin from 2026-11-14"
         }
       ],
       "baseSchemas": {
-        "note": "Shape copied from the owning repository's own base registry (FHGM-Specification development/model/base-schemas.json, registryVersion 1, measured at suite commit 57118c52 as sha256 33f3fd541fe6ad611376a559279a0f95a5b7901418a6e1e44aebc78f9a47370f): every base is keyed by the SHA-256 of the exact release bytes, resolves its tag to a commit (and names the annotated-tag object), and never records a floating branch for released material. DraftProvenanceTest checks each digest against this jar's frozen copy from 'files' and each commit against tagCommits above.",
-        "selectionRule": "A carrier declares its base through its own released file identity (schema URI plus schemaVersion); rules V1-V3 route it and the overlay's closed branches admit exactly that pairing. An unsupported declared version with no registered base is refused, not substituted.",
+        "note": "Shape copied from the owning repository's own base registry (FHGM-Specification development/model/base-schemas.json, registryVersion 1, measured at suite commit 06176262 as sha256 8feb36c1957d151e22da9833b7a3421b339b5f18475d054ebe7e54cabcf72eac (6 165 B), superseding the 33f3fd541fe6ad611376a559279a0f95a5b7901418a6e1e44aebc78f9a47370f bytes measured at 57118c52 on 2026-11-15; the registry TEXT moved with FHGM#26's URL-keyed selection, the registered BASES did not: both releases carry the same digests and tag-resolved commits recorded below, re-verified 2026-11-18 by git show at 06176262): every base is keyed by the SHA-256 of the exact release bytes, resolves its tag to a commit (and names the annotated-tag object), and never records a floating branch for released material. DraftProvenanceTest checks each digest against this jar's frozen copy from 'files' and each commit against tagCommits above.",
+        "selectionRule": "A carrier names its base through its cited schema URL; the registry maps that URL to exactly one entry (w3id with and without trailing slash, raw tag URL under both repository names), schemaVersion plays no part in the selection and the cited release's own bytes then judge it. Rules V1-V3 route the file and the overlay's closed branches admit exactly that pairing. An uncited, unregistered or moving URL (raw main, a superseded release) is refused, not substituted.",
         "bases": [
           {
             "schemaVersion": "1.1",
@@ -191,7 +191,7 @@
             "size": 24080,
             "sha256": "20ce320f5d706f11ed21cdece4dfb56e3568b50be126e25b4016f46f2e8e416c",
             "bundledCopy": "fhgff3-1.1.json",
-            "role": "sealed lane: every expectation in the pinned manifest.json (the 43 sealed vectors) was observed against these bytes"
+            "role": "sealed lane: every expectation in the pinned manifest.json (the 62 sealed vectors, 2026-11-18 revision) was observed against these bytes"
           },
           {
             "schemaVersion": "1.2",
@@ -205,21 +205,21 @@
             "size": 26955,
             "sha256": "1942be4cefc8b3a2537942c2252b45fbcef87a5532486e4fd0f5d4c540e0fbf9",
             "bundledCopy": "fhgff3-1.2.json",
-            "role": "matrix lane: the suite's separate development/conformance/base_matrix.json re-observes identity-rewritten 1.2 twins against these bytes. This library's draft job runs the sealed manifest.json only; the matrix lane is NOT run here and is reported not-run with this reason, never absorbed into the 43."
+            "role": "matrix lane: the suite's separate development/conformance/base_matrix.json re-observes identity-rewritten 1.2 twins against these bytes. This library's draft job runs the sealed manifest.json only; the matrix lane is NOT run here and is reported not-run with this reason, never absorbed into the 62."
           }
         ]
       },
-      "suiteCommit": "57118c52363990dcaa42640394db84acb089cc24",
-      "suiteManifestSha256": "0d2790151c4a29551e9b92fb6b3c3c62ea062f2889ffbd00b3c425e7b6da3458",
+      "suiteCommit": "06176262f9824f26d974a15d8feeebde1fbeb0a8",
+      "suiteManifestSha256": "e41f05fd8bb8b8ec175b0192b80832041c84e15c325876aa66a86ba6e59413ce",
       "suitePinAnnotation": {
-        "note": "Advisory measurements beside the pin; the suite is pinned by digest first and count second. This very suite is the proof: its manifest passed through 36 001 bytes at 5d15ccc1 with the vector count STILL 31 on the way to 51 114 bytes / 43 vectors - a count-only assertion would have reported that step as no drift at all (measured 2026-11-15 from git log over the manifest's own history).",
-        "previous": { "commit": "ac3d37b3033312844fc3151217731928ae33aa54", "manifestSha256": "31f14f022ff0858191170d1c8285bd83c7f943d88fd8cebc70f11712525617db", "manifestSize": 35269, "vectors": 31 },
-        "asRecorded": { "manifestSize": 51114, "vectors": 43 },
-        "delta": "31 -> 43 vectors: the 12 promoted dmel-* real-data cases (GCF_000001215.4 chr4 fixtures under development/examples/dmel4/, sealed at d443073a, 'expectations require independent review' per the commit); 14 valid / 29 invalid; all 39 files the manifest references exist at the pinned suite commit (checked with git cat-file -e).",
-        "resolution": "57118c52363990dcaa42640394db84acb089cc24 is FHGM-Specification origin/main on 2026-11-15; the last commit that touched development/conformance/manifest.json is d443073a, and 57118c52 only re-recorded the checker digest in the suite's own provenance.json - manifest, record contract, overlay and base registry are byte-identical at both (measured). The record-contract commit and the suite commit are deliberately separate fields: contract pin is not suite pin."
+        "note": "Advisory measurements beside the pin; the suite is pinned by digest first and count second. This very suite is the proof: its manifest passed through 36 001 bytes at 5d15ccc1 with the vector count STILL 31 on the way to 51 114 bytes / 43 vectors - a count-only assertion would have reported that step as no drift at all (measured 2026-11-15 from git log over the manifest's own history). A second, subtler class is on record now: the 2026-11-18 FHGM#29 pass moved the RECORD CONTRACT too (bf1553ca -> b7075e58, 9 564 -> 11 522 B), and it widened what a layers.model `pass` MEANS (see the delta) - a field diff shows bytes, a vector count shows census, neither shows semantics.",
+        "previous": { "commit": "57118c52363990dcaa42640394db84acb089cc24", "manifestSha256": "0d2790151c4a29551e9b92fb6b3c3c62ea062f2889ffbd00b3c425e7b6da3458", "manifestSize": 51114, "vectors": 43, "recordContractCommit": "ac3d37b3033312844fc3151217731928ae33aa54", "recordContractSha256": "bf1553cac04dc88d8afaff1d39bc50360342e1ebedac4b73dfe3dff570ff410f", "recordContractSize": 9564, "transportSha256": "d1619cced91b4ef554853bf5512b5b4ad593b1dc571c2beacb5ee92466ea244a", "transportSize": 2613 },
+        "asRecorded": { "manifestSize": 69526, "vectors": 62, "recordContractSize": 11522, "transportSize": 3191 },
+        "delta": "43 -> 62 vectors (0 removed; 14 -> 17 valid, 29 -> 45 invalid; rule occurrences B1 2 -> 3, K1 12 -> 15, K2 12 -> 19, K3 5 -> 7, K4 8 -> 11, K5 7 -> 7, K6 14 -> 17; the 11 K4-citing vectors split 3 valid / 8 invalid; all 58 distinct files the manifest references exist at the pinned suite commit, checked with git cat-file -e on 2026-11-18) - AND, for the first FHGM pass, both contract artifacts moved beside it: record contract bf1553ca -> b7075e58 (9 564 -> 11 522 B) and transport overlay d1619cce -> 533b3120 (2 613 -> 3 191 B). SEMANTICS WARNING that no digest diff or vector count reveals: FHGM#29 widened what layers.model `pass` asserts - beyond schema validity it now additionally implies trimmed invisible-character-free text, RFC 3986 links whose scheme carries a real host, non-blank deposits, NFC-unique model identifiers and a root-level gene target; a pass under these bytes is NOT the same claim as a pass under the 2026-11-15 bytes. The abstention question this widens is still open upstream: FHGM#22 (does layers.model presuppose feature rows?) with #27 and #28, and FAIR-bioHeaders-Specification#241, are unresolved, and JS#11 documents the failure shape (a zero-row feature layer reported as reject where the validator says absent-layer; an empty ID= making K4 an unfalsifiable pass). The pinned bytes encode a model-layer semantics PROPOSAL; inheriting them is not inheriting their resolution. Byte-level coupling measured on this jar: five new invalid vectors (record-evidence-uri-javascript-scheme, record-evidence-uri-user-info-without-host, record-methods-protocol-ftp-user-info-without-host, record-model-id-trailing-space, record-software-uri-empty-user-info-and-host) pass the previous contract and fail only this one, and two valid vectors (fhr-specification-alias-v0.6.0, v0.6.0-citation-stating-1.1) are rejected by the previous overlay (seven-carrier enum; v0.6.0 paired const 1.2) and admitted only by this one - record contract, overlay, manifest and the jar's frozen copies move atomically.",
+        "resolution": "06176262f9824f26d974a15d8feeebde1fbeb0a8 is the last commit that touched BOTH development/model/fhgm-model.schema.json and development/conformance/manifest.json; the overlay's own last-touch is 019bc29e32ce225791053dd2ce323bb91f304ce1 (FHGM#26, URL-keyed base selection), and its bytes are unchanged from 019bc29e through the measured head b1a82f82f8a2d4a5f5e78240edaa05c6bd9222d8 (the merge of FHGM#29) - every recorded commit was re-verified byte-identical to the pin by git show on 2026-11-18, in a fresh full clone, cross-checked against contents-API blobs. Under the round-13 convention unified across the four native libraries each pinned file records its own last-touch commit; contract pin, overlay pin and suite pin remain deliberately separate fields - contract pin is not suite pin."
       },
-      "retrievalCommand": "git -C /path/to/FHGM-Specification show ac3d37b3033312844fc3151217731928ae33aa54:development/model/fhgm-model.schema.json > src/main/resources/org/fairbioheaders/schemas/fhgm-model-draft.json ; git -C /path/to/FHGM-Specification show 57118c52363990dcaa42640394db84acb089cc24:development/model/fhgm-draft.schema.json > src/main/resources/org/fairbioheaders/schemas/fhgm-transport-draft.json",
-      "crossCheck": "Re-measured 2026-11-15 from content-addressed blobs (git show, not raw URLs): the record contract at ac3d37b3 and at origin/main (57118c52) are the same 9 564-byte blob (bf1553ca...), so its record stays; the overlay moved from dd9f6927... (1 363 B) to d1619cce... (2 613 B) at 5d15ccc1 when FHGM-Specification #17 made the transport dual-base, and the shipped copy in this jar was cmp-verified against the 57118c52 blob. The two base releases were independently re-resolved in a fetched FAIR-bioHeaders-Specification checkout (tag objects, commits, sizes and digests above match this jar's frozen fhgff3-1.1/fhgff3-1.2 copies and FHGM's own base-schemas.json). The suite's own development/conformance/provenance.json records the same artifact digests, so the pins agree across repositories without either one trusting the other's prose.",
+      "retrievalCommand": "git -C /path/to/FHGM-Specification show 06176262f9824f26d974a15d8feeebde1fbeb0a8:development/model/fhgm-model.schema.json > src/main/resources/org/fairbioheaders/schemas/fhgm-model-draft.json ; git -C /path/to/FHGM-Specification show 019bc29e32ce225791053dd2ce323bb91f304ce1:development/model/fhgm-draft.schema.json > src/main/resources/org/fairbioheaders/schemas/fhgm-transport-draft.json",
+      "crossCheck": "Round-13 coordinated re-pin, measured 2026-11-18: digests taken with shasum -a 256 over full downloads and cross-checked against contents-API blobs (git hash-object identity); the previous FHGM record (contract bf1553ca 9 564 B at ac3d37b3 of 2026-11-14, overlay d1619cce 2 613 B at 5d15ccc1 of 2026-11-15, suite 0d279015 at 57118c52) is preserved in suitePinAnnotation.previous rather than erased. Both base releases were independently re-resolved again at 06176262: registered bytes and tag commits unchanged (20ce320f @ 170e677f, 1942be4c @ 0ae18b00), matching this jar's frozen fhgff3-1.1/fhgff3-1.2 copies and the owning repository's base-schemas.json. Note that the suite's own development/conformance/provenance.json still carries a stale downstreamPins freshness note about the JavaScript overlay pin (its #6-class observation predates 019bc29e) - that note belongs to its owning repository and is deliberately not edited from this library. The contract bytes and vectors move together: DraftHarness re-digests the jar's frozen copies and the checkout's manifest against these values before reading a single vector.",
       "meaning": "Unreleased development contracts for gene-model records, readable only through the rule V7 opt-in lane and warned on per record. Not a released contract and not a file-bound header type: no schemaVersion, no w3id alias, no shared registry row, no support claim. Publication is scheduled separately (specification v0.8.0)."
     }
   }

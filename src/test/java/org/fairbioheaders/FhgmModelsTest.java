@@ -45,8 +45,8 @@ class FhgmModelsTest {
         // And with the lane open the registry's own pin is what the instance reports.
         FhgmModels opened = models();
         assertEquals("x-fhgm-models", opened.modelsKey());
-        assertEquals("ac3d37b3033312844fc3151217731928ae33aa54", opened.pinnedCommit());
-        assertEquals("bf1553cac04dc88d8afaff1d39bc50360342e1ebedac4b73dfe3dff570ff410f",
+        assertEquals("06176262f9824f26d974a15d8feeebde1fbeb0a8", opened.pinnedCommit());
+        assertEquals("b7075e5872e0a5ffce5ae61c590ce182f1f219fa269413cad3b1a966753cfeae",
             opened.pinnedSha256());
     }
 
@@ -61,9 +61,9 @@ class FhgmModelsTest {
         assertEquals(1, report.draftWarnings().size(), "one V7 warning per record read");
         Issue warning = report.draftWarnings().get(0);
         assertEquals("V7", warning.rule());
-        assertTrue(warning.message().contains("commit ac3d37b3033312844fc3151217731928ae33aa54"),
+        assertTrue(warning.message().contains("commit 06176262f9824f26d974a15d8feeebde1fbeb0a8"),
             warning.message());
-        assertTrue(warning.message().contains("sha256 bf1553ca"), warning.message());
+        assertTrue(warning.message().contains("sha256 b7075e58"), warning.message());
         assertTrue(warning.message().contains("not a released schema"), warning.message());
         assertTrue(warning.message().contains("x-fhgm-models"), warning.message());
     }

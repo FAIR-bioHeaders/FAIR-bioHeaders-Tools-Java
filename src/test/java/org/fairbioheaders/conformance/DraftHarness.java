@@ -206,18 +206,15 @@ public final class DraftHarness {
         if (drift != null) {
             return new Outcome(id, format, expected, false, false, null, drift);
         }
-        Kind kind = Kind.FASTA;
         Path file = suiteDir.resolve(vector.get("file").asString()).normalize();
         if (!file.startsWith(suiteDir)) {
             return new Outcome(id, format, expected, true, false, null,
                 "vector path escapes the suite directory: " + vector.get("file").asString());
         }
-        byte[] data;
-        try {
-            data = BioHeaders.readAll(file);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        // The file-based path streams and decompresses inside the verifier, so a corrupt or
+        // truncated gzip stream arrives as the reader's own R1 INVALID verdict (fht-fasta-gzip-
+        // truncated, 2026-11-18) instead of an exception escaping an eager readAll before any
+        // verdict could be reported. kindFor strips the .gz/.bgz transport suffix.
         // The manifest names the parent file for each C3 link; the reader recomputes that file's
         // checksum and compares exact strings, so the verdict comes from the bytes, not the label.
         Map<String, String> filesByStated = new LinkedHashMap<>();
@@ -235,7 +232,15 @@ public final class DraftHarness {
         ParentLinks.ParentSource source = expectedVerdict.isEmpty()
             ? null
             : ParentLinks.relativeTo(suiteDir, filesByStated);
-        VerifyResult result = reader.verify(data, kind, source);
+        VerifyResult result;
+        try {
+            // verifyFile already turns a corrupt compressed stream into an INVALID verdict with
+            // an R1 issue (BioHeaders.verify catches Gunzip.FormatException around the scan);
+            // an IOException here is a genuinely unreadable file, which stays an error.
+            result = reader.verifyFile(file, source);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
         List<String> problems = new ArrayList<>();
 
         boolean draftRouted = result.metadata() != null && citation != null
@@ -281,9 +286,13 @@ public final class DraftHarness {
             }
             case "unreachable" -> {
                 boolean lineShape = codes.contains("R2") || codes.contains("R5") || codes.contains("R10");
-                if (codes.contains("R3") || !lineShape) {
+                // An unreachable self-checksum has two shapes: the line-shape rejections of the
+                // 2026-11 era (R2/R5/R10 - never hashed, so never R3), and since 2026-11-18 the
+                // broken-stream case (fht-fasta-gzip-truncated): no decompressed bytes exist at
+                // all, so R1 reports before any hashing. Both must not report R3.
+                if (codes.contains("R3") || !(lineShape || codes.contains("R1"))) {
                     problems.add("selfChecksum=unreachable expects an R2/R5/R10 line-shape rejection"
-                        + " and no R3, got " + codes);
+                        + " or an R1 broken-stream rejection, and no R3, got " + codes);
                 }
             }
             default -> problems.add("vector records no selfChecksum state");
@@ -299,15 +308,18 @@ public final class DraftHarness {
             // enforced by the contract's own key rules, so they arrive as "schema"; C3 is reported
             // by ParentLinks.RULE; V5 is the reading itself, not a checksum problem.
             String label = switch (rule) {
-                case "R1", "R3" -> "R3";
+                case "R1" -> "R1-or-R3";
+                case "R3" -> "R3";
                 case "R4" -> "R3-or-R5";
                 case "C1", "C2", "V1", "R15" -> "schema";
                 case "C3" -> ParentLinks.RULE;
                 default -> rule;
             };
-            boolean ok = label.equals("R3-or-R5")
-                ? (codes.contains("R3") || codes.contains("R5"))
-                : codes.contains(label);
+            boolean ok = switch (label) {
+                case "R3-or-R5" -> codes.contains("R3") || codes.contains("R5");
+                case "R1-or-R3" -> codes.contains("R1") || codes.contains("R3");
+                default -> codes.contains(label);
+            };
             if (!ok) {
                 problems.add("manifest names rule " + rule + "; expected the reader to report ["
                     + label + "], got " + codes);

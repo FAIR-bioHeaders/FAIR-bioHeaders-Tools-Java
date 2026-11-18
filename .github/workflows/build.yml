@@ -198,14 +198,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: FAIR-bioHeaders/FHT-Specification
-          ref: be9bcc825f55db92852fd882ffba4c1c214f53db
+          ref: 86438f21c3a17a58334c97aed4955be1a2393522
           path: fht-specification
 
       - name: Check out FHGM-Specification at the pinned suite commit
         uses: actions/checkout@v4
         with:
           repository: FAIR-bioHeaders/FHGM-Specification
-          ref: 57118c52363990dcaa42640394db84acb089cc24
+          ref: 06176262f9824f26d974a15d8feeebde1fbeb0a8
           path: fhgm-specification
 
       - name: Test the rule V7 draft lane
@@ -230,21 +230,26 @@ jobs:
           cat "$receipt"
           # Digest first, count second: the suite pins below are SHA-256s of the manifest bytes;
           # the counts beside them are a second, weaker statement of the same revision.
-          grep -qx 'vectorsInManifest=72' "$receipt" || { echo "expected 72 vectors in the manifest" >&2; exit 1; }
-          grep -qx 'vectorsRan=72' "$receipt" || { echo "expected 72 draft vectors to run" >&2; exit 1; }
-          grep -qx 'vectorsPassed=72' "$receipt" || { echo "expected 72 draft vectors to pass" >&2; exit 1; }
-          grep -qx 'contractCommit=226f923c28b680edb3c546e99a751482d06aef1a' "$receipt" \
+          # Round-13 coordinated re-pin, measured 2026-11-18: the CONTRACT bytes moved too
+          # (59ad9641 -> 4156353a). The suite is unscoreable against the old contract and vice
+          # versa - fht-fasta-molecule-type-mixed (expected valid) is rejected by the old bytes
+          # (MoleculeType enum grew 4 -> 5 with 'mixed') - so contract, manifest and the frozen
+          # jar copy are re-pinned atomically, and every literal below moves with them.
+          grep -qx 'vectorsInManifest=82' "$receipt" || { echo "expected 82 vectors in the manifest" >&2; exit 1; }
+          grep -qx 'vectorsRan=82' "$receipt" || { echo "expected 82 draft vectors to run" >&2; exit 1; }
+          grep -qx 'vectorsPassed=82' "$receipt" || { echo "expected 82 draft vectors to pass" >&2; exit 1; }
+          grep -qx 'contractCommit=86438f21c3a17a58334c97aed4955be1a2393522' "$receipt" \
             || { echo "the draft suite did not run against the pinned contract commit" >&2; exit 1; }
-          grep -qx 'contractSha256=59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e' "$receipt" \
+          grep -qx 'contractSha256=4156353aa6d077fee2d2c69be4e17859b8e4f81bb10824f3c87f6701de196e7a' "$receipt" \
             || { echo "the draft suite did not run against the pinned contract digest" >&2; exit 1; }
-          grep -qx 'suiteCommit=be9bcc825f55db92852fd882ffba4c1c214f53db' "$receipt" \
+          grep -qx 'suiteCommit=86438f21c3a17a58334c97aed4955be1a2393522' "$receipt" \
             || { echo "the suite is not the pinned revision" >&2; exit 1; }
-          grep -qx 'suiteManifestSha256=9fd8c0b2a4638d5ddc0bf9b5d1e96c66778b26bcf8f93975aafb707d8f2b702c' "$receipt" \
+          grep -qx 'suiteManifestSha256=e5a4a5d027259e29a7e3cfb42da5e1ef07fa78d4a0e604ef73f28b8e5a59a508' "$receipt" \
             || { echo "the suite manifest is not the pinned digest" >&2; exit 1; }
           grep -qx 'note=' "$receipt" || { echo "the receipt carries a note: $receipt" >&2; exit 1; }
           count=$(grep -h 'tests=' target/surefire-reports/TEST-org.fairbioheaders.conformance.FhtDraftVectorTest.xml | head -1 | sed -E 's/.*tests="([0-9]+)".*/\1/')
           echo "FhtDraftVectorTest executed $count tests"
-          [ "$count" -eq 72 ] || { echo "expected 72 FHT draft vectors to run (got $count)" >&2; exit 1; }
+          [ "$count" -eq 82 ] || { echo "expected 82 FHT draft vectors to run (got $count)" >&2; exit 1; }
 
       - name: Assert the FHGM draft suite ran in full, against the pinned bytes
         run: |
@@ -259,31 +264,35 @@ jobs:
           cat "$receipt"
           # Digest first, count second: this suite is the proof. Its manifest passed through
           # 36 001 bytes with the vector count still 31 on the way to 51 114 bytes / 43 vectors
-          # (measured 2026-11-15 from the manifest's own history) - a count-only assertion would
-          # have reported that step as no drift at all.
-          grep -qx 'vectorsInManifest=43' "$receipt" || { echo "expected 43 FHGM vectors in the manifest" >&2; exit 1; }
-          grep -qx 'vectorsRan=43' "$receipt" || { echo "expected 43 FHGM draft vectors to run" >&2; exit 1; }
-          grep -qx 'vectorsPassed=43' "$receipt" || { echo "expected 43 FHGM draft vectors to pass" >&2; exit 1; }
-          grep -qx 'recordContractCommit=ac3d37b3033312844fc3151217731928ae33aa54' "$receipt" \
+          # (measured 2026-11-15 from the manifest's own history), and on 2026-11-18 the RECORD
+          # CONTRACT and the OVERLAY moved beside it (51 114 B / 43 -> 69 526 B / 62;
+          # bf1553ca -> b7075e58; d1619cce -> 533b3120) - a count-only assertion would have
+          # reported those steps as no drift at all. Java scores K4 natively, so this lane runs
+          # all 62; its pass/not-run split is deliberately NOT comparable with Julia's, which
+          # declares K4 not-supported-yet and runs 51/0/11.
+          grep -qx 'vectorsInManifest=62' "$receipt" || { echo "expected 62 FHGM vectors in the manifest" >&2; exit 1; }
+          grep -qx 'vectorsRan=62' "$receipt" || { echo "expected 62 FHGM draft vectors to run" >&2; exit 1; }
+          grep -qx 'vectorsPassed=62' "$receipt" || { echo "expected 62 FHGM draft vectors to pass" >&2; exit 1; }
+          grep -qx 'recordContractCommit=06176262f9824f26d974a15d8feeebde1fbeb0a8' "$receipt" \
             || { echo "not the pinned FHGM record contract commit" >&2; exit 1; }
-          grep -qx 'recordContractSha256=bf1553cac04dc88d8afaff1d39bc50360342e1ebedac4b73dfe3dff570ff410f' "$receipt" \
+          grep -qx 'recordContractSha256=b7075e5872e0a5ffce5ae61c590ce182f1f219fa269413cad3b1a966753cfeae' "$receipt" \
             || { echo "not the pinned FHGM record contract digest" >&2; exit 1; }
-          grep -qx 'transportContractCommit=5d15ccc122fcb8239787393010364a818a774ee4' "$receipt" \
+          grep -qx 'transportContractCommit=019bc29e32ce225791053dd2ce323bb91f304ce1' "$receipt" \
             || { echo "not the pinned FHGM transport overlay commit" >&2; exit 1; }
-          grep -qx 'transportContractSha256=d1619cced91b4ef554853bf5512b5b4ad593b1dc571c2beacb5ee92466ea244a' "$receipt" \
+          grep -qx 'transportContractSha256=533b3120f4a86590f1b60a2175487597c99b646b3d092b7818b1f682c6cecf9b' "$receipt" \
             || { echo "not the pinned FHGM transport overlay digest" >&2; exit 1; }
-          grep -qx 'suiteCommit=57118c52363990dcaa42640394db84acb089cc24' "$receipt" \
+          grep -qx 'suiteCommit=06176262f9824f26d974a15d8feeebde1fbeb0a8' "$receipt" \
             || { echo "not the pinned FHGM suite revision" >&2; exit 1; }
-          grep -qx 'suiteManifestSha256=0d2790151c4a29551e9b92fb6b3c3c62ea062f2889ffbd00b3c425e7b6da3458' "$receipt" \
+          grep -qx 'suiteManifestSha256=e41f05fd8bb8b8ec175b0192b80832041c84e15c325876aa66a86ba6e59413ce' "$receipt" \
             || { echo "the FHGM suite manifest is not the pinned digest" >&2; exit 1; }
           grep -q '^gff3Layer=skipped' "$receipt" \
             || { echo "the skipped GFF3 layer must be stated in the receipt" >&2; exit 1; }
           count=$(grep -h 'tests=' target/surefire-reports/TEST-org.fairbioheaders.conformance.FhgmDraftVectorTest.xml | head -1 | sed -E 's/.*tests="([0-9]+)".*/\1/')
           echo "FhgmDraftVectorTest executed $count tests"
-          [ "$count" -eq 43 ] || { echo "expected 43 FHGM draft vectors to run (got $count)" >&2; exit 1; }
+          [ "$count" -eq 62 ] || { echo "expected 62 FHGM draft vectors to run (got $count)" >&2; exit 1; }
 
       - name: Assert nothing was skipped in the draft job
-        run: sh .github/scripts/assert-reports.sh 199
+        run: sh .github/scripts/assert-reports.sh 238
 
       - name: Upload draft reports
         if: always()

@@ -9,9 +9,11 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The local feature identifiers a GFF3 body declares, in the form the FHGM draft's model-level
@@ -36,9 +38,12 @@ final class Gff3FeatureIndex {
     }
 
     private final Map<String, List<String>> typesById;
+    private final Set<String> idsWithParent;
 
-    private Gff3FeatureIndex(Map<String, List<String>> typesById) {
+    private Gff3FeatureIndex(Map<String, List<String>> typesById,
+                             Set<String> idsWithParent) {
         this.typesById = typesById;
+        this.idsWithParent = idsWithParent;
     }
 
     /**
@@ -48,6 +53,7 @@ final class Gff3FeatureIndex {
      */
     static Gff3FeatureIndex of(byte[] data) {
         Map<String, List<String>> index = new LinkedHashMap<>();
+        Set<String> withParent = new HashSet<>();
         int lineNumber = 0;
         for (byte[] line : splitLines(data)) {
             lineNumber++;
@@ -62,27 +68,42 @@ final class Gff3FeatureIndex {
                 throw new MalformedRow(lineNumber);
             }
             byte[] type = columns.get(2);
+            List<String> rowIds = new ArrayList<>();
+            boolean rowHasParent = false;
             for (byte[] attribute : split(columns.get(8), (byte) ';')) {
                 int eq = indexOf(attribute, (byte) '=');
                 if (eq < 0) {
                     continue;
                 }
                 byte[] key = Arrays.copyOfRange(attribute, 0, eq);
-                if (!Arrays.equals(key, "ID".getBytes(StandardCharsets.UTF_8))) {
-                    continue;
-                }
                 byte[] value = Arrays.copyOfRange(attribute, eq + 1, attribute.length);
-                String decoded = new String(unquote(value), StandardCharsets.UTF_8);
-                index.computeIfAbsent(decoded, k -> new ArrayList<>())
-                    .add(new String(type, StandardCharsets.UTF_8));
+                if (Arrays.equals(key, "ID".getBytes(StandardCharsets.UTF_8))) {
+                    String decoded = new String(unquote(value), StandardCharsets.UTF_8);
+                    rowIds.add(decoded);
+                    index.computeIfAbsent(decoded, k -> new ArrayList<>())
+                        .add(new String(type, StandardCharsets.UTF_8));
+                } else if (Arrays.equals(key, "Parent".getBytes(StandardCharsets.UTF_8))
+                        && value.length > 0) {
+                    // A non-empty Parent attribute: whatever ID this row carries, it names a
+                    // nested feature, not a root-level one (FHGM#29's gene-target condition).
+                    rowHasParent = true;
+                }
+            }
+            if (rowHasParent) {
+                withParent.addAll(rowIds);
             }
         }
-        return new Gff3FeatureIndex(index);
+        return new Gff3FeatureIndex(index, withParent);
     }
 
     /** The feature types carrying {@code id}; empty when no local row declares it. */
     List<String> typesOf(String id) {
         return typesById.getOrDefault(id, List.of());
+    }
+
+    /** Whether any row declaring {@code id} carries a non-empty {@code Parent} attribute. */
+    boolean hasParent(String id) {
+        return idsWithParent.contains(id);
     }
 
     int size() {

@@ -26,15 +26,15 @@ echo "live raw main: $live"
 if [ "$live" != "$pin" ]; then echo "DRIFT (advisory)"; else echo "pin is current"; fi
 echo "--- receipt guards ---"
 receipt=target/fht-draft-vectors.properties
-grep -qx 'vectorsInManifest=72' "$receipt"
-grep -qx 'vectorsRan=72' "$receipt"
-grep -qx 'vectorsPassed=72' "$receipt"
-grep -qx 'contractCommit=226f923c28b680edb3c546e99a751482d06aef1a' "$receipt"
-grep -qx 'contractSha256=59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e' "$receipt"
-grep -qx 'suiteCommit=be9bcc825f55db92852fd882ffba4c1c214f53db' "$receipt"
-grep -qx 'suiteManifestSha256=9fd8c0b2a4638d5ddc0bf9b5d1e96c66778b26bcf8f93975aafb707d8f2b702c' "$receipt"
+grep -qx 'vectorsInManifest=82' "$receipt"
+grep -qx 'vectorsRan=82' "$receipt"
+grep -qx 'vectorsPassed=82' "$receipt"
+grep -qx 'contractCommit=86438f21c3a17a58334c97aed4955be1a2393522' "$receipt"
+grep -qx 'contractSha256=4156353aa6d077fee2d2c69be4e17859b8e4f81bb10824f3c87f6701de196e7a' "$receipt"
+grep -qx 'suiteCommit=86438f21c3a17a58334c97aed4955be1a2393522' "$receipt"
+grep -qx 'suiteManifestSha256=e5a4a5d027259e29a7e3cfb42da5e1ef07fa78d4a0e604ef73f28b8e5a59a508' "$receipt"
 grep -qx 'note=' "$receipt"
 count=$(grep -h 'tests=' target/surefire-reports/TEST-org.fairbioheaders.conformance.FhtDraftVectorTest.xml | head -1 | sed -E 's/.*tests="([0-9]+)".*/\1/')
 echo "FhtDraftVectorTest executed $count tests"
-[ "$count" -eq 72 ]
+[ "$count" -eq 82 ]
 echo "ALL LOCAL GUARD CHECKS PASSED"

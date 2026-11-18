@@ -57,8 +57,8 @@ class CliTest {
         assertTrue(r.out().contains("fair-bioheaders-java 0.1.0-SNAPSHOT"), r.out());
         assertTrue(r.out().contains("current = v0.6.0"), r.out());
         assertTrue(r.out().contains("rule V7, opt-in, not released"), r.out());
-        assertTrue(r.out().contains("FHT@226f923"), r.out());
-        assertTrue(r.out().contains("sha256 59ad9641adcb"), r.out());
+        assertTrue(r.out().contains("FHT@86438f2"), r.out());
+        assertTrue(r.out().contains("sha256 4156353aa6d0"), r.out());
         assertTrue(r.out().contains("FHT-Specification main"), r.out());
     }
 
@@ -108,8 +108,8 @@ class CliTest {
         assertEquals(0, open.code(), open.out());
         assertTrue(open.out().contains("rule V7 draft lane is ON"), open.out());
         assertTrue(open.out().contains("[V7]"), open.out());
-        assertTrue(open.out().contains("commit 226f923c28b680edb3c546e99a751482d06aef1a"), open.out());
-        assertTrue(open.out().contains("sha256 59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e"),
+        assertTrue(open.out().contains("commit 86438f21c3a17a58334c97aed4955be1a2393522"), open.out());
+        assertTrue(open.out().contains("sha256 4156353aa6d077fee2d2c69be4e17859b8e4f81bb10824f3c87f6701de196e7a"),
             open.out());
         assertTrue(open.out().contains("not a released schema"), open.out());
         assertTrue(open.out().contains("checksum verified; metadata valid"), open.out());

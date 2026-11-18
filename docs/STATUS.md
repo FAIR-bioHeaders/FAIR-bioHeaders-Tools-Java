@@ -42,10 +42,12 @@ Consequences that matter for the five-type goal:
   (rule V7's "says so instead of quietly choosing a newer draft").
 - **Two drafts are registered, and neither is support.** `FHT` is a draft row:
   `fht-draft.json` is FHT-Specification commit
-  `226f923c28b680edb3c546e99a751482d06aef1a`'s `fht.json`, SHA-256
-  `59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e`, 29 430 bytes
-  (re-verified against the live repository on 2026-11-14: the commit's blob and
-  `origin/main`'s blob are the same bytes). Reading it requires the opt-in, and it
+  `86438f21c3a17a58334c97aed4955be1a2393522`'s `fht.json`, SHA-256
+  `4156353aa6d077fee2d2c69be4e17859b8e4f81bb10824f3c87f6701de196e7a`, 34 396 bytes
+  (round-13 coordinated re-pin, measured 2026-11-18 against a fresh clone at head
+  `0311ddac`; the frozen copy is byte-identical to that commit's blob, and the
+  commit recorded for a pinned file is its last-touch commit - the convention now
+  unified across the four native libraries). Reading it requires the opt-in, and it
   is a draft in every sense rule V7 uses: no `schemaVersion` in the shared registry,
   no w3id URL, no release, no support claim, and its vectors are counted separately
   ("Draft evidence" below). With the gate closed - which is the default, and what
@@ -180,10 +182,13 @@ counts — verified 2026-11-14.)
 | **total** | **291** | **228** | **228** | 0 |
 
 Plus 90 unit/integration/CLI JUnit tests in the released-contract job: **318 test
-executions, 0 failures, 0 skipped** (JDK 17.0.21.0.3 and 27.0.1.0.3 locally,
-Temurin 17 and 21 in CI on ubuntu-latest and macos-latest). The draft job adds 199
-more (72 FHT draft vectors, 72 lane-off controls, 43 FHGM draft vectors, 10 FHGM
-rule tests, 2 ledgers) for **517 in total**, with the same counts on JDK 17 and 21.
+executions, 0 failures, 0 skipped** as recorded on 2026-11-16; the released job has
+since grown to 351 executions locally (measured 2026-11-18 on this branch, JDK
+17.0.21.0.3) — that doc/CI-literal lag is tracked as its own change (Tools-Java#14),
+not folded into a re-pin. (JDK 17.0.21.0.3 and 27.0.1.0.3 locally,
+Temurin 17 and 21 in CI on ubuntu-latest and macos-latest). The draft job adds 238
+more (82 FHT draft vectors, 82 lane-off controls, 62 FHGM draft vectors, 10 FHGM
+rule tests, 2 ledgers) for **589 measured in total on this pass**, with the same counts on JDK 17 and 21.
 The earlier PR #1 figure was 258 (30 unit plus 228 vectors). The 63 not-run vectors are every `microdata-*` and `jsonld-*`
 vector listed in `ConformanceReportTest` output; they exercise the HTML
 microdata (rule M1/M3, `itemtype`/`itemprop` token lists, typed values) and
@@ -218,14 +223,13 @@ at the pinned revision, and the job asserts the receipt rather than a green tick
 
 | suite | vectors | ran | passed | identity of what was measured |
 | --- | --- | --- | --- | --- |
-| FHT development suite (`conformance/manifest.json`, format `fht-fasta`) | 72 | 72 | **72** | contract `fht.json` commit `226f923c28b680edb3c546e99a751482d06aef1a`, SHA-256 `59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e` (29 430 B, unchanged by the 2026-11-15 re-pin); suite commit `be9bcc825f55db92852fd882ffba4c1c214f53db`, manifest SHA-256 `9fd8c0b2a4638d5ddc0bf9b5d1e96c66778b26bcf8f93975aafb707d8f2b702c` (65 615 B; previously suite `24d3b033…` / manifest `9b071794…` / 66 vectors) |
-| FHGM draft suite (`development/conformance/manifest.json`, format `fhgff3` with `x-fhgm-models`) | 43 | 43 | **43** | record contract `development/model/fhgm-model.schema.json` commit `ac3d37b3033312844fc3151217731928ae33aa54`, SHA-256 `bf1553cac04dc88d8afaff1d39bc50360342e1ebedac4b73dfe3dff570ff410f` (9 564 B, unchanged by the 2026-11-15 re-pin); transport overlay `development/model/fhgm-draft.schema.json` commit `5d15ccc122fcb8239787393010364a818a774ee4`, SHA-256 `d1619cced91b4ef554853bf5512b5b4ad593b1dc571c2beacb5ee92466ea244a` (2 613 B; previously `dd9f6927…`, 1 363 B, the 1.1-only overlay); suite commit `57118c52363990dcaa42640394db84acb089cc24`, manifest SHA-256 `0d2790151c4a29551e9b92fb6b3c3c62ea062f2889ffbd00b3c425e7b6da3458` (51 114 B; previously `31f14f02…` / 35 269 B / 31 vectors) |
+| FHT development suite (`conformance/manifest.json`, format `fht-fasta`) | 82 | 82 | **82** | contract `fht.json` commit `86438f21c3a17a58334c97aed4955be1a2393522`, SHA-256 `4156353aa6d077fee2d2c69be4e17859b8e4f81bb10824f3c87f6701de196e7a` (34 396 B; the contract bytes MOVED at this re-pin — previous `59ad9641…`, 29 430 B, at `226f923c`); suite commit `86438f21c3a17a58334c97aed4955be1a2393522`, manifest SHA-256 `e5a4a5d027259e29a7e3cfb42da5e1ef07fa78d4a0e604ef73f28b8e5a59a508` (76 939 B; previously suite `be9bcc82…` / manifest `9fd8c0b2…` / 72 vectors, and before that `24d3b033…` / 66) |
+| FHGM draft suite (`development/conformance/manifest.json`, format `fhgff3` with `x-fhgm-models`) | 62 | 62 | **62** | record contract `development/model/fhgm-model.schema.json` commit `06176262f9824f26d974a15d8feeebde1fbeb0a8`, SHA-256 `b7075e5872e0a5ffce5ae61c590ce182f1f219fa269413cad3b1a966753cfeae` (11 522 B; MOVED at this re-pin — previous `bf1553ca…`, 9 564 B, at `ac3d37b3`); transport overlay `development/model/fhgm-draft.schema.json` commit `019bc29e32ce225791053dd2ce323bb91f304ce1`, SHA-256 `533b3120f4a86590f1b60a2175487597c99b646b3d092b7818b1f682c6cecf9b` (3 191 B; previously `d1619cce…`, 2 613 B, at `5d15ccc1`, and before that `dd9f6927…`, 1 363 B); suite commit `06176262f9824f26d974a15d8feeebde1fbeb0a8`, manifest SHA-256 `e41f05fd8bb8b8ec175b0192b80832041c84e15c325876aa66a86ba6e59413ce` (69 526 B; previously `57118c52…` / `0d279015…` / 43 vectors) |
 
-**Draft-suite re-pin, 2026-11-15.** Both suite records advanced; both contract
+**Draft-suite re-pin, 2026-11-15 (previous era).** Both suite records advanced; both contract
 records stayed because their bytes did not move (re-measured from the development
-repositories' content-addressed blobs, not from raw URLs). The FHGM record-contract
-pin and the suite pin are deliberately separate fields — on this very revision they
-parted ways (`ac3d37b3` vs `57118c52`). The 12 new FHGM vectors are the promoted
+repositories' content-addressed blobs, not from raw URLs). On that revision the FHGM
+record-contract pin and the suite pin parted ways (`ac3d37b3` vs `57118c52`). The 12 new FHGM vectors were the promoted
 real-data `dmel-*` cases (RefSeq `GCF_000001215.4` chr4 fixtures); the commit that
 sealed them says their expectations require independent review, and the 4 new FHT
 parent-link cases carry the suite's own `promotion: candidate-unreviewed` marker.
@@ -234,9 +238,55 @@ separate 1.2 matrix lane (`development/conformance/base_matrix.json`, identity-r
 twins observed against FHGFF3 1.2) is **not run** by this job: the sealed manifest is
 what this library pins and executes; the matrix lane would double-count the same
 expectations under rewritten file identity, so it stays not-run with that reason.
+
+**Round-13 coordinated re-pin, 2026-11-18: the CONTRACT bytes moved.** For the first
+time every draft artifact advanced together — FHT contract `59ad9641` → `4156353a`
+(29 430 → 34 396 B, FHT-Specification #54), FHT suite 72 → 82 (0 removed; C1 24 → 31,
+C2 3 → 4, C3 10 → 10), FHGM record contract `bf1553ca` → `b7075e58` (9 564 → 11 522 B)
+and overlay `d1619cce` → `533b3120` (2 613 → 3 191 B, FHGM #26/#29), FHGM suite 43 → 62
+(0 removed; 17 valid / 45 invalid; K4 occurrences 8 → 11). A suite-only re-pin is
+impossible: measured on this jar, the FHT suite's `fht-fasta-molecule-type-mixed`
+(expected valid) is REJECTED by the previous contract (the `MoleculeType` enum grew
+4 → 5 with `mixed`), the previous contract ACCEPTS `fht-fasta-blank-version-separator`
+(expected invalid), and the FHGM suite's `fhr-specification-alias-v0.6.0` and
+`v0.6.0-citation-stating-1.1` (both expected valid) are rejected by the previous
+overlay (seven-carrier enum; v0.6.0 paired const `1.2` only). So contract, overlay,
+manifest and the jar's frozen copies are re-pinned atomically, and the implementation
+moved with them where the widened bytes demand it: `FhgmModels` now applies K3 identity
+**before** any per-record rule and after NFC normalisation (the two new K3 vectors),
+and K4 requires the targeted gene row to be **root-level** — a gene carrying a
+`Parent` attribute no longer resolves (`feature-target-gene-with-parent`, a semantics
+change inside FHGM#29, not a new rule label). The draft-lane reading of FHT files
+moved to the streaming `verifyFile` path so a truncated gzip member arrives as the
+reader's own R1 INVALID (`fht-fasta-gzip-truncated`) instead of crashing an eager
+decompress — a control that runs red if the R1 handling regresses.
+Commit convention unified this pass across the four native libraries: each pinned
+file records its OWN last-touch commit, never a floating default-branch head; every
+recorded commit was re-verified byte-identical to its digest by `git show`, and the
+advisory freshness job compares digests against live main regardless of the label.
+
+**Two limitations no digest diff or vector count reveals**, carried here because the
+numbers above cannot state them: (1) the pinned FHGM bytes include FHGM#29's widening
+of `layers.model` — a `pass` now also asserts trimmed invisible-character-free text,
+RFC 3986 links with a real host, non-blank deposits, NFC-unique identifiers and a
+root-level gene target; a pass under these bytes is NOT the same claim as a pass under
+the 2026-11-15 bytes. (2) The K4 question is an **open upstream decision**, not a
+settled one: FHGM#22 (does `layers.model` presuppose feature rows?) with FHGM#27/#28
+and FAIR-bioHeaders-Specification#241 remain unresolved, the owning repository still
+describes the layers as orthogonal while its layer-semantics proposal sits unanswered,
+and JS#11 documents the failure shapes any resolution must answer (a zero-row feature
+layer reported as `reject` where the validator says `absent-layer`; an empty `ID=`
+making K4 an unfalsifiable `pass`). Java scores K4 natively, which is exactly why this
+statement matters here: this lane's 62/62 is an observation about a CONTESTED K4
+semantics, and unlike Julia — which declares K4 `not-supported-yet` and runs
+51 pass / 11 not-run — it cannot abstain. Also unchanged: 4 of the 82 FHT vectors are
+still `candidate-unreviewed` promotion cases, and the promoted `dmel-*` expectations
+still await independent review upstream.
+
 Suites are pinned **by digest first, count second**: the FHGM manifest passed through
-36 001 bytes at `5d15ccc1` with its vector count still 31 — a count-only assertion
-would have called that step no drift at all.
+36 001 bytes at `5d15ccc1` with its vector count still 31, and the 2026-11-18 FHGM
+manifest grew to 62 vectors while removing none — a count-only assertion would have
+called the earlier step no drift at all.
 
 `DraftHarness` re-digests the checkout's `fht.json` **and** its `manifest.json`
 against the registry pin before running anything; on a mismatch every vector is
@@ -255,8 +305,9 @@ carries the `V7` warning naming the commit and digest (and that no other record
 does).
 
 The differential control runs in the same job: `FhtLaneOffControlTest` reads all
-72 files with the default reader and requires each to be **rejected** as FHR with
-no `V7` warning — 72/72. Without it, a passing draft suite would not distinguish
+82 files with the default reader and requires each to be **rejected** as FHR (or as
+a broken stream, R1) with
+no `V7` warning — 82/82. Without it, a passing draft suite would not distinguish
 the lane from the released reader.
 
 `FHGM` is the second registered draft row, an `embedded-records` type: it is not a
@@ -280,10 +331,10 @@ from the draft's model-level rules:
 | rule | what this library checks | where it is proven |
 | --- | --- | --- |
 | B1 | the carrier file must satisfy the released FHGFF3 base schema **and** its exact-byte checksum before any model verdict exists | the suite's `transport-1-0-extension` and `tampered-record-bytes` vectors, and `FhgmModelsTest.aBrokenCarrierIsBoundaryB1NotAModelVerdict` |
-| K1 | the pinned transport overlay: FHGFF3 1.1 identity plus a non-empty `x-fhgm-models` array | `empty-model-array` + `k1RequiresTheTransportOverlay…` |
-| K2 | each record against the pinned record contract (four required fields, closed nested objects, opaque non-empty strings) | `record-unknown-key`, `record-without-reference`, `record-numeric-model-version` + `k2IsThePinnedRecordContract…` |
-| K3 | one `modelId` per snapshot; a duplicate is reported as an unselectable identity and rejects the snapshot | `ambiguous-model-id-in-snapshot`, `pointer-into-ambiguous-history` + `k3RejectsTwoRecordsSharingOneModelId…` |
-| K4 | `featureId`, percent-decoded over raw bytes, resolves to exactly one local `gene` (or `SO:0000704`) row | `feature-target-absent`, `-duplicate-rows`, `-transcript-row`, `percent-decoded-feature-target` + `k4RequiresExactlyOneLocalGeneRow` |
+| K1 | the pinned transport overlay: a released FHGFF3 identity selected by its cited schema URL (v0.5.0 with `1.1`, or v0.6.0 with `1.1` or `1.2`, FHGM#26) plus a non-empty `x-fhgm-models` array | `empty-model-array` + `k1RequiresTheTransportOverlay…` |
+| K2 | each record against the pinned record contract (four required fields, closed nested objects, opaque non-empty strings; portable link-host and non-blank patterns since the 2026-11-18 bytes) | `record-unknown-key`, `record-without-reference`, `record-evidence-uri-*`, `record-model-id-trailing-space` + `k2IsThePinnedRecordContract…` |
+| K3 | one `modelId` per snapshot, compared after NFC normalisation and before any per-record rule; a collision is reported as an unselectable identity and rejects the snapshot | `ambiguous-model-id-in-snapshot`, `duplicate-model-id-reported-before-record-checks`, `model-ids-equal-under-nfc`, `pointer-into-ambiguous-history` + `k3RejectsTwoRecordsSharingOneModelId…` |
+| K4 | `featureId`, percent-decoded over raw bytes, resolves to exactly one local **root-level** `gene` (or `SO:0000704`) row — since the 2026-11-18 bytes, a gene carrying a `Parent` attribute does not resolve | `feature-target-absent`, `-duplicate-rows`, `-transcript-row`, `-gene-with-parent`, `percent-decoded-feature-target` + `k4RequiresExactlyOneLocalGeneRow` |
 | K5 | the record's reference shares at least one comparable form with the file's genome link and never contradicts it | `reference-forms-not-comparable`, `record-reference-contradicts-file`, `both-reference-forms`, `file-linked-by-fhr-parent` + `k5RequiresOneComparableFormAndForbidsContradiction` |
 | K6 | a `predecessor` claim resolves against the prior snapshots the caller supplied, and only those (own model ID named, a different recorded version, matching assembly link and record reference, no recorded successor skipped) | `revision-resolves-supplied-history`, `predecessor-*`, `gap-*`, `stale-pointer-absent-history`, `revision-without-supplied-history`, `contract-rich-revision-chain`, `history-with-unresolved-own-pointer` + `k6ResolvesAPointerOnlyAgainstSuppliedHistory` |
 
@@ -294,7 +345,7 @@ reported **skipped** — feature-line validation belongs to `gff3-validator`, an
 suite itself records that no FHGM rule depends on that layer.
 
 Runner controls, so the 31/31 was not a vacuous agreement (and the 43/43 after the
-2026-11-15 re-pin runs the same controls): changing one byte of a vector fixture
+2026-11-15 re-pin, and the 62/62 after the 2026-11-18 re-pin, ran the same controls): changing one byte of a vector fixture
 inside checksum coverage made that vector fail (31 ran, 1 failure,
 build red); zeroing one recorded fixture digest in the manifest made the whole
 suite report **not run** through the pinned-manifest drift check (1 skipped test,
@@ -309,7 +360,20 @@ resulting skips; (2) appending one space to the shipped `fhgm-transport-draft.js
 (a change `cmp` confirmed was really present) made `DraftProvenanceTest` fail on the
 digest and `SchemaBundle` throw `IllegalStateException("…refusing to read drafts
 that do not match their own provenance")` in all 10 `FhgmModelsTest` cases; the file
-was then restored and `cmp`-verified byte-identical before the green re-run.
+was then restored and `cmp`-verified byte-identical before the green re-run. The
+2026-11-18 re-pin repeated the discipline again: with the OLD pins still in the jar,
+pointing the draft job at the live (advanced, 82- and 62-vector) checkouts produced
+`vectorsRan=0` in both receipts and a `note=drift` line naming live and pinned
+digests plus `re-pin deliberately` (FHT, contract side) and the pinned-vs-live
+manifest digests (FHGM, suite side), with the build red; the coupling itself was
+demonstrated vector by vector on the CLI - the same `fht-fasta-molecule-type-mixed`
+bytes are `INVALID` under the previous contract and `checksum verified; metadata
+valid` under the pinned one, `fht-fasta-blank-version-separator` is `metadata valid`
+(a lie) under the previous contract and rejected under the pinned one, and the two
+overlay-dependent valid FHGM vectors (`fhr-specification-alias-v0.6.0`,
+`v0.6.0-citation-stating-1.1`) are `REJECT [K1]` against the previous overlay bytes
+and `PASS` against the pinned ones - so no partial pin of this revision could have
+been green without the byte moves it hides.
 
 ## What this library does
 
@@ -375,10 +439,16 @@ was then restored and `cmp`-verified byte-identical before the green re-run.
 - **No FHGM *support*, and no FHGM released form.** FHGM is not a header type - its
   records ride inside an FHGFF3 header under `x-fhgm-models` - and what exists here
   is the rule V7 lane: both contract files pinned by commit and digest
-  (record contract `bf1553ca…`, 9 564 B, at `ac3d37b3`; transport overlay
-  `d1619cce…`, 2 613 B, at `5d15ccc1`, re-verified against `FHGM-Specification`
-  main on 2026-11-15), the K1–K6 checks ported by `FhgmModels`, and the suite's
-  recorded expectations executed in the labelled draft job. What this library does
+  (record contract `b7075e58…`, 11 522 B, at `06176262`; transport overlay
+  `533b3120…`, 3 191 B, at its last-touch `019bc29e`, re-verified against
+  `FHGM-Specification` main on 2026-11-18), the K1–K6 checks ported by `FhgmModels`,
+  and the suite's
+  recorded expectations executed in the labelled draft job. A `layers.model` `pass`
+  here means the **widened** FHGM#29 assertion - trimmed invisible-character-free
+  text, real-host RFC 3986 links, non-blank deposits, NFC-unique identifiers, a
+  root-level gene target - and the K4 abstention question (FHGM#22/#27/#28,
+  FAIR-bioHeaders-Specification#241, JS#11) is an open upstream decision this lane
+  participates in by scoring, not resolving; see the re-pin note above. What this library does
   **not** do with that: give FHGM a `schemaVersion`, a w3id URL, a registry row, a
   release tag or a support claim; run the suite's optional `gff3` feature layer
   (skipped by design); or run the suite's separate 1.2-base matrix lane
@@ -418,32 +488,40 @@ covered by `HeaderChecksTest`:
   includes `metadataAuthor[].uri` and `assemblyAuthor[].uri`, which the contract
   declares `format: uri` and the toolkit checks.
 
-## Draft pin currency (noted 2026-11-18, not re-pinned)
+## Draft pin currency (re-pinned 2026-11-18, round 13)
 
-The FHT pin is behind FHT-Specification `main`. `fht.json` moved after the pinned
-commit `226f923c` in FHT-Specification #50 (`f908fec`) and #51 (`dc82725`); `main`'s
-`fht.json` now has SHA-256 `91a890e2976373eb739574d3c3f24a55a2ee779131d24b55dfa4bb2f7accde8d`,
-and the suite manifest moved as well. The advisory `draft-pin-freshness` job reports
-this. A re-pin is a deliberate change of its own (new frozen bytes, registry row,
-provenance, CI literals, suite counts; AGENTS.md "never automate a re-pin"), so it is
-recorded here rather than folded into an unrelated fix. Until then every FHT reading
-is evidence about commit `226f923c` only. The FHGM record contract and transport
-overlay pins still match FHGM-Specification `main` (`a51a62f`).
+The 2026-11-18 morning record of this section said the FHT pin was behind
+`main` — `fht.json` had moved after `226f923c` in FHT-Specification #50 (`f908fec`)
+and #51 (`dc82725`), with the suite manifest moving too — and that a re-pin was a
+deliberate change of its own. This PR is that deliberate change, executed against a
+fresh clone. `main`'s contract bytes went on moving after that note was written —
+`7ea83956…` at `dc82725`, the then-live `91a890e2…` at `f908fec`, `2c437f60…` at
+`91fdc1f` (re-measured from each commit's blob, 2026-11-18) — before settling: this
+jar now pins `4156353a…` at last-touch commit `86438f21` (#54), with the 82-vector
+suite at `e5a4a5d0…` from the same commit; the FHGM record contract, overlay and
+suite advanced with it (`06176262` / `019bc29e`, above). Every
+FHT reading from this build is evidence about commit `86438f21` only. The advisory
+`draft-pin-freshness` job continues to compare digests against live raw main and
+nothing automates a re-pin from it.
 
 ## Not verified (open questions, honestly listed)
 
 - The suite passed on this host with Homebrew OpenJDK **17.0.21.0.3** and
   **27.0.1.0.3** (macOS/aarch64, Maven 3.9.11) and in CI with Temurin **17** and
   **21** on ubuntu-latest, with the specification pinned at tag `v0.6.0` and the
-  FHT suite pinned at `be9bcc8` (the pre-registry run was 43618810450). The report
+  FHT suite pinned at `86438f2` (the pre-registry run was 43618810450; the 2026-11-18
+  re-pin evidence above was produced locally on this machine's JDK 17.0.21.0.3 and
+  the detached suite checkouts, and the CI runs of this very commit remain to be
+  observed). The report
   guard (`.github/scripts/assert-reports.sh`) fails on zero tests, a class that
   executed nothing, or any skip; the receipts pin the vector counts. Platforms/JDKs
   beyond these are untested.
 - The FHT draft reading is verified only where the FHT suite reaches: FASTA
-  containers, the pinned `fht.json` revision, and the 72 vectors' rules. Nothing
+  containers, the pinned `fht.json` revision, and the 82 vectors' rules. Nothing
   about FHT in a GFA container, FHT microdata or FHT JSON-LD, or any other draft
   revision, is implemented or tested here. The 4 parent-link vectors added on
-  2026-11-15 carry the suite's own `promotion: candidate-unreviewed` marker: they
+  2026-11-15 still carry the suite's own `promotion: candidate-unreviewed` marker at
+  this revision: they
   exercise this reader, but their expectations await review by a second reader
   upstream (FHT-Specification#8), and nothing here pre-empts that review.
 - Behavior on huge files (multi-GB bgzip) and on adversarially crafted YAML is

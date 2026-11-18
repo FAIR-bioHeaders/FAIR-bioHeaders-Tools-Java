@@ -5,12 +5,11 @@
  */
 package org.fairbioheaders;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.networknt.schema.Schema;
 
@@ -34,16 +33,21 @@ import tools.jackson.databind.JsonNode;
  *   <li><b>B1 boundary</b> - the file must already satisfy the released FHGFF3 base schema and its
  *       exact-byte checksum. Reported by the carrier {@link VerifyResult}; a rejection at this
  *       layer is not evidence about a model.</li>
- *   <li><b>K1 transport</b> - the pinned transport overlay: released FHGFF3 1.1 identity plus a
- *       non-empty {@code x-fhgm-models} array of objects.</li>
+ *   <li><b>K1 transport</b> - the pinned transport overlay: a released FHGFF3 identity selected by
+ *       its cited schema URL (v0.5.0 with schemaVersion 1.1, or v0.6.0 with 1.1 or 1.2, per the
+ *       dual-base decision of 2026-11-15 and the URL-keyed selection of FHGM#26) plus a non-empty
+ *       {@code x-fhgm-models} array of objects.</li>
  *   <li><b>K2 record shape</b> - each record against the pinned native record contract
  *       ({@code modelId}, {@code modelVersion}, {@code featureId}, {@code reference} required;
  *       nested objects closed).</li>
- *   <li><b>K3 identity</b> - one {@code modelId} per snapshot. A duplicate makes the identity a
- *       revision pointer needs unselectable, reported as ambiguous, and rejects the snapshot.</li>
- *   <li><b>K4 targeting</b> - the first record for a model ID must name a {@code featureId} that
- *       percent-decodes to exactly one local {@code gene} row (or {@code SO:0000704}) in the
- *       enclosing file.</li>
+ *   <li><b>K3 identity</b> - one {@code modelId} per snapshot, compared after NFC normalisation
+ *       and before any per-record rule. A collision - same spelling repeated, or distinct
+ *       spellings that fold together - makes the identity a revision pointer needs unselectable,
+ *       reported as ambiguous, and rejects the snapshot.</li>
+ *   <li><b>K4 targeting</b> - the record's {@code featureId} must percent-decode to exactly one
+ *       local {@code gene} row (or {@code SO:0000704}) in the enclosing file, and since the
+ *       2026-11-18 bytes (FHGM#29) that row must be <em>root-level</em>: a gene carrying a
+ *       {@code Parent} attribute does not resolve.</li>
  *   <li><b>K5 reference</b> - the record's reference must share at least one comparable form with
  *       the file's genome link (accession + SeqCol digest, or the annotated FHR checksum) and must
  *       never contradict it. Both halves are enforced.</li>
@@ -294,10 +298,37 @@ public final class FhgmModels {
         }
         Gff3FeatureIndex targets = featureIndex(data);
         LinkKeys fileKeys = assemblyKeys(header);
-        Map<String, JsonNode> byModelId = new LinkedHashMap<>();
-        Set<String> seen = new LinkedHashSet<>();
         List<JsonNode> records = new ArrayList<>();
         models.forEach(records::add);
+        // K3 identity comes first, before any per-record rule, and it compares modelIds after
+        // NFC normalisation: a collision is the named outcome `ambiguous` and rejects the whole
+        // snapshot, so it must never be preempted or masked by whichever K2/K4/K5 check happens
+        // to trip on one of the colliding rows first (suite rule K3; the 2026-11-18 vectors
+        // duplicate-model-id-reported-before-record-checks and model-ids-equal-under-nfc hold
+        // this reader to exactly that precedence and normalisation).
+        Map<String, List<String>> idsByNormalized = new LinkedHashMap<>();
+        for (JsonNode model : records) {
+            String modelId = model.path("modelId").asString("");
+            idsByNormalized
+                .computeIfAbsent(Normalizer.normalize(modelId, Normalizer.Form.NFC),
+                    k -> new ArrayList<>())
+                .add(modelId);
+        }
+        for (List<String> collision : idsByNormalized.values()) {
+            if (collision.size() < 2) {
+                continue;
+            }
+            if (collision.stream().distinct().count() == 1) {
+                throw new ModelCheckFailure(Issue.error("K3", "Ambiguous model ID "
+                    + quoted(collision.get(0)) + ": " + collision.size()
+                    + " records share it in one snapshot"));
+            }
+            throw new ModelCheckFailure(Issue.error("K3", "Ambiguous model ID "
+                + quoted(collision.get(0)) + " and " + quoted(collision.get(1))
+                + ": distinct spellings equal under NFC normalisation, " + collision.size()
+                + " records share one snapshot identity in one snapshot"));
+        }
+        Map<String, JsonNode> byModelId = new LinkedHashMap<>();
         for (int index = 0; index < records.size(); index++) {
             JsonNode model = records.get(index);
             List<Issue> shape = labelled(SchemaBundle.validate(recordContract, model), "K2");
@@ -306,16 +337,22 @@ public final class FhgmModels {
                     + " is invalid under the pinned draft contract: " + shape.get(0).message()));
             }
             String modelId = model.path("modelId").asString();
-            if (seen.add(modelId)) {
-                String featureId = model.path("featureId").asString();
-                List<String> types = targets.typesOf(featureId);
-                if (types.size() != 1 || !isGene(types.get(0))) {
-                    throw new ModelCheckFailure(Issue.error("K4", "model " + quoted(modelId)
-                        + " must target one local gene row: " + quoted(featureId)
-                        + " resolves to " + types));
-                }
+            String featureId = model.path("featureId").asString();
+            List<String> types = targets.typesOf(featureId);
+            if (types.size() != 1 || !isGene(types.get(0))) {
+                throw new ModelCheckFailure(Issue.error("K4", "model " + quoted(modelId)
+                    + " must target one local gene row: " + quoted(featureId)
+                    + " resolves to " + types));
             }
-            seen.add(modelId);
+            if (targets.hasParent(featureId)) {
+                // FHGM#29 widened K4's gene target to a ROOT-level gene row: a gene that carries
+                // a Parent attribute is nested, and a pointer into it does not resolve as the
+                // draft now requires. This is a semantics change inside the pinned bytes, not a
+                // new rule label.
+                throw new ModelCheckFailure(Issue.error("K4", "model " + quoted(modelId)
+                    + " must target one local gene row: " + quoted(featureId)
+                    + " has a Parent attribute, so it is not a root gene row"));
+            }
             byModelId.putIfAbsent(modelId, model);
             LinkKeys recordKeys = referenceKeys(model);
             if (recordKeys.conflictsWith(fileKeys)) {
@@ -325,15 +362,6 @@ public final class FhgmModels {
             if (!recordKeys.matches(fileKeys)) {
                 throw new ModelCheckFailure(Issue.error("K5", "model " + quoted(modelId)
                     + " has no reference form comparable with the file genome link"));
-            }
-        }
-        for (String modelId : seen) {
-            long count = records.stream()
-                .filter(m -> modelId.equals(m.path("modelId").asString(null)))
-                .count();
-            if (count > 1) {
-                throw new ModelCheckFailure(Issue.error("K3", "Ambiguous model ID " + quoted(modelId)
-                    + ": " + count + " records share it in one snapshot"));
             }
         }
         return new Snapshot(header, byModelId, header.path("checksum").asString());
