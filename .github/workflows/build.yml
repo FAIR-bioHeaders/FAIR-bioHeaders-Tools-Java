@@ -292,7 +292,7 @@ jobs:
           [ "$count" -eq 62 ] || { echo "expected 62 FHGM draft vectors to run (got $count)" >&2; exit 1; }
 
       - name: Assert nothing was skipped in the draft job
-        run: sh .github/scripts/assert-reports.sh 238
+        run: sh .github/scripts/assert-reports.sh 270
 
       - name: Upload draft reports
         if: always()

@@ -9,7 +9,6 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,13 +36,30 @@ final class Gff3FeatureIndex {
         }
     }
 
+    /** What one row's attribute column says about that row's parent. */
+    enum ParentState {
+        /** No {@code Parent} tag on the row at all: the only state that can support a root claim. */
+        ABSENT,
+        /** A {@code Parent} tag with a readable value: the row is nested. */
+        NESTED,
+        /**
+         * A {@code Parent} tag that is present but carries no value ({@code Parent=}), or a
+         * {@code Parent} token the attribute grammar cannot parse at all (a bare {@code Parent} with
+         * no {@code =}). Per the GFF3 attribute grammar {@code Parent=} is a <em>present</em> tag with
+         * an empty value list, which is not the same assertion as the tag being absent - and neither
+         * is an assertion this index is willing to read either way. A caller that needs to know
+         * whether a row is a root gets "unknown" here, and must not report a root.
+         */
+        INDETERMINATE
+    }
+
     private final Map<String, List<String>> typesById;
-    private final Set<String> idsWithParent;
+    private final Map<String, ParentState> parentById;
 
     private Gff3FeatureIndex(Map<String, List<String>> typesById,
-                             Set<String> idsWithParent) {
+                             Map<String, ParentState> parentById) {
         this.typesById = typesById;
-        this.idsWithParent = idsWithParent;
+        this.parentById = parentById;
     }
 
     /**
@@ -53,7 +69,7 @@ final class Gff3FeatureIndex {
      */
     static Gff3FeatureIndex of(byte[] data) {
         Map<String, List<String>> index = new LinkedHashMap<>();
-        Set<String> withParent = new HashSet<>();
+        Map<String, ParentState> parents = new LinkedHashMap<>();
         int lineNumber = 0;
         for (byte[] line : splitLines(data)) {
             lineNumber++;
@@ -69,31 +85,52 @@ final class Gff3FeatureIndex {
             }
             byte[] type = columns.get(2);
             List<String> rowIds = new ArrayList<>();
-            boolean rowHasParent = false;
+            ParentState rowParent = ParentState.ABSENT;
             for (byte[] attribute : split(columns.get(8), (byte) ';')) {
                 int eq = indexOf(attribute, (byte) '=');
-                if (eq < 0) {
-                    continue;
-                }
-                byte[] key = Arrays.copyOfRange(attribute, 0, eq);
-                byte[] value = Arrays.copyOfRange(attribute, eq + 1, attribute.length);
+                // A token with no '=' is not a tag/value pair: keep the whole token as the key and no
+                // value, so a bare `Parent` is seen as a Parent tag that says nothing readable rather
+                // than being skipped as unrecognised. Key matching stays exact-as-written, the way the
+                // draft's own index does it, so ` Parent` with a leading space is another tag.
+                byte[] key = eq < 0 ? attribute : Arrays.copyOfRange(attribute, 0, eq);
+                byte[] value = eq < 0 ? new byte[0]
+                    : Arrays.copyOfRange(attribute, eq + 1, attribute.length);
                 if (Arrays.equals(key, "ID".getBytes(StandardCharsets.UTF_8))) {
                     String decoded = new String(unquote(value), StandardCharsets.UTF_8);
                     rowIds.add(decoded);
                     index.computeIfAbsent(decoded, k -> new ArrayList<>())
                         .add(new String(type, StandardCharsets.UTF_8));
                 } else if (Arrays.equals(key, "Parent".getBytes(StandardCharsets.UTF_8))
-                        && value.length > 0) {
-                    // A non-empty Parent attribute: whatever ID this row carries, it names a
-                    // nested feature, not a root-level one (FHGM#29's gene-target condition).
-                    rowHasParent = true;
+                        && rowParent != ParentState.NESTED) {
+                    // FHGM#29's gene-target condition reads this: a non-empty Parent makes the row
+                    // nested; an empty or unparseable one makes the row's parenthood unknown, which is
+                    // not the same as absent and must not be reported as a root.
+                    rowParent = value.length > 0 ? ParentState.NESTED : ParentState.INDETERMINATE;
                 }
             }
-            if (rowHasParent) {
-                withParent.addAll(rowIds);
+            for (String id : rowIds) {
+                ParentState known = parents.get(id);
+                parents.put(id, strongest(known, rowParent));
             }
         }
-        return new Gff3FeatureIndex(index, withParent);
+        return new Gff3FeatureIndex(index, parents);
+    }
+
+    /**
+     * When several rows declare one ID, the most informative statement about parenthood wins: nested
+     * outranks indeterminate outranks silent. Merging keeps a row elsewhere in the file from being
+     * forgotten, and it never upgrades an indeterminate row into a root.
+     */
+    private static ParentState strongest(ParentState seen, ParentState next) {
+        if (seen == null) {
+            return next;
+        }
+        if (seen == ParentState.NESTED || next == ParentState.NESTED) {
+            return ParentState.NESTED;
+        }
+        return seen == ParentState.INDETERMINATE || next == ParentState.INDETERMINATE
+            ? ParentState.INDETERMINATE
+            : ParentState.ABSENT;
     }
 
     /** The feature types carrying {@code id}; empty when no local row declares it. */
@@ -101,9 +138,12 @@ final class Gff3FeatureIndex {
         return typesById.getOrDefault(id, List.of());
     }
 
-    /** Whether any row declaring {@code id} carries a non-empty {@code Parent} attribute. */
-    boolean hasParent(String id) {
-        return idsWithParent.contains(id);
+    /**
+     * What the rows declaring {@code id} say about its parent. {@link ParentState#ABSENT} is also what
+     * an unknown ID reports, and a caller must have resolved the ID before reading that as anything.
+     */
+    ParentState parentOf(String id) {
+        return parentById.getOrDefault(id, ParentState.ABSENT);
     }
 
     int size() {

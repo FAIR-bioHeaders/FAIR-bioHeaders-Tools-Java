@@ -186,9 +186,16 @@ executions, 0 failures, 0 skipped** as recorded on 2026-11-16; the released job 
 since grown to 351 executions locally (measured 2026-11-18 on this branch, JDK
 17.0.21.0.3) — that doc/CI-literal lag is tracked as its own change (Tools-Java#14),
 not folded into a re-pin. (JDK 17.0.21.0.3 and 27.0.1.0.3 locally,
-Temurin 17 and 21 in CI on ubuntu-latest and macos-latest). The draft job adds 238
+Temurin 17 and 21 in CI on ubuntu-latest and macos-latest). The draft job adds 270
 more (82 FHT draft vectors, 82 lane-off controls, 62 FHGM draft vectors, 10 FHGM
-rule tests, 2 ledgers) for **589 measured in total on this pass**, with the same counts on JDK 17 and 21.
+rule tests, 16 FHGM verdict-precision tests, 16 FHGM carrier-citation cells, 2
+ledgers) for **621 measured in total on the pinned baseline** (351 + 270), on JDK
+17.0.21.0.3. **Baseline matters when quoting these numbers**: the same tree run
+against FAIR-bioHeaders-Specification's live `main` instead of the pinned `v0.6.0`
+tag measures 607 tests with 7 failures (five shared-suite additions plus two
+ledger/golden totals) — that is not a defect in the draft lane, it is what pinning a
+build to a moving branch does, and it is the direct argument for re-pinning these
+drafts to release tags the moment `v0.7.0` and `v0.8.0` exist.
 The earlier PR #1 figure was 258 (30 unit plus 228 vectors). The 63 not-run vectors are every `microdata-*` and `jsonld-*`
 vector listed in `ConformanceReportTest` output; they exercise the HTML
 microdata (rule M1/M3, `itemtype`/`itemprop` token lists, typed values) and
@@ -264,6 +271,92 @@ Commit convention unified this pass across the four native libraries: each pinne
 file records its OWN last-touch commit, never a floating default-branch head; every
 recorded commit was re-verified byte-identical to its digest by `git show`, and the
 advisory freshness job compares digests against live main regardless of the label.
+
+**Review fixes on the same head (2026-11-18, after the independent review of
+`91cafb7`).** The re-pin's implementation changes were correct in direction and wrong
+in three specifics, each one the same class of defect — a verdict asserted from
+something the reader had not resolved:
+
+1. **K4's root condition does not accept an unreadable `Parent`.** A gene row written
+   `ID=toy-a;Parent=` — a *present* tag with an empty value list under the GFF3
+   attribute grammar, which is a different assertion from the tag being absent — and a
+   bare `ID=toy-a;Parent` (no `=` at all) both resolved as root, because the parser
+   skipped a token with no `=` and required a non-empty value to call a row nested.
+   `Gff3FeatureIndex` now answers with three states (`ABSENT` / `NESTED` /
+   `INDETERMINATE`, merged strongest-wins when several rows carry one ID), and K4
+   resolves only from `ABSENT`. An indeterminate row **rejects** under K4; it is not
+   silently upgraded to a root and not counted as a pass. Reject rather than abstain is
+   a deliberate choice, stated here because abstention in this lane is exactly the
+   unresolved upstream question (§4 and the limitations below): this library already
+   scores K4 natively, so the honest options were assert-too-much or refuse-the-record,
+   and refusing is the one that cannot mislead a caller. Key matching stays exact-as-written,
+   the way the draft's own index does it, so ` Parent` with a leading space is still
+   a different tag.
+2. **K2 (record shape) runs before K3 (identity), over the whole array.** The re-pin had
+   put K3 first, so two records that were both *missing* `modelId` produced
+   `K3: Ambiguous model ID ''` — an identity fabricated from an absent field, and a
+   finding that points at the wrong rule. `validate_fhgm.py` validates every record's
+   shape before it collects normalised IDs, and this reader now keeps that order. The
+   full sequence, with what each step may report first:
+
+   | step | this library | the draft's reference checker |
+   | --- | --- | --- |
+   | base schema + exact-byte checksum | B1, on the carrier, before any model verdict | `base.validate`, then `checksum` |
+   | transport overlay | K1 | `transport.validate` |
+   | **every record's shape** | **K2, whole-array first pass** | **K2, whole-array first pass** |
+   | identity uniqueness, after NFC | K3, before any per-record rule | K3, before any per-record rule |
+   | gene-target resolution (root row) | K4, per record | K4, per record |
+   | reference agreement with the file link | K5, per record | K5, per record |
+   | revision-pointer verdicts | K6, after the snapshot clears | K6, after the snapshot clears |
+
+   The K3-before-K4/K5 precedence the re-pin introduced is kept — that is what
+   `duplicate-model-id-reported-before-record-checks` pins — and `FhgmVerdictPrecisionTest`
+   now holds both halves: a real collision still outranks a per-record finding, and a
+   record with nothing valid to compare never reaches the comparison at all. Enumerating
+   the order was the fix: the K3 inversion had also been able to mask any other K2
+   defect (unknown key, non-string field, nested-shape error) behind an ambiguity
+   report, not just the missing-`modelId` case.
+3. **`$defs.text` is enforced in Unicode terms, in the draft lane only.** The pinned
+   record contract states the rule as "no leading or trailing whitespace (Unicode
+   whitespace included)" and forbids C0/DEL/C1/zero-width/bidi characters anywhere
+   (`fhgm-model-draft.json` lines 155-161) — but writes it as `^\S` and `\s$`, which
+   the JSON Schema evaluator here hands to `java.util.regex` *without*
+   `UNICODE_CHARACTER_CLASS`. ASCII `\s` is `[ \t\n\x0B\f\r]`, so a `modelId` of
+   `"model-a\u00A0"`, or of `"\u00A0"` alone, satisfied the pattern and passed: the
+   contract's own hidden-character rule, defeated by an engine default, in the model
+   layer this library exposes to callers. `DraftTextPolicy` now applies the constraint
+   over the code points **the contract itself enumerates** — the set
+   `$defs.link` spells out at line 166 (`\t-\r`, space, `\x1c-\x1f`, `\x85`,
+   `\xa0`, `\u1680`, `\u2000-\u200a`, `\u2028`, `\u2029`, `\u202f`, `\u205f`,
+   `\u3000`, `\ufeff`) plus the invisible class of `$defs.text`'s own `not` pattern —
+   and it is applied to **every string in the record**, recursively, not to the three
+   field names in the bug report, because `modelId`, `modelVersion`, `featureId`, a
+   predecessor's ids, contributor names and roles, evidence descriptions, software
+   names/versions, limitations and `reuseConditions` are all `$defs.text`. Internal
+   ordinary whitespace stays legal, exactly as the contract leaves it.
+
+   The fix is draft-scoped on purpose. Editing the frozen bytes to carry an explicit
+   class would move a digest this jar quotes and re-pins deliberately; the portable
+   pattern is owning-repository work in `FHGM-Specification` (with the ±fixtures a
+   schema change needs), and until it lands, the sentence wins over the engine. The
+   same class exists in the FHT draft contract's patterns and in other readers'
+   evaluators; that belongs to the cross-repository hidden-character policy
+   conversation, not to this PR, and is **not** patched here.
+
+
+**What the pinned suites do NOT cover, measured rather than assumed.** Each fix was
+reverted on its own and the whole draft group re-run against the pinned baseline. Every
+revert turned red exactly its own unit cases and nothing else: dropping the indeterminate
+`Parent` branch, or reading an empty `Parent=` as absent, reddens 2 cases; putting K3 back
+before K2 reddens 2; removing the Unicode text policy reddens 5. In all four reverts the
+FHT lane stayed `82 ran / 82 passed`, the FHGM lane stayed `62 ran / 62 passed`, the
+16-cell carrier matrix stayed green and `assert-reports` saw no skips. That is the finding,
+not a comfort: **the 62 FHGM vectors contain no case for an empty or malformed `Parent`,
+no case for a record whose `modelId` is absent, and no case for a text value padded with a
+non-ASCII space** - a green draft job cannot see any of these three, which is why they
+arrived by review rather than by CI. They are pinned here as unit cases, and they are
+vector-shaped gaps worth reporting upstream to `FHGM-Specification` (this PR does not
+create that issue, and does not claim the suite covers them).
 
 **Two limitations no digest diff or vector count reveals**, carried here because the
 numbers above cannot state them: (1) the pinned FHGM bytes include FHGM#29's widening

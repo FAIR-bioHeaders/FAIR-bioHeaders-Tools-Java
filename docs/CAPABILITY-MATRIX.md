@@ -84,14 +84,25 @@ Cells a reviewer should not have to guess about:
    never as passing and never omitted from the total.
 2. **FHGM: a pinned draft reading of the records, and nothing more.** `FhgmModels` validates the
    records under `x-fhgm-models` against the two pinned contract files (K1 transport, K2 record
-   shape) and enforces K3 (one `modelId` per snapshot), K4 (`featureId` percent-decodes to exactly
-   one local gene row), K5 (the record's reference shares a comparable form with the file's genome
-   link and never contradicts it) and K6 (a `predecessor` claim resolves against the prior snapshots
-   the caller supplied, and only those), warning per record. What it is **not**: a released type (no
-   `schemaVersion`, no w3id URL, no registry row), a supported type, a feature-line validator, or a
-   lineage resolver. A carrier whose FHGFF3 header or checksum is broken is refused at boundary B1
-   before any model verdict - the suite's own ordering, and the reason no FHGM pass can be read as
-   an integrity statement.
+   shape) and enforces K3 (one `modelId` per snapshot, compared after NFC normalisation), K4
+   (`featureId` percent-decodes to exactly one local gene row that is **root-level**), K5 (the
+   record's reference shares a comparable form with the file's genome link and never contradicts it)
+   and K6 (a `predecessor` claim resolves against the prior snapshots the caller supplied, and only
+   those), warning per record. The order is the draft's own, and each step is stated because a
+   verdict is only as good as the layer that produced it: B1 (carrier schema + exact-byte checksum)
+   → K1 → **K2 for every record** → K3 → K4 → K5 → K6. Shape comes before identity because an
+   identity the contract has not accepted is not an identity - a record with no `modelId` is a K2
+   failure, never a K3 collision about the empty string. Root comes before nothing but its own
+   evidence: `Parent=` is a present tag with an empty value list and a bare `Parent` is
+   unreadable, so both are **INDETERMINATE** and K4 rejects rather than calling the row a root
+   (`schemas/provenance.json` `drafts.FHGM.suitePinAnnotation.verdictPrecision`). And the contract's
+   text rule is Unicode, so it is enforced on code points, not on `\s`: see `DraftTextPolicy`.
+   What it is **not**: a released type (no released or registered `schemaVersion`, no w3id URL, no
+   registry row - though the FHT draft's own bytes require a `schemaVersion: "1.0"` field, which is
+   why the qualifier is part of the claim), a supported type, a feature-line validator, or a lineage
+   resolver. A carrier whose FHGFF3 header or checksum is broken is refused at boundary B1 before
+   any model verdict - the suite's own ordering, and the reason no FHGM pass can be read as an
+   integrity statement.
 3. **GFA containers for the FHT draft: no.** Reason: the draft suite defines its
    format as `fht-fasta` only; inventing GFA draft fixtures here would be
    authoring normative expectations the owning repository has not stated.
@@ -112,8 +123,13 @@ Cells a reviewer should not have to guess about:
    logged. A draft never takes a release form: a `.../fht/vX.Y.Z` w3id URL or an
    `FHT-Specification` raw **tag** URL is not a draft citation and stays rule V5
    with the near-miss warning (both cases are vectors in the FHT suite and tests
-   here). No `schemaVersion`, registry row, alias or support claim is invented
-   for a draft.
+   here). No released or registered `schemaVersion`, registry row, alias or
+   support claim is invented for a draft — which is not the same statement as "no
+   `schemaVersion` anywhere": the FHT draft contract requires a
+   `schemaVersion: "1.0"` field inside an FHT header, and that field is part of the
+   pinned draft bytes, not a release registration. Say "no released/registered FHT
+   `schemaVersion`", because the bare form is false and a V7 sweep keyed on the bare
+   form would flag its own documentation.
 7. **Microdata `R14`/`R15` per-type divergence, `assess`, `--online` resolution,
    directive cross-checks (`#!genome-build`):** not implemented; see
    `docs/STATUS.md`. (Streaming is implemented: `verifyFile` reads a file once
@@ -124,10 +140,10 @@ Cells a reviewer should not have to guess about:
 
 * Released-contract acceptance: 228 of 291 shared vectors run; 63 declared
   not-run with reason 1 above.
-* Draft evidence, in the labelled `draft-vectors` job only (238 tests measured
-  2026-11-18: 82 FHT
-  vectors + 82 lane-off controls + 62 FHGM vectors + 10 FHGM rule tests + 2 ledgers
-  = 238),
+* Draft evidence, in the labelled `draft-vectors` job only (270 tests measured
+  2026-11-18 on the pinned baseline: 82 FHT vectors + 82 lane-off controls + 62 FHGM
+  vectors + 10 FHGM rule tests + 16 FHGM verdict-precision tests + 16 FHGM
+  carrier-citation cells + 2 ledgers = 270),
   each suite's receipt naming the contract commit and digest and the suite commit
   and manifest digest it measured. Neither count is added to the 291, and neither
   is a support claim; the FHGM figure scores the widened K4 semantics this library
