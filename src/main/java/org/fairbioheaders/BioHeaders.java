@@ -186,6 +186,10 @@ public final class BioHeaders {
                 }
             }
             metadata = PortableYaml.loadSafe(scan.yamlText());
+            Issue identity = checksumLineIdentity(scan.checksumLineText(), metadata);
+            if (identity != null) {
+                issues.add(identity);
+            }
             FhType type;
             String release;
             try {
@@ -200,6 +204,13 @@ public final class BioHeaders {
                 return new VerifyResult(VerifyResult.Status.UNSUPPORTED_VERSION,
                     stated, computed, metadata, issues);
             }
+            if (!types.def(type).carriedBy(kind)) {
+                // The reference toolkit's validate_header_family: a header family belongs to the
+                // serializations its contract defines (docs/CAPABILITY-MATRIX.md section 2).
+                issues.add(Issue.error("container", type.fileKey() + " metadata is incompatible with "
+                    + kind + "; expected " + String.join(" or ", allowedNames(kind)) + " metadata"));
+                return new VerifyResult(VerifyResult.Status.INVALID, stated, computed, metadata, issues);
+            }
             issues.addAll(SchemaBundle.validate(bundle.contract(type, release), metadata));
             UriSchemes.collect(types.def(type), metadata, issues);
             if (parents != null) {
@@ -212,6 +223,42 @@ public final class BioHeaders {
         boolean invalid = issues.stream().anyMatch(i -> i.severity() == Severity.ERROR);
         return new VerifyResult(invalid ? VerifyResult.Status.INVALID : VerifyResult.Status.VALID,
             stated, computed, metadata, issues, verdicts);
+    }
+
+    private List<String> allowedNames(Kind kind) {
+        List<String> names = new ArrayList<>();
+        for (FhType t : types.types()) {
+            if (types.def(t).carriedBy(kind) && t.transport() == FhType.Transport.EMBEDDED_HEADER) {
+                names.add(t.fileKey());
+            }
+        }
+        return names;
+    }
+
+    /**
+     * The line the checksum excludes must be the record's checksum, not a line that only looks
+     * like one to the line scan (a {@code checksum:} line inside a quoted or flow scalar, with the
+     * real key elsewhere): parsed alone it must be exactly {@code {checksum: <value>}}, and that
+     * value must be the parsed record's {@code checksum}. As the toolkit's
+     * {@code SequenceScan.checksum}.
+     */
+    static Issue checksumLineIdentity(String lineText, JsonNode metadata) {
+        if (lineText == null) {
+            return null;
+        }
+        JsonNode alone;
+        try {
+            alone = PortableYaml.loadSafe(lineText);
+        } catch (ScanException e) {
+            alone = null;
+        }
+        JsonNode value = alone != null && alone.isObject() && alone.size() == 1 ? alone.get("checksum") : null;
+        boolean ok = value != null && value.isString() && !value.asString().isEmpty()
+            && metadata != null && metadata.isObject()
+            && value.equals(metadata.get("checksum"));
+        return ok ? null : Issue.error("R2", "the checksum header line must hold the record's own"
+            + " checksum value as a single-line scalar; the line the checksum excludes is not the"
+            + " record's checksum field");
     }
 
     /**

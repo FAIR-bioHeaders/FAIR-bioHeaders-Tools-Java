@@ -79,7 +79,8 @@ final class PortableYaml {
     private static final Set<String> TRUE_WORDS =
         Set.of("true", "True", "TRUE");
 
-    enum Tag { NULL, BOOL, INT, FLOAT, STR }
+    /** {@code VALUE} is YAML 1.1's {@code tag:yaml.org,2002:value}, the plain scalar {@code =}. */
+    enum Tag { NULL, BOOL, INT, FLOAT, STR, VALUE }
 
     private PortableYaml() {
     }
@@ -121,6 +122,9 @@ final class PortableYaml {
     }
 
     private static Tag tag11(String v) {
+        if (v.equals("=")) {
+            return Tag.VALUE; // PyYAML resolves a plain '=' to the 1.1 value tag, not a string
+        }
         if (v.equals("y") || v.equals("Y") || v.equals("n") || v.equals("N")) {
             return Tag.BOOL;
         }

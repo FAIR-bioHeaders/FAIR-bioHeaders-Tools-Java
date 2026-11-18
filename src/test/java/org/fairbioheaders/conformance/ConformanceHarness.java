@@ -186,7 +186,8 @@ public final class ConformanceHarness {
      * Most rules are checked by name. The rules a released contract enforces (P1, P2, G2, G3, R15,
      * and the selection rules V1-V3, V5 and V6, whose failure shows as the record not satisfying
      * the contract it selected) surface as {@code schema} errors from the validator, so a schema
-     * error is their evidence. R1 and R4 define which bytes are hashed and how the digest is
+     * error is their evidence; a GFF3 header citing another type is refused as the wrong
+     * container before any validation (G3). R1 and R4 define which bytes are hashed and how the digest is
      * written, so a file that breaks them states a checksum that does not match the covered bytes
      * (R3) or is not a canonical 44-character value (R5). G1 also defines where the GFF3 header
      * block ends, and a {@code #~} line after {@code ##FASTA} is reported as the late header line
@@ -194,7 +195,8 @@ public final class ConformanceHarness {
      */
     public static Set<String> evidenceFor(String rule) {
         return switch (rule) {
-            case "P1", "P2", "G2", "G3", "R15", "V1", "V2", "V3", "V5", "V6" -> Set.of(rule, "schema");
+            case "G3" -> Set.of("G3", "schema", "container");
+            case "P1", "P2", "G2", "R15", "V1", "V2", "V3", "V5", "V6" -> Set.of(rule, "schema");
             case "R1" -> Set.of("R1", "R3");
             case "R4" -> Set.of("R4", "R3", "R5");
             case "G1" -> Set.of("G1", "R10");

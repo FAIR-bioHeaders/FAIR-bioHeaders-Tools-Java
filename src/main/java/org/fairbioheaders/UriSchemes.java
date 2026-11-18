@@ -37,8 +37,8 @@ final class UriSchemes {
      */
     static final Map<FhType, List<String>> URI_FIELDS = Map.of(
         FhType.FHR, List.of(
-            "accessionID.url", "assemblyProtocol", "assemblySoftware[].uri",
-            "relatedLink[]", "taxon.uri"),
+            "accessionID.url", "assemblyAuthor[].uri", "assemblyProtocol", "assemblySoftware[].uri",
+            "metadataAuthor[].uri", "relatedLink[]", "taxon.uri"),
         FhType.FHP, List.of(
             "accessionID.url", "derivedFrom[].accessionID.url", "metadataAuthor[].uri",
             "predictionProtocol", "predictionSoftware[].uri", "relatedLink[]",
@@ -68,7 +68,9 @@ final class UriSchemes {
         }
         for (int k = 0; k < value.length(); k++) {
             char c = value.charAt(k);
-            if (Character.isISOControl(c)) {
+            // Whitespace anywhere, not only at the ends: a URI has none (RFC 3987 4.1), and the
+            // toolkit's URI_FORM refuses Unicode whitespace (NBSP, U+2000-U+200A, ...) as well.
+            if (Character.isISOControl(c) || Character.isWhitespace(c) || Character.isSpaceChar(c)) {
                 return false;
             }
         }

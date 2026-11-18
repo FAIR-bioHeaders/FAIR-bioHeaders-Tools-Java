@@ -44,7 +44,7 @@ counts and the "not verified" list.
 | --- | --- | --- | --- | --- | --- |
 | FASTA `;~` block, exact bytes (LF, CRLF, lone CR) | yes | yes | n/a | yes, draft lane | n/a |
 | GFA `#~` block | yes | n/a | n/a | no - the draft suite has no GFA vectors | n/a |
-| GFF3 `#~` block after `##gff-version 3` | no - FHR is FASTA/GFA | n/a | yes | n/a | no |
+| GFF3 `#~` block after `##gff-version 3` | no - FHR is FASTA/GFA (refused as a `container` error) | n/a (refused) | yes | n/a | no |
 | gzip and multi-member bgzip transport | yes | yes | yes | yes, draft lane (the suite's gzip/BGZF vectors run) | not exercised: the FHGM suite ships uncompressed GFF3 |
 | header YAML → JSON value model (R8/R12/R13) | yes | yes | yes | yes, draft lane | yes, as the carrier's YAML; the records are read out of it by `FhgmModels` |
 | JSON metadata document (contract validation alone) | yes, `SchemaBundle.validate` on a `JsonNode` | yes | yes | yes, draft lane | yes for the record contract itself (K2 over a parsed carrier); there is no standalone FHGM JSON document format |

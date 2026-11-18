@@ -393,22 +393,30 @@ was then restored and `cmp`-verified byte-identical before the green re-run.
 - Directive cross-checking (`#!genome-build` etc. compared with metadata) is
   not implemented.
 
-## Known wording divergence from the reference toolkit (open, deliberately unfixed here)
+## Fixed divergences from the reference toolkit (2026-11-18)
 
-For a near-miss `schema` URL naming `fht` — for example
-`https://w3id.org/fair-bioheaders/fht/v0.7.0` or an `FHT-Specification` raw tag URL —
-this reader says `read as FHR, not FHGFF3, against the current schema (rule V5)` while
-the reference toolkit says `not FHT`. The cause is historical: `SchemaSelection.typeOfUrlKey`
-mapped every name that was not `fhp` to `FhType.FHGFF3` through its default branch, and the
-warning was built from that mapping. The behavior is *message-only* — the type, release,
-validity, exit status and every vector outcome are unchanged, and rule V5 reads the record as
-FHR either way — but it is wrong wording about a real type.
+Each is a labelled change against the golden (`golden/labelled-changes.json`) or
+covered by `HeaderChecksTest`:
 
-It is **not** corrected in the registry refactor, because that PR's claim is that default
-behavior is byte-identical and the corrected string is inside the default-behavior golden
-(`selection` section, the `fht` URL rows). Correcting it is a small, separately labelled
-change that updates the golden with a stated reason; until then the golden pins the existing
-text so it cannot change by accident.
+- **Near-miss wording (Java#2).** An `fht` near-miss `schema` URL now reads `read as
+  FHR, not FHT, ...` as the toolkit words it; it used to say `not FHGFF3` because the
+  old type lookup fell through to FHGFF3. Message only.
+- **The excluded line is the record's checksum (R2).** The line the checksum excludes
+  must parse alone as `{checksum: <value>}` and that value must equal the parsed
+  record's `checksum`, as the toolkit's `SequenceScan.checksum` requires. A
+  `checksum:` line hidden inside a quoted or flow scalar, with the real key spelled
+  `"checksum"` elsewhere, used to verify; it is now an R2 error.
+- **Containers.** A header type is accepted only in the containers its registry row
+  names (`containers` in `schemas/bundled.json`: FHR in FASTA/GFA, FHP in FASTA,
+  FHGFF3 in GFF3, FHT in FASTA), as the toolkit's `validate_header_family`; anything
+  else is a `container` error, e.g. `FHP metadata is incompatible with GFA; expected
+  FHR metadata`.
+- **Plain `=` (R12).** PyYAML resolves a plain `=` to YAML 1.1's value tag, not a
+  string, so it is now an R12 disagreement; quoted `'='` is fine.
+- **R14.** Whitespace anywhere in a link (including NBSP and the other Unicode
+  spaces) means no accepted scheme, not only at the ends; and the FHR field table now
+  includes `metadataAuthor[].uri` and `assemblyAuthor[].uri`, which the contract
+  declares `format: uri` and the toolkit checks.
 
 ## Draft pin currency (noted 2026-11-18, not re-pinned)
 

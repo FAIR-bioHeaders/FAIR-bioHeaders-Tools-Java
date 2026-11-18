@@ -223,14 +223,9 @@ public final class SchemaSelection {
         }
         Matcher named = NEAR_MISS_TYPE.matcher(lowered);
         if (named.find()) {
-            // Pre-refactor wording, kept verbatim: the reader resolved every name that is not
-            // "fhp" through a default branch to FHGFF3, so an "fht" near-miss has always been
-            // reported as "not FHGFF3". The reference toolkit words it "not FHT". Correcting the
-            // message changes observable output, so it is a separate, labelled change, not a
-            // side effect of this refactor: see FAIR-bioHeaders-Tools-Java#2 and docs/STATUS.md.
-            String kind = types.byUrlKey(named.group(1))
-                .map(def -> def.type().fileKey())
-                .orElse(FhType.FHGFF3.fileKey());
+            // The type the URL names, as the reference toolkit words it ("not FHT" for an fht
+            // near-miss; this reader said "not FHGFF3" until FAIR-bioHeaders-Tools-Java#2 was fixed).
+            String kind = named.group(1).toUpperCase(Locale.ROOT);
             return Issue.warning("V5", "schema " + value + " is not a FAIR-bioHeaders schema URL;"
                 + " read as FHR, not " + kind + ", against the current schema (rule V5)");
         }
