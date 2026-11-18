@@ -5,6 +5,9 @@
  */
 package org.fairbioheaders;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
@@ -48,96 +51,106 @@ final class HeaderScan {
     // YAML document markers and comments are not content lines (reference scan).
     private static final Pattern MARKER_LINE = Pattern.compile("^(?:%|---(?:[ \\t]|$)|\\.\\.\\.(?:[ \\t]|$)).*", Pattern.DOTALL);
 
+    /** Chunk size for reading. */
+    private static final int BUFFER = 1 << 16;
+
     private final Kind kind;
-    private final byte[] data;
 
     private List<String> headerLines = new ArrayList<>();  // decoded content after prefix, no terminator
     private List<String> rawHeaderLines = new ArrayList<>(); // full line content (with prefix), for warnings
-    private int checksumLine = -1;                          // index of the excluded line
+    private String checksumLineText;                        // content after the prefix of the excluded line
     private String statedChecksum;
     private String computedChecksum;
 
-    private HeaderScan(Kind kind, byte[] data) {
+    // Digest state, as the reference SequenceScan keeps it: 'all' hashes every byte while the
+    // header block can still produce a checksum line; 'excluded' is a copy taken just before the
+    // current candidate line and updated with everything after it, so it is the R3 digest once the
+    // file ends with exactly one candidate.
+    private MessageDigest all = newDigest();
+    private MessageDigest excluded;
+
+    private HeaderScan(Kind kind) {
         this.kind = kind;
-        this.data = data;
     }
 
     /** R7: FASTA/GFA files must not begin with a UTF-8 byte order mark. */
     static void checkBom(Kind kind, byte[] data) {
+        checkBom(kind, data, data.length);
+    }
+
+    private static void checkBom(Kind kind, byte[] data, int length) {
         if (kind == Kind.GFF3) {
             return; // R7 names FASTA/GFA; a GFF3 BOM fails G1 line 1 anyway.
         }
-        if (data.length >= 3 && (data[0] & 0xFF) == 0xEF && (data[1] & 0xFF) == 0xBB && (data[2] & 0xFF) == 0xBF) {
+        if (length >= 3 && (data[0] & 0xFF) == 0xEF && (data[1] & 0xFF) == 0xBB && (data[2] & 0xFF) == 0xBF) {
             throw new ScanException("R7", "file must not begin with a UTF-8 byte order mark");
         }
     }
 
-    /** Run the scan; fills header lines, checksum state, and both checksum values. */
+    /** Run the scan over in-memory bytes; fills header lines, checksum state and both values. */
     static HeaderScan of(Kind kind, byte[] data) {
-        HeaderScan scan = new HeaderScan(kind, data);
-        scan.run();
+        try {
+            return of(kind, new java.io.ByteArrayInputStream(data));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e); // not reachable for an in-memory stream
+        }
+    }
+
+    /**
+     * Run the scan over a stream, in one pass. Only the header lines are held (at most
+     * {@link #MAX_HEADER_BYTES}); every other byte goes through the digest and is dropped, so a
+     * file of any size is verified in bounded memory.
+     */
+    static HeaderScan of(Kind kind, InputStream in) throws IOException {
+        HeaderScan scan = new HeaderScan(kind);
+        scan.run(new Lines(in));
         return scan;
     }
 
-    private void run() {
+    private void update(byte[] b, int off, int len) {
+        if (all != null) {
+            all.update(b, off, len);
+        }
+        if (excluded != null) {
+            excluded.update(b, off, len);
+        }
+    }
+
+    private void run(Lines lines) throws IOException {
+        lines.ensure(3);
+        checkBom(kind, lines.buf, lines.lim);
         byte[] prefix = kind.prefix();
-        int n = data.length;
         int lineNo = 0;
-        int i = 0;
-        boolean inBlock = true;
         int headerBytes = 0;
         int headerCount = 0;
         int rootIndent = -1;
         int matches = 0;
-        List<Integer> hashedRanges = new ArrayList<>(); // start/end pairs; the checksum line is dropped after
 
-        while (i < n) {
+        Line line;
+        while ((line = lines.next(this::update)) != null) {
             lineNo++;
-            int end = i;
-            while (end < n && data[end] != '\n' && data[end] != '\r') {
-                end++;
-            }
-            int next = end;
-            if (end < n) {
-                if (data[end] == '\r' && end + 1 < n && data[end + 1] == '\n') {
-                    next = end + 2;
-                } else {
-                    next = end + 1;
-                }
-            }
-            boolean isPrefix = startsWith(data, i, end, prefix);
-
-            if (!inBlock) {
-                if (isPrefix) {
-                    throw new ScanException("R10",
-                        "FHR header line after the header block at line " + lineNo);
-                }
-                hashedRanges.add(i);
-                hashedRanges.add(next);
-                i = next;
-                continue;
-            }
+            boolean isPrefix = line.startsWith(prefix);
 
             if (kind == Kind.GFF3 && lineNo == 1) {
                 // Byte-level guard first: a line 1 that does not even start with the
                 // directive is a G1 failure regardless of encoding.
-                if (!startsWithAscii(data, i, end, "##gff-version 3")
-                        || !GFF3_VERSION_LINE.matcher(decode(data, i, end, "G1")).matches()) {
+                if (line.truncated || !line.startsWith(GFF3_VERSION)
+                        || !GFF3_VERSION_LINE.matcher(decode(line.bytes, 0, line.contentLength, "G1")).matches()) {
                     throw new ScanException("G1",
                         "line 1 of a headed GFF3 file must match '##gff-version 3' (optionally 3.MINOR.PATCH)");
                 }
             }
 
             if (isPrefix) {
-                headerBytes += next - i;
-                if (headerBytes > MAX_HEADER_BYTES) {
+                headerBytes += line.length;
+                if (line.truncated || headerBytes > MAX_HEADER_BYTES) {
                     throw new ScanException("R10", "FHR header lines exceed the size limit");
                 }
                 headerCount++;
                 if (headerCount > MAX_HEADER_LINES) {
                     throw new ScanException("R10", "FHR header lines exceed the line limit");
                 }
-                String content = decode(data, i, end, "R6");            // line minus terminator, UTF-8 strict
+                String content = decode(line.bytes, 0, line.contentLength, "R6"); // UTF-8 strict
                 String metadata = content.substring(prefix.length);   // after the prefix
                 rawHeaderLines.add(content);
                 headerLines.add(stripTrailing(metadata));
@@ -150,48 +163,288 @@ final class HeaderScan {
                     if (rootIndent < 0 || indent < rootIndent) {
                         rootIndent = indent;
                         matches = 0;
-                        checksumLine = -1;
+                        excluded = null;
+                        checksumLineText = null;
                     }
                     if (indent == rootIndent
                             && CHECKSUM_CANDIDATE.matcher(content).matches()) {
                         matches++;
+                        excluded = null;
                         if (matches == 1) {
-                            checksumLine = hashedRanges.size() / 2; // this line's pair index
+                            excluded = copy(all);
+                            checksumLineText = metadata;
                             statedChecksum = strictChecksumValue(metadata, lineNo);
                         }
+                        all.update(line.bytes, 0, line.length); // not into 'excluded' (R3)
+                        continue;
                     }
                 }
             } else {
-                boolean endLine = startsWithAscii(data, i, end, ">");
-                boolean blank = isBlank(data, i, end);
-                boolean hashComment = startsWithAscii(data, i, end, "#");
-                if (kind == Kind.FASTA && endLine) {
-                    inBlock = false;
-                } else if (kind == Kind.GFA && !blank && !hashComment) {
-                    inBlock = false;
-                } else if (kind == Kind.GFF3
-                        && ((!blank && !hashComment) || isFastaDirective(data, i, end))) {
-                    inBlock = false;
+                boolean endLine = line.startsWith(GT);
+                boolean hashComment = line.startsWith(HASH);
+                boolean ends = (kind == Kind.FASTA && endLine)
+                    || (kind == Kind.GFA && !line.blank && !hashComment)
+                    || (kind == Kind.GFF3 && ((!line.blank && !hashComment) || line.isFastaDirective()));
+                if (ends) {
+                    endBlock(line);
+                    break;
                 }
             }
-            hashedRanges.add(i);
-            hashedRanges.add(next);
-            i = next;
+            if (!line.truncated) {
+                update(line.bytes, 0, line.length);
+            }
+        }
+        if (line != null) {
+            lineNo++;
+            lines.drainBody(prefix, lineNo, this::bodyUpdate);
         }
 
         if (matches != 1) {
             throw new ScanException("R2", "expected exactly one root-level checksum line, found " + matches);
         }
+        computedChecksum = Base64.getEncoder().encodeToString(excluded.digest());
+    }
 
-        MessageDigest md = newDigest();
-        for (int r = 0; r < hashedRanges.size(); r += 2) {
-            if (r / 2 == checksumLine) {
-                continue; // R3: the checksum line and its terminator are excluded
-            }
-            md.update(data, hashedRanges.get(r), hashedRanges.get(r + 1) - hashedRanges.get(r));
+    /** The line that ends the header block: hashed, and from here on no candidate can appear. */
+    private void endBlock(Line line) {
+        if (line != null && !line.truncated) {
+            update(line.bytes, 0, line.length);
         }
-        byte[] digest = md.digest();
-        computedChecksum = Base64.getEncoder().encodeToString(digest);
+        all = null; // no more checksum candidates: only 'excluded' is still needed
+    }
+
+    private void bodyUpdate(byte[] b, int off, int len) {
+        if (excluded != null) {
+            excluded.update(b, off, len);
+        }
+    }
+
+    private static MessageDigest copy(MessageDigest digest) {
+        try {
+            return (MessageDigest) digest.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new IllegalStateException("SHA-512/256 digest cannot be copied", e);
+        }
+    }
+
+    private static final byte[] GT = {'>'};
+    private static final byte[] HASH = {'#'};
+    private static final byte[] GFF3_VERSION = "##gff-version 3".getBytes(StandardCharsets.US_ASCII);
+    private static final byte[] FASTA_DIRECTIVE = "##FASTA".getBytes(StandardCharsets.US_ASCII);
+
+    /** Where a hashed byte range goes. */
+    private interface Sink {
+        void update(byte[] b, int off, int len);
+    }
+
+    /**
+     * One line of the header block: its bytes (content and terminator) when it fits within
+     * {@link #MAX_HEADER_BYTES}, or else the first bytes of it, with the whole line already
+     * streamed to the digest.
+     */
+    private static final class Line {
+        byte[] bytes;
+        int length;          // bytes held, terminator included
+        int contentLength;   // bytes held before the terminator
+        boolean truncated;   // longer than the hold limit; the whole line went to the sink
+        boolean blank;       // every content byte is a space or a tab
+        boolean blankAfterDirective; // every content byte after "##FASTA" is a space or a tab
+
+        boolean startsWith(byte[] p) {
+            int have = truncated ? bytes.length : contentLength;
+            if (have < p.length) {
+                return false;
+            }
+            for (int k = 0; k < p.length; k++) {
+                if (bytes[k] != p[k]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /** Byte-level {@code ##FASTA} boundary line (docs/FHGFF3.md G1). */
+        boolean isFastaDirective() {
+            return startsWith(FASTA_DIRECTIVE) && blankAfterDirective;
+        }
+    }
+
+    /**
+     * Line splitting over a stream (R1): a line ends at LF, CRLF, or a CR not followed by LF, and
+     * the terminator belongs to the line. Lines up to {@link #MAX_HEADER_BYTES} are held whole;
+     * a longer one is streamed to the sink as it is read and only its start is kept.
+     */
+    private static final class Lines {
+        private final InputStream in;
+        final byte[] buf = new byte[BUFFER];
+        int pos;
+        int lim;
+        private boolean eof;
+        private byte[] hold = new byte[256];
+
+        Lines(InputStream in) {
+            this.in = in;
+        }
+
+        /** Make at least {@code n} bytes available unless the stream ends first. */
+        void ensure(int n) throws IOException {
+            if (lim - pos >= n) {
+                return;
+            }
+            System.arraycopy(buf, pos, buf, 0, lim - pos);
+            lim -= pos;
+            pos = 0;
+            while (lim < n && !eof) {
+                int r = in.read(buf, lim, buf.length - lim);
+                if (r < 0) {
+                    eof = true;
+                } else {
+                    lim += r;
+                }
+            }
+        }
+
+        private boolean fill() throws IOException {
+            pos = 0;
+            lim = 0;
+            ensure(1);
+            return lim > 0;
+        }
+
+        Line next(Sink sink) throws IOException {
+            if (pos == lim && !fill()) {
+                return null;
+            }
+            Line line = new Line();
+            line.blank = true;
+            line.blankAfterDirective = true;
+            int held = 0;
+            long seen = 0;          // content bytes seen so far
+            boolean truncated = false;
+            byte[] head = null;
+            while (true) {
+                int end = pos;
+                while (end < lim && buf[end] != '\n' && buf[end] != '\r') {
+                    end++;
+                }
+                // Flags over the content bytes of this stretch.
+                for (int k = pos; k < end; k++) {
+                    byte c = buf[k];
+                    boolean ws = c == ' ' || c == '\t';
+                    if (!ws) {
+                        line.blank = false;
+                        if (seen + (k - pos) >= FASTA_DIRECTIVE.length) {
+                            line.blankAfterDirective = false;
+                        }
+                    }
+                }
+                int stretch = end - pos;
+                int term = 0;
+                boolean done = false;
+                if (end < lim) {
+                    term = 1;
+                    done = true;
+                }
+                // Append content (and the first terminator byte) to the hold, or to the sink.
+                int count = stretch + term;
+                if (!truncated && held + count > MAX_HEADER_BYTES) {
+                    truncated = true;
+                    head = java.util.Arrays.copyOf(hold, held);
+                    sink.update(hold, 0, held);
+                }
+                if (truncated) {
+                    sink.update(buf, pos, count);
+                } else {
+                    if (held + count > hold.length) {
+                        hold = java.util.Arrays.copyOf(hold,
+                            Math.max(held + count, Math.min(MAX_HEADER_BYTES, hold.length * 2)));
+                    }
+                    System.arraycopy(buf, pos, hold, held, count);
+                    held += count;
+                }
+                seen += stretch;
+                boolean cr = term == 1 && buf[end] == '\r';
+                pos = end + term;
+                if (done) {
+                    if (cr) {
+                        if (pos == lim) {
+                            fill();
+                        }
+                        if (pos < lim && buf[pos] == '\n') {
+                            if (truncated) {
+                                sink.update(buf, pos, 1);
+                            } else {
+                                if (held + 1 > hold.length) {
+                                    hold = java.util.Arrays.copyOf(hold, held + 1);
+                                }
+                                hold[held++] = '\n';
+                            }
+                            pos++;
+                            term = 2;
+                        }
+                    }
+                    line.contentLength = truncated ? -1 : held - term;
+                    break;
+                }
+                if (!fill()) {
+                    line.contentLength = truncated ? -1 : held;
+                    break;
+                }
+            }
+            line.truncated = truncated;
+            if (truncated) {
+                line.bytes = head;
+                line.length = head.length;
+            } else {
+                line.bytes = java.util.Arrays.copyOf(hold, held);
+                line.length = held;
+            }
+            return line;
+        }
+
+        /**
+         * Everything after the header block: hashed in whole buffers, with only the line starts
+         * looked at, for the R10 rule that no FHR line may follow the block.
+         */
+        void drainBody(byte[] prefix, int firstLineNo, Sink sink) throws IOException {
+            int lineNo = firstLineNo;
+            // 0 = at a line start, 1 = at a line start after prefix[0], 2 = inside a line,
+            // 3 = just after a CR (a following LF belongs to the same terminator).
+            int state = 0;
+            while (pos < lim || fill()) {
+                for (int k = pos; k < lim; k++) {
+                    byte c = buf[k];
+                    if (state == 3) {
+                        state = 0;
+                        if (c == '\n') {
+                            continue;
+                        }
+                    }
+                    if (state == 0) {
+                        if (c == prefix[0]) {
+                            state = 1;
+                            continue;
+                        }
+                        state = 2;
+                    } else if (state == 1) {
+                        if (c == prefix[1]) {
+                            throw new ScanException("R10",
+                                "FHR header line after the header block at line " + lineNo);
+                        }
+                        state = 2;
+                    }
+                    if (c == '\n') {
+                        lineNo++;
+                        state = 0;
+                    } else if (c == '\r') {
+                        lineNo++;
+                        state = 3;
+                    }
+                }
+                sink.update(buf, pos, lim - pos);
+                pos = lim;
+            }
+        }
     }
 
     /** Apply R5 to the loose candidate: the line must hold the value and nothing else. */
@@ -235,47 +488,6 @@ final class HeaderScan {
 
     String computedChecksum() {
         return computedChecksum;
-    }
-
-    // ---- byte helpers -------------------------------------------------------
-
-    private static boolean startsWith(byte[] data, int from, int to, byte[] prefix) {
-        if (to - from < prefix.length) {
-            return false;
-        }
-        for (int k = 0; k < prefix.length; k++) {
-            if (data[from + k] != prefix[k]) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static boolean startsWithAscii(byte[] data, int from, int to, String s) {
-        byte[] p = s.getBytes(StandardCharsets.US_ASCII);
-        return startsWith(data, from, to, p);
-    }
-
-    private static boolean isBlank(byte[] data, int from, int to) {
-        for (int k = from; k < to; k++) {
-            if (data[k] != ' ' && data[k] != '\t') {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /** Byte-level {@code ##FASTA} boundary line (docs/FHGFF3.md G1). */
-    private static boolean isFastaDirective(byte[] data, int from, int to) {
-        if (!startsWithAscii(data, from, to, "##FASTA")) {
-            return false;
-        }
-        for (int k = from + 7; k < to; k++) {
-            if (data[k] != ' ' && data[k] != '\t') {
-                return false;
-            }
-        }
-        return true;
     }
 
     /** R6: header lines must decode as UTF-8 and must not hold U+0085, U+2028, U+2029. */

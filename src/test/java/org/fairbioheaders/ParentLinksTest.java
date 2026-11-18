@@ -158,4 +158,26 @@ class ParentLinksTest {
                 (stated, headerType, index) -> Optional.of(new ParentLinks.Parent(Kind.FASTA, junk))));
         assertTrue(e.getMessage().contains("not a readable headed"), e.getMessage());
     }
+
+    @Test
+    void aSymbolicLinkCannotLeadAParentOutOfItsSuite(@org.junit.jupiter.api.io.TempDir Path dir)
+            throws Exception {
+        Path suite = java.nio.file.Files.createDirectories(dir.resolve("suite"));
+        Path outside = java.nio.file.Files.write(dir.resolve("outside.fasta"), parent());
+        String stated = new BioHeaders().verify(parent(), Kind.FASTA).computedChecksum();
+        try {
+            java.nio.file.Files.createSymbolicLink(suite.resolve("link.fasta"), outside);
+        } catch (UnsupportedOperationException | java.io.IOException e) {
+            org.junit.jupiter.api.Assumptions.assumeTrue(false, "no symbolic links here: " + e);
+        }
+        ParentLinks.ParentSource source = ParentLinks.relativeTo(suite, Map.of(stated, "link.fasta"));
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+            () -> source.parentBytes(stated, "FHR", 0));
+        assertTrue(e.getMessage().contains("symbolic link"), e.getMessage());
+
+        java.nio.file.Files.write(suite.resolve("inside.fasta"), parent());
+        ParentLinks.ParentSource ok = ParentLinks.relativeTo(suite, Map.of(stated, "inside.fasta"));
+        ParentLinks.Parent p = ok.parentBytes(stated, "FHR", 0).orElseThrow();
+        assertEquals(stated, ParentLinks.checksumOf(p), "a path-backed parent is streamed and hashed");
+    }
 }

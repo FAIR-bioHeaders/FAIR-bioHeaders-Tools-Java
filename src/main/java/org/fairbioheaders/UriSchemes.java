@@ -107,7 +107,7 @@ final class UriSchemes {
                     String value = node.asString();
                     if (!schemeAccepted(value)) {
                         issues.add(Issue.warning("R14",
-                            "the " + field + " value '" + value
+                            "the " + field + " value '" + Text.printable(value)
                                 + "' has no accepted scheme (http, https, ftp, urn, doi, info)"));
                     }
                 }

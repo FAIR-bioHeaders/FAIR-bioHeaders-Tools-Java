@@ -51,8 +51,29 @@ public final class ParentLinks {
         UNCHECKED
     }
 
-    /** A parent file the caller supplied: its container and its decompressed bytes (R1). */
-    public record Parent(Kind kind, byte[] data) {
+    /**
+     * A parent file the caller supplied: its container and either its decompressed bytes (R1) or
+     * the path to read them from. A path-backed parent ({@link #ofFile}) is streamed when its
+     * checksum is computed, so a genome-sized parent is never held in memory; its {@code data()}
+     * is {@code null}.
+     */
+    public record Parent(Kind kind, byte[] data, Path file) {
+
+        public Parent {
+            if ((data == null) == (file == null)) {
+                throw new IllegalArgumentException("a parent has either bytes or a file, not both");
+            }
+        }
+
+        /** A parent given as decompressed bytes. */
+        public Parent(Kind kind, byte[] data) {
+            this(kind, java.util.Objects.requireNonNull(data, "data"), null);
+        }
+
+        /** A parent read from {@code file} when needed; the container comes from its name. */
+        public static Parent ofFile(Path file) {
+            return new Parent(BioHeaders.kindFor(file.getFileName().toString()), null, file);
+        }
     }
 
     /**
@@ -152,18 +173,42 @@ public final class ParentLinks {
             if (!Files.isRegularFile(resolved)) {
                 return Optional.empty();
             }
+            // The lexical check above cannot see symbolic links: compare the real paths too, so a
+            // link inside the suite cannot hand over a file from outside it.
             try {
-                return Optional.of(new Parent(BioHeaders.kindFor(resolved.getFileName().toString()),
-                    BioHeaders.readAll(resolved)));
+                Path realBase = base.toRealPath();
+                Path real = resolved.toRealPath();
+                if (!real.startsWith(realBase)) {
+                    throw new IllegalArgumentException(
+                        "parent path escapes its suite directory through a symbolic link: " + relative);
+                }
+                return Optional.of(Parent.ofFile(real));
             } catch (IOException e) {
                 throw new UncheckedIOException("cannot read parent file " + resolved, e);
             }
         };
     }
 
+    /**
+     * The SHA-512/256 checksum a parent file's own header covers, recomputed (R1-R5).
+     *
+     * @throws IllegalArgumentException when the parent is not a readable headed file
+     * @throws UncheckedIOException when a path-backed parent cannot be read
+     */
+    public static String checksumOf(Parent parent) {
+        return checksum(parent);
+    }
+
     private static String checksum(Parent parent) {
         try {
-            return HeaderScan.of(parent.kind(), parent.data()).computedChecksum();
+            if (parent.file() == null) {
+                return HeaderScan.of(parent.kind(), parent.data()).computedChecksum();
+            }
+            try (java.io.InputStream in = BioHeaders.open(parent.file())) {
+                return HeaderScan.of(parent.kind(), in).computedChecksum();
+            } catch (IOException e) {
+                throw new UncheckedIOException("cannot read parent file " + parent.file(), e);
+            }
         } catch (ScanException e) {
             throw new IllegalArgumentException("the supplied parent file is not a readable headed "
                 + parent.kind() + " file: " + e.getMessage(), e);

@@ -25,3 +25,16 @@ frozen copies (rules V1-V6, mirroring the toolkit: "schemas are never fetched"
 — a reference to an unbundled release fails as unsupported-version instead of
 triggering network use). A finding that bypasses any of this is in scope for
 this policy.
+
+Memory: `BioHeaders.verifyFile` and the CLI read a file once, as a stream. Gzip
+and bgzip input is decompressed as it is read, only the header block is held
+(the 1 MiB / 10 000-line bound above, with lines longer than that streamed
+rather than buffered), and every other byte passes through the SHA-512/256
+digest and is dropped, so memory use does not grow with the file or with its
+compression ratio. Parent files given to `verify --parent` or
+`ParentLinks.relativeTo` are streamed the same way. The in-memory entry points
+(`BioHeaders.verify(byte[], Kind)`, `BioHeaders.readAll`) hold the whole input
+by design; `readAll` refuses input that decompresses past 1 GiB with an
+`IOException`. Corrupt or truncated gzip data is reported as an `R1` error,
+and the CLI reports unreadable files, unsupported extensions and memory
+exhaustion as per-file errors rather than stack traces.
