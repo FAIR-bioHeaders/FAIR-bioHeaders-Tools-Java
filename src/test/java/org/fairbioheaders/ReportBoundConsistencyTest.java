@@ -118,7 +118,8 @@ class ReportBoundConsistencyTest {
         assertNotNull(status);
         Matcher s = Pattern.compile("\\*{0,2}(\\d+) measured in total[^*]*\\*{0,2}\\s*\\((\\d+) \\+ (\\d+)\\)")
             .matcher(read(status).replace("\n", " "));
-        while (s.find()) {
+        assertTrue(s.find(), "docs/STATUS.md must carry a recognizable measured total and split");
+        do {
             int total = Integer.parseInt(s.group(1));
             int r = Integer.parseInt(s.group(2));
             int d = Integer.parseInt(s.group(3));
@@ -128,6 +129,6 @@ class ReportBoundConsistencyTest {
                 "docs/STATUS.md's released measurement disagrees with the bounds row");
             assertEquals(measuredDraft, d,
                 "docs/STATUS.md's draft measurement disagrees with the bounds row");
-        }
+        } while (s.find());
     }
 }
