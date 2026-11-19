@@ -414,6 +414,19 @@ something the reader had not resolved:
    with the measurements and the vector pair it asks for.
 
 
+**A `62/62` here is not a `62/62` over there.** The JavaScript library's own re-pin PR
+(JS#22) reports **58 pass / 4 fail against these same 62 FHGM vectors**, because that lane
+declined to implement the widened expectations and left them failing rather than abstaining
+on them; this lane implements them, which is precisely why it can print `62/62`. The two
+numbers are therefore **not equivalent outcomes** and must never be presented side by side as
+if they were: Java's `62/62` rests on a local decision to adopt FHGM#29's semantics and to
+reject where the attribute is unreadable, while Julia's `51 pass / 11 not-run` rests on the
+opposite local decision to abstain on K4 entirely. Three libraries, three different
+relationships to the same contested draft semantics, one shared pinned byte set. (The JS
+figures are quoted from that PR's own body, not re-measured here; JS's tee-piped draft job can
+also surface a vector failure in its artefact without reddening the step, which is that lane's
+problem to solve and is noted in #14's territory, not changed by this PR.)
+
 **Second review round on `4afdf50a`: four more blockers, all fixed, all red-first.**
 The re-review of the first fix round (same independent reviewer, `COMMENTED`, "I would
 not approve this head") found four defects, two of them produced by instructions in the
