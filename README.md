@@ -55,13 +55,26 @@ FhgmModels.Report report = models.check(gff3Bytes, List.of(priorSnapshotBytes));
 ```
 
 `FhgmModels` runs the draft's model-level rules - transport overlay (K1), record
-shape (K2), `modelId` uniqueness (K3), `featureId` resolution to exactly one local
-gene row (K4), reference agreement with the file's genome link (K5), and
+shape (K2), NFC-normalised `modelId` uniqueness (K3), `featureId` resolution to exactly one local
+**root** gene row (K4: `gene` or `SO:0000704` with no `Parent`; a non-empty `Parent` is nested and
+an empty `Parent=` cannot establish root, so neither passes), reference agreement with the file's
+genome link (K5), and
 revision-pointer resolution against the history you supply (K6) - against two
 pinned contract files, and it refuses any carrier whose released FHGFF3 schema or
-checksum fails first (the suite's boundary B1). It is not support, not a release,
+checksum fails first (the suite's boundary B1). A model-layer `pass` carries the
+FHGM-Specification#29 widened meaning — named in [docs/CAPABILITY-MATRIX.md](docs/CAPABILITY-MATRIX.md),
+and the K4/abstention semantics remain an open upstream question (`FHGM#22`/`#27`/`#28`), so a
+`pass` is participation in the draft's current reading, not a settled verdict.
+It is not support, not a release,
 and not a feature-line validator: `gff3-validator` remains that. With the lane
 closed, `FhgmModels` will not construct at all.
+
+Contract `pattern`s are evaluated under the family's normative ECMA-262 floor
+(`FAIR-bioHeaders-Specification#264`, `docs/REGEX-DIALECT.md`): `java.util.regex`'s ASCII-only
+`\s` and its `$`-before-trailing-LF reading are translated, so a DOI or identifier padded with
+U+00A0, U+202F or U+FEFF is INVALID here exactly as the reference engine reports it, while U+0085
+stays legal because ECMA-262 says so (`EcmaRegularExpressionFactory`,
+`FhtDraftWhitespaceEcmaTest`).
 
 [docs/CAPABILITY-MATRIX.md](docs/CAPABILITY-MATRIX.md) is the type × operation ×
 serialization × version statement, including the named holes;

@@ -116,7 +116,7 @@ jobs:
       - name: Assert nothing was skipped and no report is empty
         run: |
           # Zero-test and skip guards: a green build with a quiet skip is not acceptance.
-          sh .github/scripts/assert-reports.sh 318
+          sh .github/scripts/assert-reports.sh 318  # guard-bound: released
 
       # The ledger is the completeness claim: all 291 shared vectors accounted for, 228 run here,
       # 63 declared not-run with a reason each. A stale declared count fails the build.
@@ -292,7 +292,7 @@ jobs:
           [ "$count" -eq 62 ] || { echo "expected 62 FHGM draft vectors to run (got $count)" >&2; exit 1; }
 
       - name: Assert nothing was skipped in the draft job
-        run: sh .github/scripts/assert-reports.sh 288
+        run: sh .github/scripts/assert-reports.sh 288  # guard-bound: draft
 
       - name: Upload draft reports
         if: always()
@@ -314,44 +314,17 @@ jobs:
     continue-on-error: true
     steps:
       - uses: actions/checkout@v4
+      - name: Self-test the freshness script's own controls
+        run: sh .github/scripts/check-draft-pin-freshness.sh --self-test
       - name: Compare the pinned draft bytes with live raw main
         run: |
-          # Every draft this jar registers, checked three ways: the digest recorded in the registry,
-          # the bytes shipped inside this jar, and the owning repository's live raw main. Values are
-          # read per registry row (sed over the row's own block), never by positional grep over the
-          # whole file, so adding a draft cannot silently re-point the check at the wrong one.
-          set -e
-          registry=src/main/resources/org/fairbioheaders/schemas/bundled.json
-          dir=src/main/resources/org/fairbioheaders/schemas
-          control=$(curl -s -o /dev/null -w '%{http_code}' \
-            https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/no-such-file.json)
-          echo "control (expect 404): $control"
-          [ "$control" = "404" ] || { echo "probe control failed; any result below is meaningless" >&2; exit 1; }
-          drift=0
-          for key in FHT FHGM; do
-            row=$(sed -n "/\"fileKey\": \"$key\"/,/^    }$/p" "$registry")
-            url=$(printf '%s' "$row" | grep -oE '"citation": "https[^"]*"' | head -1 | cut -d'"' -f4)
-            pin=$(printf '%s' "$row" | grep -oE '"sha256": "[0-9a-f]{64}"' | head -1 | cut -d'"' -f4)
-            file=$(printf '%s' "$row" | grep -oE '"file": "[^"]*"' | head -1 | cut -d'"' -f4)
-            commit=$(printf '%s' "$row" | grep -oE '"commit": "[0-9a-f]{40}"' | head -1 | cut -d'"' -f4)
-            echo "--- $key"
-            echo "    pinned  : $pin (commit $commit)"
-            [ -n "$url" ] && [ -n "$pin" ] && [ -n "$file" ] || { echo "$key: registry fields missing" >&2; exit 1; }
-            shipped=$(sha256sum "$dir/$file" | cut -d' ' -f1)
-            echo "    shipped : $shipped"
-            [ "$shipped" = "$pin" ] || { echo "$key: the shipped copy does not match its own pin" >&2; exit 1; }
-            code=$(curl -s -o "live-$file" -w '%{http_code}' "$url")
-            live=$(sha256sum "live-$file" | cut -d' ' -f1)
-            echo "    live    : $live (HTTP $code from $url)"
-            [ "$code" = "200" ] || { echo "$key: citation did not resolve" >&2; exit 1; }
-            if [ "$live" != "$pin" ]; then
-              echo "::warning title=Stale $key draft pin::$key raw main now has sha256 $live; this jar pins $pin (commit $commit). Re-pin deliberately (issue #2)."
-              drift=1
-            fi
-          done
-          if [ "$drift" = "1" ]; then
-            echo "at least one pinned draft revision is no longer the owning repository's main: the reading"
-            echo "stays valid evidence about the pinned commit, and about nothing newer"
-          else
-            echo "both pins are current"
-          fi
+          # Every pinned draft target this jar registers - contract, suite manifest,
+          # record contract, transport overlay, FHGM suite manifest, and the base
+          # registry - checked three ways where a copy ships: registry pin, shipped
+          # bytes, live raw main. Values are read per registry row through a JSON
+          # parser, never by positional grep, so a nested previousPin cannot re-point
+          # a check at a superseded digest (the Tools-R#23 class; case 7 of the
+          # self-test above is the guard against regressing it). An empty or failed
+          # read is UNUSABLE and exits non-zero: advisory means "a moved draft does
+          # not gate acceptance", never "a broken probe reads as all-clear".
+          sh .github/scripts/check-draft-pin-freshness.sh

@@ -54,7 +54,7 @@ git -C fhgm-pin checkout 06176262f9824f26d974a15d8feeebde1fbeb0a8
 
 # 4. The reports guard, exactly as CI runs it.
 sh .github/scripts/assert-reports.sh 318          # released job
-sh .github/scripts/assert-reports.sh 288 target/surefire-reports   # draft job
+sh .github/scripts/assert-reports.sh 288   # draft job (bound marked '# guard-bound: draft' in build.yml)
 #   Maven alone is NOT the enforcement: a drifted checkout yields skips and BUILD SUCCESS.
 #   This guard is the step that rejects skips, alongside the receipt greps in build.yml.
 sh .github/scripts/ci-guards-dryrun.sh            # local dry run of the CI shell guards
@@ -100,7 +100,7 @@ run is reported as not tested, not as supported.
 | default-behavior receipt | `build.yml` | `target/default-behavior-golden.properties` is missing, or `vectorsCompared≠228`, `documentsCompared≠47`, `selectionCasesCompared≠304`, `kindsCompared≠18` |
 | golden equality | `DefaultBehaviorGoldenTest` | the recomputed fingerprint differs by even one byte from the golden generated from commit `237da6c` |
 | acceptance ledger | `AcceptanceLedgerTest` + `build.yml` | the shared manifest is not 291 vectors, the run set is not 228, anything fails, or a format is not run without a declared reason |
-| report guard | `.github/scripts/assert-reports.sh` | no report directory, no `TEST-*.xml`, a class that executed 0 tests, any skip, any failure/error, or an aggregate below the job's bound (318 released, 238 draft) |
+| report guard | `.github/scripts/assert-reports.sh` | no report directory, no `TEST-*.xml`, a class that executed 0 tests, any skip, any failure/error, or an aggregate below the job's bound. Machine-readable bounds row: guard-bound: released=318, measured=352; guard-bound: draft=288, measured=298 (measured pair dated 2026-11-19, JDK 17, pinned spec `v0.6.0` and draft checkouts `86438f21`/`06176262`). The bounds are single-sourced at the `# guard-bound:`-marked invocations in `build.yml`; `ReportBoundConsistencyTest` fails if the workflow and this row ever disagree, or if a floor rises above its own measurement. |
 | draft receipts | `draft-vectors` job | FHT ran/passed ≠ 82, FHGM ran/passed ≠ 62, a recorded contract, transport-overlay or suite pin that differs from the registry's, or a missing `gff3Layer=skipped` statement in the FHGM receipt |
 | draft byte identity | `DraftHarness`, `FhgmHarness`, `DraftProvenanceTest` | a checkout whose `fht.json`, `fhgm-model.schema.json`, `fhgm-draft.schema.json` or suite manifest differs from the registry pins, or a shipped copy that differs from its own recorded SHA-256 |
 | native purity | `NativePurityTest` | any source uses `ProcessBuilder`, `Runtime.getRuntime`, `javax.script`/`ScriptEngine`, `System.load`/`loadLibrary`, `LibraryLoader`, or a Python bridge; or the test classpath holds a jar outside the documented set; or a foreign project file (`requirements.txt`, `pyproject.toml`, `package.json`, `DESCRIPTION`, `Project.toml`, `.venv`, …) appears in the tree |

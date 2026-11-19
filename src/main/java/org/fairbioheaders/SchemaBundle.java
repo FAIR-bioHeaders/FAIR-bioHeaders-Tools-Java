@@ -65,6 +65,7 @@ public final class SchemaBundle {
         SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_2020_12,
             b -> b.schemaRegistryConfig(SchemaRegistryConfig.builder()
                 .formatAssertionsEnabled(Boolean.TRUE)
+                .regularExpressionFactory(EcmaRegularExpressionFactory.INSTANCE)
                 .build()));
 
     /** The shared instance backed by the schemas inside this jar, released contracts only. */
