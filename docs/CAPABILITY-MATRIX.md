@@ -140,10 +140,12 @@ Cells a reviewer should not have to guess about:
 
 * Released-contract acceptance: 228 of 291 shared vectors run; 63 declared
   not-run with reason 1 above.
-* Draft evidence, in the labelled `draft-vectors` job only (270 tests measured
-  2026-11-18 on the pinned baseline: 82 FHT vectors + 82 lane-off controls + 62 FHGM
+* Draft evidence, in the labelled `draft-vectors` job only (288 tests measured
+  2026-11-19 on the pinned baseline: 82 FHT vectors + 82 lane-off controls + 62 FHGM
   vectors + 10 FHGM rule tests + 16 FHGM verdict-precision tests + 16 FHGM
-  carrier-citation cells + 2 ledgers = 270),
+  carrier-citation cells + 17 second-round review cases + 1 text-scope derivation test
+  + 2 ledgers = 288; released job
+  351, so 639 in total),
   each suite's receipt naming the contract commit and digest and the suite commit
   and manifest digest it measured. Neither count is added to the 291, and neither
   is a support claim; the FHGM figure scores the widened K4 semantics this library

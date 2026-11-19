@@ -188,14 +188,28 @@ since grown to 351 executions locally (measured 2026-11-18 on this branch, JDK
 not folded into a re-pin. (JDK 17.0.21.0.3 and 27.0.1.0.3 locally,
 Temurin 17 and 21 in CI on ubuntu-latest and macos-latest). The draft job adds 270
 more (82 FHT draft vectors, 82 lane-off controls, 62 FHGM draft vectors, 10 FHGM
-rule tests, 16 FHGM verdict-precision tests, 16 FHGM carrier-citation cells, 2
-ledgers) for **621 measured in total on the pinned baseline** (351 + 270), on JDK
+rule tests, 16 FHGM verdict-precision tests, 16 FHGM carrier-citation cells, 18
+second-round review cases and 2 ledgers) for **639 measured in total on the pinned
+baseline** (351 + 288), on JDK
 17.0.21.0.3. **Baseline matters when quoting these numbers**: the same tree run
 against FAIR-bioHeaders-Specification's live `main` instead of the pinned `v0.6.0`
 tag measures 607 tests with 7 failures (five shared-suite additions plus two
 ledger/golden totals) — that is not a defect in the draft lane, it is what pinning a
 build to a moving branch does, and it is the direct argument for re-pinning these
 drafts to release tags the moment `v0.7.0` and `v0.8.0` exist.
+**What actually enforces these counts is the report guard, not Maven.** `mvn test` exits
+0 when draft vector tests are *skipped*: `FhtDraftVectorTest`/`FhgmDraftVectorTest` turn a
+missing or drifted checkout into an `assumeTrue(false)` dynamic test, and Surefire records
+that as a skip, not a failure. Measured on this head against the superseded checkouts
+(FHT `be9bcc82`, FHGM `57118c52`): `./mvnw -B -ntp test -Dgroups=draft` printed
+`Tests run: 136, Failures: 0, Errors: 0, Skipped: 2` and **BUILD SUCCESS**, exit 0, while
+`sh .github/scripts/assert-reports.sh 288` rejected those same reports with
+`expected zero skipped tests: a skipped vector or suite is a missing fixture, not a pass`
+and exit 1, naming both `FhgmDraftVectorTest.xml` and `FhtDraftVectorTest.xml`. So a green Maven exit is never
+acceptance evidence for this repository — the CI step that gates is the report guard plus
+the receipt greps, and the receipt's own `vectorsRan=0` / `note=drift` line is what says
+nothing was scored.
+
 The earlier PR #1 figure was 258 (30 unit plus 228 vectors). The 63 not-run vectors are every `microdata-*` and `jsonld-*`
 vector listed in `ConformanceReportTest` output; they exercise the HTML
 microdata (rule M1/M3, `itemtype`/`itemprop` token lists, typed values) and
@@ -305,6 +319,7 @@ something the reader had not resolved:
    | transport overlay | K1 | `transport.validate` |
    | **every record's shape** | **K2, whole-array first pass** | **K2, whole-array first pass** |
    | identity uniqueness, after NFC | K3, before any per-record rule | K3, before any per-record rule |
+   | **read the feature layer** | **after K3**: `featureIndex(data)` runs only once both passes are clean | `gene_targets(data)` is called after the K3 loop |
    | gene-target resolution (root row) | K4, per record | K4, per record |
    | reference agreement with the file link | K5, per record | K5, per record |
    | revision-pointer verdicts | K6, after the snapshot clears | K6, after the snapshot clears |
@@ -329,20 +344,142 @@ something the reader had not resolved:
    `$defs.link` spells out at line 166 (`\t-\r`, space, `\x1c-\x1f`, `\x85`,
    `\xa0`, `\u1680`, `\u2000-\u200a`, `\u2028`, `\u2029`, `\u202f`, `\u205f`,
    `\u3000`, `\ufeff`) plus the invisible class of `$defs.text`'s own `not` pattern —
-   and it is applied to **every string in the record**, recursively, not to the three
-   field names in the bug report, because `modelId`, `modelVersion`, `featureId`, a
-   predecessor's ids, contributor names and roles, evidence descriptions, software
-   names/versions, limitations and `reuseConditions` are all `$defs.text`. Internal
-   ordinary whitespace stays legal, exactly as the contract leaves it.
+   and — after the second review round corrected the first attempt — it is applied
+   to **the properties the contract actually types as `$defs.text`, and to no other
+   string**. The scope is derived from the pinned schema by `DraftTextPolicy.textPaths`,
+   which follows `$ref` and `allOf` and returns the fourteen sites
+   (`modelId`, `modelVersion`, `featureId`, `reuseConditions`, `predecessor.modelId`,
+   `predecessor.modelVersion`, `contributors[].name`, `contributors[].role`,
+   `evidence[].description`, `methods.software[].name`, `methods.software[].version`,
+   `methods.limitations[]`, `publication.deposit[]` — a `$defs/curie`, whose
+   `allOf[0]` IS `$defs.text` — and `reference.genomeReference.assemblyName`), rather
+   than a field list kept by hand. A test asserts that set exactly, so widening or
+   narrowing the contract widens or narrows the check on its own.
+
+   **The first version of this fix got the scope wrong, and the correction matters.**
+   It walked every string in the record, which applied `$defs.text`'s invisible-character
+   ban to `publication.article` — a property whose schema carries only the DOI pattern
+   `^10\.[0-9]+(\.[0-9]+)*/\S+$` and no reference to `$defs.text`. The result was that
+   `10.1234/ab\u200dcd` was **rejected**, a false invalidity, which the
+   [#264 ruling](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues/264)
+   weighs as heavily as a false pass. It is now a positive control: that DOI is accepted
+   (`aNonTextFieldKeepsItsOwnConstraint`), the same character in `modelId` is still
+   rejected (`aTextFieldStillRejectsTheSameCharacter`), and both directions are asserted
+   in one record so the two cannot drift apart again (`theSameCharacterIsAcceptedInOneFieldAndRejectedInAnother`).
+   The distinction being drawn is the contract's own — *which properties carry which
+   definition* — not a judgement about how strict to be. Internal ordinary whitespace in a
+   text field stays legal, exactly as the contract leaves it.
+
+   **ZWNJ and ZWJ: the frozen FHGM schema governs, and an earlier instruction here was
+   wrong.** A cross-family FHT reading was quoted into this work as licensing ZWJ/ZWNJ
+   to stay legal. It does not, and nothing in this library implements that: `$defs.text`'s
+   own `not` pattern at **line 160** of the pinned `fhgm-model-draft.json` lists
+   `\u200b-\u200f` explicitly, which covers U+200C (ZWNJ) and U+200D (ZWJ), so both reject
+   in every `$defs.text` field — `zeroWidthJoinersAreRejectedInATextField` pins it, and
+   the rejection is the *schema's own*, because the range is written as explicit code
+   points rather than a class, so it survives any engine. The schema was **not** edited
+   (digest still `b7075e58…`, `cmp` clean). The cross-family question is real but belongs
+   to the owner: it is raised in
+   [FHGM-Specification#32](https://github.com/FAIR-bioHeaders/FHGM-Specification/issues/32),
+   which is also where the `\s`-vs-prose blind spot in the FHGM suite is recorded.
 
    The fix is draft-scoped on purpose. Editing the frozen bytes to carry an explicit
    class would move a digest this jar quotes and re-pins deliberately; the portable
    pattern is owning-repository work in `FHGM-Specification` (with the ±fixtures a
-   schema change needs), and until it lands, the sentence wins over the engine. The
-   same class exists in the FHT draft contract's patterns and in other readers'
-   evaluators; that belongs to the cross-repository hidden-character policy
-   conversation, not to this PR, and is **not** patched here.
+   schema change needs), and until it lands, the sentence wins over the engine.
 
+   **Named, unpatched, untested in the FHT lane — and the count, corrected.** The FHT
+   draft contract also writes `\S`. Counted on the pinned bytes (`4156353a…`) there are
+   **five pattern occurrences containing `\s`/`\S`, and they are NOT five affected
+   constraints** — an earlier paragraph in this file said "five sites", which was wrong:
+
+   | occurrences | pattern | whitespace-class dependent? |
+   | --- | --- | --- |
+   | **3** | the `(?![\s\S])` end-anchor idiom (`sequencingRuns` at root and in `$defs`, `Sample.tissueIdentifier`) | **no.** `[\s\S]` means "any character" whichever way `\s` is defined, so the assertion is end-of-input in every engine. |
+   | **2** | `^10\.[0-9]+(\.[0-9]+)*/\S+$` — one distinct DOI pattern, vendored twice (root `properties.scholarlyArticle` and `$defs/FHT/…`) | **yes.** One real dependency, not five. |
+
+   And that one is not hypothetical, measured on this build against the toolkit's engine:
+   a sealed, otherwise-valid FHT header whose `scholarlyArticle` ends in **U+00A0**
+   reports **VALID** here, while `jsonschema` 4.26.0 on CPython 3.12.15 — the stack the
+   reference toolkit validates with — reports it **INVALID**
+   (`'10.1234/abc\xa0' does not match '^10\.[0-9]+(\.[0-9]+)*/\S+$'`). The ASCII-space
+   DOI fails in both, and a ZWJ-inside-DOI value passes in both, so the divergence is
+   exactly the non-ASCII-whitespace edge. **Java's draft-lane FHT reading therefore
+   differs from the toolkit's on that input, and a green `82/82` is not evidence the case
+   was ever checked** — no FHT vector pads a DOI with non-ASCII whitespace. It predates
+   this re-pin (the superseded `59ad9641` carries the same pattern), it is **not** fixed
+   here, because the pattern is `FHT-Specification`'s to change and a blanket local
+   override is precisely the over-reach the preceding paragraph is about. Filed as
+   [Tools-Java#16](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-Java/issues/16)
+   with the measurements and the vector pair it asks for.
+
+
+**Second review round on `4afdf50a`: four more blockers, all fixed, all red-first.**
+The re-review of the first fix round (same independent reviewer, `COMMENTED`, "I would
+not approve this head") found four defects, two of them produced by instructions in the
+producer's own brief rather than by the code's intent, and each is the same failure mode
+this cycle keeps meeting — a verdict asserted from input that was not faithfully read, or
+a constraint asserted where the contract did not place one:
+
+1. **K4 resolved a target out of a decoding failure.** A sealed carrier with one gene row
+   `ID=%FF` and a record naming `featureId: "\ufffd"` returned **PASS**. `%FF` is not the
+   UTF-8 encoding of anything; `new String(bytes, UTF_8)` never fails, it *substitutes*
+   U+FFFD, and the substituted value then matched the record. Identity is now the decoded
+   **bytes** (`ByteBuffer`-keyed, the same comparison the draft's checker makes: index by
+   `unquote_to_bytes`, look up by `feature_id.encode()`), so `%FF` matches no text ID and
+   K4 does not resolve. **Decision: REJECT under K4 — matching the oracle exactly** (the
+   checker raises `must target one local gene row` when no row's bytes equal the ID's), and
+   the finding keeps the two causes apart: a row ID that no text can name is counted and
+   reported as such, so "absent" and "unreadable" are not collapsed into one message.
+   Controls, all in `FhgmRoundTwoReviewTest`: `%FF` vs `"\ufffd"` rejects; the *actual*
+   UTF-8 bytes `%EF%BF%BD` vs `"\ufffd"` **passes**; `%FF%FE%FF` vs `"\ufffd\ufffd"`
+   rejects; `toy-%C3%A9` vs `"toy-\u00e9"` passes and the decomposed spelling does not
+   alias it; the suite's own percent pair (`toy%2Da`) still resolves only when decoded.
+2. **The feature layer was read too early, which is part of the ordering, not a detail of
+   it.** `featureIndex(data)` sat above the whole-array K2 and K3 passes, so a row that is
+   not nine columns raised first and reported **K4** over a record that was missing a
+   required field (must be **K2**) and over a genuine duplicate identity (must be **K3**).
+   The index is now built after both, as the checker builds it; `malformedRowsCannotMaskK2`
+   and `malformedRowsCannotMaskK3` pin it, and `malformedRowStillRejectsWhenRecordsAreValid`
+   keeps the K4 verdict for a file whose only fault is the row. The per-record K5-before-K4
+   interleaving is unchanged and matches upstream (it is not a global K4 pass).
+   **One ordering difference is kept deliberately, and now has a name and a test:** this
+   library settles the *carrier* — released base schema and the exact-byte checksum, B1 —
+   **before** K1, where `validate_snapshot` runs `base.validate` → `transport.validate` →
+   checksum. So for a file that is both checksum-stale and transport-inadmissible, Java
+   reports **B1** and never reaches the overlay, where upstream would name the transport
+   fault first. It is deliberate: the draft lane is layered on the released reading and
+   must never run model rules over a carrier the released reader refuses, which is what V7
+   requires of it. It changes only *which* boundary a doubly-broken file is reported at, not
+   whether it is rejected. `carrierIntegrityIsSettledBeforeK1` asserts both halves —
+   an intact-but-inadmissible carrier reports K1 alone, and the same carrier with one
+   tampered row reports B1 alone — so the divergence is pinned rather than remembered.
+3. **The text policy over-reached** onto `publication.article`, which is not a
+   `$defs/text` site, and rejected a DOI containing ZWJ. Scope is now derived from the
+   schema (the fourteen `$ref` sites, followed through `$ref`/`allOf`), asserted as an
+   exact set, and proved in both directions on one record. See the correction under
+   defect 3 of the previous block.
+4. **ZWNJ/ZWJ** stay rejected in `$defs.text` fields because the frozen schema lists
+   `\u200b-\u200f` explicitly at line 160; no frozen byte was edited and the cross-family
+   question is raised upstream in FHGM-Specification#32 instead of being settled here. See
+   the retraction under defect 3 above.
+
+**Red-first / green, measured.** On a pristine `git archive` of `4afdf50a` with only the new
+test file added, `./mvnw -o test -Dgroups=draft -Dtest=FhgmRoundTwoReviewTest` printed
+`Tests run: 17, Failures: 6` — `aPercentDecodingFailureDoesNotMatchTheReplacementCharacter`,
+`anUndecodableRowIdIsReportedApartFromAnAbsentOne`, `malformedRowsCannotMaskK2`,
+`malformedRowsCannotMaskK3`, `aNonTextFieldKeepsItsOwnConstraint` and
+`theSameCharacterIsAcceptedInOneFieldAndRejectedInAnother`. The other eleven cases were
+already green there and stay green: they are controls, and `zeroWidthJoinersAreRejectedInATextField`
+among them is the measured evidence for blocker 4 — the frozen schema already refused those
+code points, so defect 4 was a claim and a scope question, not a behaviour this library had
+broken. At this head the same class is `17 run / 0 red`, `DraftTextScopeTest` is `1/1`, and
+the whole draft group is `288 run / 0 red`.
+
+**And a disclosure that was missing from the first fix round**: the FHT-lane `\S`
+dependency is now stated in full, with its corrected count (one pattern, two sites, not
+five) and with the measured difference between this library and the toolkit's engine, as
+[Tools-Java#16](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Tools-Java/issues/16).
 
 **What the pinned suites do NOT cover, measured rather than assumed.** Each fix was
 reverted on its own and the whole draft group re-run against the pinned baseline. Every

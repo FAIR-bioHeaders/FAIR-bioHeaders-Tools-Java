@@ -209,8 +209,10 @@ This section applies only to FAIR-bioHeaders-Tools-Java.
   (318 tests), and `./mvnw test -Dgroups=draft
   -Dfh.fht.dir=<FHT-Specification>/conformance
   -Dfh.fhgm.dir=<FHGM-Specification>/development/conformance` is rule V7 evidence
-  (270 tests at the 2026-11-18 re-pin plus its review fixes: 82 FHT vectors, 82 lane-off controls,
-  62 FHGM vectors, 10 rule tests, 2 ledgers). CI runs them as separate labelled jobs. The receipts
+  (288 tests at the 2026-11-18/19 re-pin plus its two review rounds: 82 FHT vectors, 82 lane-off controls,
+  62 FHGM vectors, 16 round-one verdict-precision tests, 16 carrier-citation cells, 17
+  second-round review cases, 1 text-scope derivation test, 2 ledgers). CI runs them as
+  separate labelled jobs. The receipts
   (`target/default-behavior-golden.properties`,
   `target/fht-draft-vectors.properties`,
   `target/fhgm-draft-vectors.properties`) plus

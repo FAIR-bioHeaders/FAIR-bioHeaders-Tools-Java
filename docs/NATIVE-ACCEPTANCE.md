@@ -54,7 +54,9 @@ git -C fhgm-pin checkout 06176262f9824f26d974a15d8feeebde1fbeb0a8
 
 # 4. The reports guard, exactly as CI runs it.
 sh .github/scripts/assert-reports.sh 318          # released job
-sh .github/scripts/assert-reports.sh 270 target/surefire-reports   # draft job
+sh .github/scripts/assert-reports.sh 288 target/surefire-reports   # draft job
+#   Maven alone is NOT the enforcement: a drifted checkout yields skips and BUILD SUCCESS.
+#   This guard is the step that rejects skips, alongside the receipt greps in build.yml.
 sh .github/scripts/ci-guards-dryrun.sh            # local dry run of the CI shell guards
 ```
 

@@ -6,9 +6,12 @@
 package org.fairbioheaders;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,13 +56,25 @@ final class Gff3FeatureIndex {
         INDETERMINATE
     }
 
-    private final Map<String, List<String>> typesById;
-    private final Map<String, ParentState> parentById;
+    /**
+     * The decoded ID bytes, as the key. A {@link ByteBuffer} compares and hashes by remaining bytes,
+     * which is what identity here means: the draft's checker indexes the percent-decoded bytes and
+     * looks them up by the record ID's UTF-8 encoding ({@code validate_fhgm.py}: {@code targets.get(
+     * feature_id.encode(), [])}), so matching two byte strings is the whole operation. It is NOT the
+     * same operation as decoding each side to text first: a row ID of {@code %FF} is not valid UTF-8,
+     * and a decoder that substitutes U+FFFD for it would then "match" a record that names U+FFFD -
+     * a target invented out of a decoding failure, and a K4 PASS on nothing.
+     */
+    private final Map<ByteBuffer, List<String>> typesById;
+    private final Map<ByteBuffer, ParentState> parentById;
+    /** How many distinct decoded IDs in this file are not valid UTF-8 at all. */
+    private final int undecodableIds;
 
-    private Gff3FeatureIndex(Map<String, List<String>> typesById,
-                             Map<String, ParentState> parentById) {
+    private Gff3FeatureIndex(Map<ByteBuffer, List<String>> typesById,
+                             Map<ByteBuffer, ParentState> parentById, int undecodableIds) {
         this.typesById = typesById;
         this.parentById = parentById;
+        this.undecodableIds = undecodableIds;
     }
 
     /**
@@ -68,8 +83,9 @@ final class Gff3FeatureIndex {
      * @throws MalformedRow when a data row does not have nine tab-separated columns
      */
     static Gff3FeatureIndex of(byte[] data) {
-        Map<String, List<String>> index = new LinkedHashMap<>();
-        Map<String, ParentState> parents = new LinkedHashMap<>();
+        Map<ByteBuffer, List<String>> index = new LinkedHashMap<>();
+        Map<ByteBuffer, ParentState> parents = new LinkedHashMap<>();
+        Set<ByteBuffer> undecodable = new HashSet<>();
         int lineNumber = 0;
         for (byte[] line : splitLines(data)) {
             lineNumber++;
@@ -84,7 +100,7 @@ final class Gff3FeatureIndex {
                 throw new MalformedRow(lineNumber);
             }
             byte[] type = columns.get(2);
-            List<String> rowIds = new ArrayList<>();
+            List<ByteBuffer> rowIds = new ArrayList<>();
             ParentState rowParent = ParentState.ABSENT;
             for (byte[] attribute : split(columns.get(8), (byte) ';')) {
                 int eq = indexOf(attribute, (byte) '=');
@@ -96,10 +112,17 @@ final class Gff3FeatureIndex {
                 byte[] value = eq < 0 ? new byte[0]
                     : Arrays.copyOfRange(attribute, eq + 1, attribute.length);
                 if (Arrays.equals(key, "ID".getBytes(StandardCharsets.UTF_8))) {
-                    String decoded = new String(unquote(value), StandardCharsets.UTF_8);
-                    rowIds.add(decoded);
-                    index.computeIfAbsent(decoded, k -> new ArrayList<>())
+                    byte[] decoded = unquote(value);
+                    ByteBuffer id = ByteBuffer.wrap(decoded);
+                    rowIds.add(id);
+                    index.computeIfAbsent(id, k -> new ArrayList<>())
                         .add(new String(type, StandardCharsets.UTF_8));
+                    if (!isValidUtf8(decoded)) {
+                        // No record can name this ID: a record's text is valid UTF-8 by construction,
+                        // and these bytes are not. It is still counted, so a K4 finding can say the
+                        // target was not merely absent but unreadable.
+                        undecodable.add(id);
+                    }
                 } else if (Arrays.equals(key, "Parent".getBytes(StandardCharsets.UTF_8))
                         && rowParent != ParentState.NESTED) {
                     // FHGM#29's gene-target condition reads this: a non-empty Parent makes the row
@@ -108,12 +131,27 @@ final class Gff3FeatureIndex {
                     rowParent = value.length > 0 ? ParentState.NESTED : ParentState.INDETERMINATE;
                 }
             }
-            for (String id : rowIds) {
+            for (ByteBuffer id : rowIds) {
                 ParentState known = parents.get(id);
                 parents.put(id, strongest(known, rowParent));
             }
         }
-        return new Gff3FeatureIndex(index, parents);
+        return new Gff3FeatureIndex(index, parents, undecodable.size());
+    }
+
+    /**
+     * Strict UTF-8 decoding, and nothing like {@code new String(bytes, UTF_8)}, which never fails:
+     * it replaces every undecodable sequence with U+FFFD and so turns a read failure into a value.
+     */
+    private static boolean isValidUtf8(byte[] bytes) {
+        try {
+            return StandardCharsets.UTF_8.newDecoder()
+                .onMalformedInput(CodingErrorAction.REPORT)
+                .onUnmappableCharacter(CodingErrorAction.REPORT)
+                .decode(ByteBuffer.wrap(bytes)) != null;
+        } catch (CharacterCodingException expected) {
+            return false;
+        }
     }
 
     /**
@@ -133,17 +171,32 @@ final class Gff3FeatureIndex {
             : ParentState.ABSENT;
     }
 
-    /** The feature types carrying {@code id}; empty when no local row declares it. */
-    List<String> typesOf(String id) {
-        return typesById.getOrDefault(id, List.of());
+    /**
+     * The feature types carrying the record's {@code featureId}, compared as the ID's UTF-8 bytes -
+     * the same comparison the draft's checker makes. Empty when no local row declares it, including
+     * when a row declares bytes this file cannot spell as text.
+     */
+    List<String> typesOf(String featureId) {
+        return typesById.getOrDefault(ByteBuffer.wrap(featureId.getBytes(StandardCharsets.UTF_8)),
+            List.of());
+    }
+
+    /**
+     * How many decoded row IDs in this file are not valid UTF-8. A K4 finding quotes it so an
+     * unresolvable target says whether the ID was absent or unreadable, which are different faults
+     * with different owners.
+     */
+    int undecodableIdCount() {
+        return undecodableIds;
     }
 
     /**
      * What the rows declaring {@code id} say about its parent. {@link ParentState#ABSENT} is also what
      * an unknown ID reports, and a caller must have resolved the ID before reading that as anything.
      */
-    ParentState parentOf(String id) {
-        return parentById.getOrDefault(id, ParentState.ABSENT);
+    ParentState parentOf(String featureId) {
+        return parentById.getOrDefault(
+            ByteBuffer.wrap(featureId.getBytes(StandardCharsets.UTF_8)), ParentState.ABSENT);
     }
 
     int size() {

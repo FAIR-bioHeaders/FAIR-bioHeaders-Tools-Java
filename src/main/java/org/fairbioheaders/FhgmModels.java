@@ -134,6 +134,8 @@ public final class FhgmModels {
     private final Options options;
     private final Schema transportOverlay;
     private final Schema recordContract;
+    /** The record paths the pinned contract types as {@code $defs.text}; see DraftTextPolicy. */
+    private final java.util.Set<String> textPaths;
     private final String modelsKey;
     private final FhType type;
     private final HeaderTypeDef.DraftPin pin;
@@ -166,6 +168,7 @@ public final class FhgmModels {
         this.modelsKey = pin.modelsKey();
         this.transportOverlay = bundle.transportContract(type);
         this.recordContract = bundle.contract(type, "main");
+        this.textPaths = DraftTextPolicy.textPaths(readTree(bundle, pin.file()));
     }
 
     /** The options this instance was opened with; the lane must be enabled for FHGM. */
@@ -305,10 +308,15 @@ public final class FhgmModels {
         if (!sink.isEmpty()) {
             throw new ModelCheckFailure(sink.get(0));
         }
-        Gff3FeatureIndex targets = featureIndex(data);
-        LinkKeys fileKeys = assemblyKeys(header);
         List<JsonNode> records = new ArrayList<>();
         models.forEach(records::add);
+        // NOTE on where the feature layer is read. The draft's checker indexes the rows only AFTER the
+        // whole-array K2 pass and after K3 (`validate_snapshot`: base selection -> base schema ->
+        // transport -> checksum -> K2 for every record -> NFC K3 -> `gene_targets(data)` -> K4/K5 per
+        // record). Reading it earlier means a malformed row - nine columns is the first thing this
+        // index checks - gets reported as K4 before the records themselves have been looked at, so a
+        // missing required field or a duplicate identity disappears behind a feature-layer fault. The
+        // index is therefore built here, after both, and nothing before this point touches a row.
 
         // K2 first, over the WHOLE array: every record must satisfy the contract's shape before any
         // rule reads a field of it. This is the order the draft's own checker uses, and the order the
@@ -327,7 +335,7 @@ public final class FhgmModels {
             // The contract's text rule is stated in Unicode terms, which this evaluator's `\s` is not;
             // DraftTextPolicy applies the sentence the schema spells out, before any rule looks at a
             // field, so an invisible edge on one field cannot be reported as another rule's finding.
-            String invisible = firstTextViolation(model, "");
+            String invisible = firstTextViolation(model, "", textPaths);
             if (invisible != null) {
                 throw new ModelCheckFailure(Issue.error("K2", "model record " + index
                     + " is invalid under the pinned draft contract: " + invisible));
@@ -364,16 +372,27 @@ public final class FhgmModels {
                 + " records share one snapshot identity in one snapshot"));
         }
 
-        // K4 and K5 per record, in the order the draft states them.
+        // K4 and K5 per record, in the order the draft states them, and only now is the feature
+        // layer read.
+        Gff3FeatureIndex targets = featureIndex(data);
+        LinkKeys fileKeys = assemblyKeys(header);
         Map<String, JsonNode> byModelId = new LinkedHashMap<>();
         for (JsonNode model : records) {
             String modelId = model.path("modelId").asString();
             String featureId = model.path("featureId").asString();
             List<String> types = targets.typesOf(featureId);
             if (types.size() != 1 || !isGene(types.get(0))) {
+                // Identity is compared as decoded bytes (see Gff3FeatureIndex), which is also why
+                // nothing here can name a row whose ID bytes are not valid UTF-8: no text featureId
+                // encodes to them. Say so, because "absent" and "unreadable by any text ID" are
+                // different faults with different owners, and collapsing them would hide the second.
+                String unreadable = targets.undecodableIdCount() == 0 ? ""
+                    : "; the feature layer carries " + targets.undecodableIdCount()
+                        + " row ID(s) whose percent-decoded bytes are not valid UTF-8, so no text"
+                        + " featureId can name them and none was matched by substituting U+FFFD";
                 throw new ModelCheckFailure(Issue.error("K4", "model " + quoted(modelId)
                     + " must target one local gene row: " + quoted(featureId)
-                    + " resolves to " + types));
+                    + " resolves to " + types + unreadable));
             }
             Gff3FeatureIndex.ParentState parent = targets.parentOf(featureId);
             if (parent == Gff3FeatureIndex.ParentState.NESTED) {
@@ -411,25 +430,28 @@ public final class FhgmModels {
     }
 
     /**
-     * The first string in one record that violates the contract's text rule, described with the field
-     * path it was found under, or {@code null}.
+     * The first {@code $defs.text} value in one record that violates the contract's text rule,
+     * described with the field path it was found under, or {@code null}.
      *
-     * <p>Walked rather than listed field by field: {@code $defs.text} is what the contract applies to
-     * {@code modelId}, {@code modelVersion}, {@code featureId}, a predecessor's two ids, contributor
-     * names and roles, evidence descriptions, software names and versions, limitations and
-     * {@code reuseConditions} - fourteen places, and a check wired to the three that happened to be in
-     * the first bug report would leave the other eleven relying on an ASCII regex class. Every string
-     * in the record is covered, including strings inside nested objects and arrays.
+     * <p>Only the paths in {@code textPaths} are checked - the sites the pinned schema actually types
+     * as {@code $defs/text}, followed through {@code $ref} and {@code allOf}. Checking every string
+     * instead would be the same mistake in the other direction: {@code publication.article} carries a
+     * DOI pattern of its own and no text reference, so a blanket walk rejects values the contract
+     * accepts, and a false invalidity is as wrong as a false pass.
      */
-    private static String firstTextViolation(JsonNode node, String path) {
+    private static String firstTextViolation(JsonNode node, String path,
+                                                     java.util.Set<String> textPaths) {
         if (node.isString()) {
+            if (!textPaths.contains(path)) {
+                return null;
+            }
             String violation = DraftTextPolicy.violation(node.asString());
             return violation == null ? null : (path.isEmpty() ? "the value" : path) + " " + violation;
         }
         if (node.isObject()) {
             for (Map.Entry<String, JsonNode> field : node.properties()) {
                 String found = firstTextViolation(field.getValue(),
-                    path.isEmpty() ? field.getKey() : path + "." + field.getKey());
+                    DraftTextPolicy.path(path, field.getKey()), textPaths);
                 if (found != null) {
                     return found;
                 }
@@ -437,14 +459,23 @@ public final class FhgmModels {
             return null;
         }
         if (node.isArray()) {
-            for (int i = 0; i < node.size(); i++) {
-                String found = firstTextViolation(node.get(i), path + "[" + i + "]");
+            for (JsonNode element : node) {
+                String found = firstTextViolation(element, path + "[]", textPaths);
                 if (found != null) {
                     return found;
                 }
             }
         }
         return null;
+    }
+
+    /** The pinned contract's own JSON, for schema-directed scoping (bytes are digest-checked at load). */
+    private static JsonNode readTree(SchemaBundle bundle, String file) {
+        try (java.io.InputStream in = bundle.open(file)) {
+            return new tools.jackson.databind.ObjectMapper().readTree(in);
+        } catch (java.io.IOException e) {
+            throw new java.io.UncheckedIOException(e);
+        }
     }
 
     /** K6, the bounded pointer resolution of the draft. Never throws; reports instead. */

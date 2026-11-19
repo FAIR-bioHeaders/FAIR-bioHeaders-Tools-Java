@@ -36,8 +36,19 @@ package org.fairbioheaders;
  * whitespace stays legal, exactly as the contract leaves it: the rule is about the edges and about
  * characters that never show.
  *
- * <p>Scope. This is a <b>draft-lane</b> check, applied by {@link FhgmModels} to the strings of an FHGM
- * record and to nothing else. It changes no released validation, no released contract bytes, and no
+ * <p>Scope, and it is the contract's scope and not a wider one. The rule applies at the properties the
+ * pinned record contract actually types as {@code $defs/text} - the fourteen sites that reference it,
+ * followed through {@code $ref} and {@code allOf} (so {@code $defs/curie} counts, because its
+ * {@code allOf[0]} is {@code $defs/text}, and {@code reference.genomeReference.assemblyName} counts
+ * through the {@code $defs/genomeReference} reference). It does NOT apply to every string reachable by
+ * recursion: {@code publication.article} carries its own DOI pattern and no text reference, and
+ * applying the text rule there rejected {@code 10.1234/ab&#x200D;cd}, a value the pinned contract
+ * accepts. Over-rejection is a false invalidity, which the {@code #264} ruling weighs as heavily as a
+ * false pass, so {@link #textPaths(JsonNode)} derives the paths from the schema instead of a list kept
+ * by hand.
+ *
+ * <p>Scope in the other direction: this is a <b>draft-lane</b> check, applied by {@link FhgmModels} to
+ * an FHGM record and to nothing else. It changes no released validation, no released contract bytes, and no
  * frozen draft bytes: the pinned schema is vendored verbatim and digest-checked, so the portable fix -
  * writing the patterns as explicit code-point classes the way {@code $defs.link} already does, upstream
  * in FHGM-Specification with a deliberate re-pin and fixtures - is owning-repository work. Until that
@@ -47,6 +58,70 @@ package org.fairbioheaders;
 final class DraftTextPolicy {
 
     private DraftTextPolicy() {
+    }
+
+    /**
+     * The paths in an FHGM record where the contract applies {@code $defs.text}, derived from the
+     * pinned schema rather than a hand-kept list. Array segments are normalised to {@code []}, so a
+     * contributor name is {@code contributors[].name} on both sides of the comparison.
+     *
+     * <p>Walking it out of the schema is the point. A list of field names goes stale on the next
+     * deliberate re-pin in exactly the wrong direction - it silently stops covering a field the
+     * contract did constrain - while {@code $ref} is a fact about the bytes this jar digests.
+     */
+    static java.util.Set<String> textPaths(tools.jackson.databind.JsonNode contract) {
+        java.util.Set<String> found = new java.util.LinkedHashSet<>();
+        // Start at the schema root, so the paths collected are record paths. Walking $defs instead
+        // would add the empty prefix (a definition is not an instance location) and miss every field.
+        collectTextPaths(contract, contract, "", found, 0);
+        found.remove("");
+        return java.util.Collections.unmodifiableSet(found);
+    }
+
+    private static void collectTextPaths(tools.jackson.databind.JsonNode root,
+                                         tools.jackson.databind.JsonNode node, String prefix,
+                                         java.util.Set<String> found, int depth) {
+        if (node == null || node.isMissingNode() || node.isNull() || depth > 24) {
+            return;
+        }
+        String ref = node.path("$ref").asString("");
+        if (!ref.isEmpty()) {
+            String name = ref.substring(ref.lastIndexOf('/') + 1);
+            if (name.equals("text")) {
+                found.add(prefix);
+                return;
+            }
+            if (ref.startsWith("#/$defs/")) {
+                collectTextPaths(root, root.path("$defs").path(name), prefix, found, depth + 1);
+            }
+            return;
+        }
+        for (tools.jackson.databind.JsonNode branch : node.path("allOf")) {
+            collectTextPaths(root, branch, prefix, found, depth + 1);
+        }
+        for (tools.jackson.databind.JsonNode branch : node.path("anyOf")) {
+            collectTextPaths(root, branch, prefix, found, depth + 1);
+        }
+        for (tools.jackson.databind.JsonNode branch : node.path("oneOf")) {
+            collectTextPaths(root, branch, prefix, found, depth + 1);
+        }
+        if (node.has("items")) {
+            collectTextPaths(root, node.path("items"), prefix + "[]", found, depth + 1);
+        }
+        tools.jackson.databind.JsonNode properties = node.path("properties");
+        if (properties.isObject()) {
+            for (java.util.Map.Entry<String, tools.jackson.databind.JsonNode> field
+                : properties.properties()) {
+                collectTextPaths(root, field.getValue(),
+                    prefix.isEmpty() ? field.getKey() : prefix + "." + field.getKey(), found,
+                    depth + 1);
+            }
+        }
+    }
+
+    /** The instance path of one value inside a record, with array indices normalised to {@code []}. */
+    static String path(String parent, String field) {
+        return parent.isEmpty() ? field : parent + "." + field;
     }
 
     /**
