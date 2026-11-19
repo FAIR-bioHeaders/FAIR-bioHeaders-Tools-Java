@@ -62,8 +62,8 @@ class TypeRegistryTest {
             "FHGM is a records lane inside an FHGFF3 header, not a file header type");
         // The pin the V7 warning must name.
         SchemaBundle.Draft fht = bundle.draft("FHT");
-        assertEquals("226f923c28b680edb3c546e99a751482d06aef1a", fht.commit());
-        assertEquals("59ad9641adcb0e5591045c2d894c066d1adc9984cca84c5ff6502f8dad88487e", fht.sha256());
+        assertEquals("86438f21c3a17a58334c97aed4955be1a2393522", fht.commit());
+        assertEquals("4156353aa6d077fee2d2c69be4e17859b8e4f81bb10824f3c87f6701de196e7a", fht.sha256());
         assertEquals("https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/main/fht.json",
             fht.citation());
     }

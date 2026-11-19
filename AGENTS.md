@@ -79,9 +79,15 @@ releases, fixed schema aliases or existing file-bound headers.
 
 Check the adoption decision and released support before implementing a
 proposal; an issue or PR's existence does not establish adoption. **FHT and
-FHGM are drafts (rule V7): they have no released contract, no `schemaVersion`,
-no w3id URL, no entry in the shared registry, and no support claim — and a
-draft never takes a release form.** This repository registers **two**
+FHGM are drafts (rule V7): they have no released contract, no **released or
+registered** `schemaVersion`, no w3id URL, no entry in the shared registry, and
+no support claim — and a draft never takes a release form.** The qualification is
+load-bearing, not pedantry: the FHT draft contract itself *requires* a
+`schemaVersion: "1.0"` field inside every FHT header, so "no `schemaVersion`" read
+bare is simply false about FHT bytes and makes a future V7 token sweep either cry
+wolf at a required field or miss a real release form. What no draft has is a
+`schemaVersion` **registered in the shared `schemas/versions.json`**, which is the
+thing that would make a reader entitled to select it as a release.** This repository registers **two**
 drafts as pinned rows of `schemas/bundled.json`, both readable only through the
 explicit V7 opt-in and both warned on for every record read that way: `FHT` (the
 commit and SHA-256 of FHT-Specification's `fht.json`, a file-bound header) and
@@ -203,7 +209,10 @@ This section applies only to FAIR-bioHeaders-Tools-Java.
   (318 tests), and `./mvnw test -Dgroups=draft
   -Dfh.fht.dir=<FHT-Specification>/conformance
   -Dfh.fhgm.dir=<FHGM-Specification>/development/conformance` is rule V7 evidence
-  (199 tests). CI runs them as separate labelled jobs. The receipts
+  (288 tests at the 2026-11-18/19 re-pin plus its two review rounds: 82 FHT vectors, 82 lane-off controls,
+  62 FHGM vectors, 16 round-one verdict-precision tests, 16 carrier-citation cells, 17
+  second-round review cases, 1 text-scope derivation test, 2 ledgers). CI runs them as
+  separate labelled jobs. The receipts
   (`target/default-behavior-golden.properties`,
   `target/fht-draft-vectors.properties`,
   `target/fhgm-draft-vectors.properties`) plus

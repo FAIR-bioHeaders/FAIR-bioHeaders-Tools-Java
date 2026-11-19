@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fairbioheaders.BioHeaders;
-import org.fairbioheaders.Kind;
 import org.fairbioheaders.VerifyResult;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Tag;
@@ -51,7 +50,10 @@ class FhtLaneOffControlTest {
             tests.add(DynamicTest.dynamicTest(id + " (lane closed)", () -> {
                 Path file = harness.suiteDir().resolve(vector.get("file").asString()).normalize();
                 assertTrue(Files.isRegularFile(file), file + " should exist");
-                VerifyResult result = released.verify(BioHeaders.readAll(file), Kind.FASTA);
+                // The file-based path again: a broken compressed stream must arrive as the
+                // released reader's own rejection (R1), never as an exception escaping readAll -
+                // a crashed control proves nothing about the lane either.
+                VerifyResult result = released.verifyFile(file);
                 assertFalse(result.hasRule("V7"),
                     "a closed lane must not describe anything as a draft reading");
                 // A record written against the FHT contract cannot satisfy FHR: its required

@@ -5,12 +5,11 @@
  */
 package org.fairbioheaders;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.networknt.schema.Schema;
 
@@ -34,16 +33,30 @@ import tools.jackson.databind.JsonNode;
  *   <li><b>B1 boundary</b> - the file must already satisfy the released FHGFF3 base schema and its
  *       exact-byte checksum. Reported by the carrier {@link VerifyResult}; a rejection at this
  *       layer is not evidence about a model.</li>
- *   <li><b>K1 transport</b> - the pinned transport overlay: released FHGFF3 1.1 identity plus a
- *       non-empty {@code x-fhgm-models} array of objects.</li>
- *   <li><b>K2 record shape</b> - each record against the pinned native record contract
+ *   <li><b>K1 transport</b> - the pinned transport overlay: a released FHGFF3 identity selected by
+ *       its cited schema URL (v0.5.0 with schemaVersion 1.1, or v0.6.0 with 1.1 or 1.2, per the
+ *       dual-base decision of 2026-11-15 and the URL-keyed selection of FHGM#26) plus a non-empty
+ *       {@code x-fhgm-models} array of objects.</li>
+ *   <li><b>K2 record shape</b> - every record against the pinned native record contract
  *       ({@code modelId}, {@code modelVersion}, {@code featureId}, {@code reference} required;
- *       nested objects closed).</li>
- *   <li><b>K3 identity</b> - one {@code modelId} per snapshot. A duplicate makes the identity a
- *       revision pointer needs unselectable, reported as ambiguous, and rejects the snapshot.</li>
- *   <li><b>K4 targeting</b> - the first record for a model ID must name a {@code featureId} that
- *       percent-decodes to exactly one local {@code gene} row (or {@code SO:0000704}) in the
- *       enclosing file.</li>
+ *       nested objects closed), as a pass over the WHOLE array before K3 looks at any field: an
+ *       identity the contract has not accepted is not an identity to compare, and reporting two
+ *       records that both lack {@code modelId} as one ambiguous ID would invent the string it
+ *       claims they share. The contract's text rule is part of this step and is evaluated in the
+ *       Unicode terms the contract states - see {@link DraftTextPolicy}.</li>
+ *   <li><b>K3 identity</b> - one {@code modelId} per snapshot, compared after NFC normalisation
+ *       and before any per-record rule. A collision - same spelling repeated, or distinct
+ *       spellings that fold together - makes the identity a revision pointer needs unselectable,
+ *       reported as ambiguous, and rejects the snapshot.</li>
+ *   <li><b>K4 targeting</b> - the record's {@code featureId} must percent-decode to exactly one
+ *       local {@code gene} row (or {@code SO:0000704}) in the enclosing file, and since the
+ *       2026-11-18 bytes (FHGM#29) that row must be <em>root-level</em>: a gene carrying a
+ *       {@code Parent} attribute does not resolve. Root means the tag is absent. {@code Parent=} is
+ *       a present tag with an empty value list under the GFF3 attribute grammar and a bare
+ *       {@code Parent} is a token that grammar cannot read, so neither is evidence of a root: both
+ *       reject, and this reader does not report a relationship it could not resolve. Whether K4
+ *       should abstain instead is an open upstream question (FHGM#22, {@code JS#11}), not something
+ *       this class decides.</li>
  *   <li><b>K5 reference</b> - the record's reference must share at least one comparable form with
  *       the file's genome link (accession + SeqCol digest, or the annotated FHR checksum) and must
  *       never contradict it. Both halves are enforced.</li>
@@ -121,6 +134,8 @@ public final class FhgmModels {
     private final Options options;
     private final Schema transportOverlay;
     private final Schema recordContract;
+    /** The record paths the pinned contract types as {@code $defs.text}; see DraftTextPolicy. */
+    private final java.util.Set<String> textPaths;
     private final String modelsKey;
     private final FhType type;
     private final HeaderTypeDef.DraftPin pin;
@@ -153,6 +168,7 @@ public final class FhgmModels {
         this.modelsKey = pin.modelsKey();
         this.transportOverlay = bundle.transportContract(type);
         this.recordContract = bundle.contract(type, "main");
+        this.textPaths = DraftTextPolicy.textPaths(readTree(bundle, pin.file()));
     }
 
     /** The options this instance was opened with; the lane must be enabled for FHGM. */
@@ -292,12 +308,23 @@ public final class FhgmModels {
         if (!sink.isEmpty()) {
             throw new ModelCheckFailure(sink.get(0));
         }
-        Gff3FeatureIndex targets = featureIndex(data);
-        LinkKeys fileKeys = assemblyKeys(header);
-        Map<String, JsonNode> byModelId = new LinkedHashMap<>();
-        Set<String> seen = new LinkedHashSet<>();
         List<JsonNode> records = new ArrayList<>();
         models.forEach(records::add);
+        // NOTE on where the feature layer is read. The draft's checker indexes the rows only AFTER the
+        // whole-array K2 pass and after K3 (`validate_snapshot`: base selection -> base schema ->
+        // transport -> checksum -> K2 for every record -> NFC K3 -> `gene_targets(data)` -> K4/K5 per
+        // record). Reading it earlier means a malformed row - nine columns is the first thing this
+        // index checks - gets reported as K4 before the records themselves have been looked at, so a
+        // missing required field or a duplicate identity disappears behind a feature-layer fault. The
+        // index is therefore built here, after both, and nothing before this point touches a row.
+
+        // K2 first, over the WHOLE array: every record must satisfy the contract's shape before any
+        // rule reads a field of it. This is the order the draft's own checker uses, and the order the
+        // two statements depend on. A rule that compares identities is not entitled to an identity the
+        // contract has not accepted - reading a missing `modelId` as "" and then reporting two records
+        // as sharing that empty ID invents an identity out of an absent field, and points the finding
+        // at the wrong rule. And a record whose shape is already invalid cannot be the reason a
+        // different, real collision goes unreported either.
         for (int index = 0; index < records.size(); index++) {
             JsonNode model = records.get(index);
             List<Issue> shape = labelled(SchemaBundle.validate(recordContract, model), "K2");
@@ -305,17 +332,89 @@ public final class FhgmModels {
                 throw new ModelCheckFailure(Issue.error("K2", "model record " + index
                     + " is invalid under the pinned draft contract: " + shape.get(0).message()));
             }
-            String modelId = model.path("modelId").asString();
-            if (seen.add(modelId)) {
-                String featureId = model.path("featureId").asString();
-                List<String> types = targets.typesOf(featureId);
-                if (types.size() != 1 || !isGene(types.get(0))) {
-                    throw new ModelCheckFailure(Issue.error("K4", "model " + quoted(modelId)
-                        + " must target one local gene row: " + quoted(featureId)
-                        + " resolves to " + types));
-                }
+            // The contract's text rule is stated in Unicode terms, which this evaluator's `\s` is not;
+            // DraftTextPolicy applies the sentence the schema spells out, before any rule looks at a
+            // field, so an invisible edge on one field cannot be reported as another rule's finding.
+            String invisible = firstTextViolation(model, "", textPaths);
+            if (invisible != null) {
+                throw new ModelCheckFailure(Issue.error("K2", "model record " + index
+                    + " is invalid under the pinned draft contract: " + invisible));
             }
-            seen.add(modelId);
+        }
+
+        // K3 identity next, before any per-record rule, comparing modelIds after NFC normalisation:
+        // a collision is the named outcome `ambiguous` and rejects the whole snapshot, so it must not
+        // be preempted or masked by whichever K4/K5 check happens to trip on one of the colliding rows
+        // first (suite rule K3; the 2026-11-18 vectors
+        // duplicate-model-id-reported-before-record-checks and model-ids-equal-under-nfc hold this
+        // reader to exactly that precedence and normalisation). Every ID reaching here has cleared K2,
+        // so it is a real string the contract accepted.
+        Map<String, List<String>> idsByNormalized = new LinkedHashMap<>();
+        for (JsonNode model : records) {
+            String modelId = model.path("modelId").asString();
+            idsByNormalized
+                .computeIfAbsent(Normalizer.normalize(modelId, Normalizer.Form.NFC),
+                    k -> new ArrayList<>())
+                .add(modelId);
+        }
+        for (List<String> collision : idsByNormalized.values()) {
+            if (collision.size() < 2) {
+                continue;
+            }
+            if (collision.stream().distinct().count() == 1) {
+                throw new ModelCheckFailure(Issue.error("K3", "Ambiguous model ID "
+                    + quoted(collision.get(0)) + ": " + collision.size()
+                    + " records share it in one snapshot"));
+            }
+            throw new ModelCheckFailure(Issue.error("K3", "Ambiguous model ID "
+                + quoted(collision.get(0)) + " and " + quoted(collision.get(1))
+                + ": distinct spellings equal under NFC normalisation, " + collision.size()
+                + " records share one snapshot identity in one snapshot"));
+        }
+
+        // K4 and K5 per record, in the order the draft states them, and only now is the feature
+        // layer read.
+        Gff3FeatureIndex targets = featureIndex(data);
+        LinkKeys fileKeys = assemblyKeys(header);
+        Map<String, JsonNode> byModelId = new LinkedHashMap<>();
+        for (JsonNode model : records) {
+            String modelId = model.path("modelId").asString();
+            String featureId = model.path("featureId").asString();
+            List<String> types = targets.typesOf(featureId);
+            if (types.size() != 1 || !isGene(types.get(0))) {
+                // Identity is compared as decoded bytes (see Gff3FeatureIndex), which is also why
+                // nothing here can name a row whose ID bytes are not valid UTF-8: no text featureId
+                // encodes to them. Say so, because "absent" and "unreadable by any text ID" are
+                // different faults with different owners, and collapsing them would hide the second.
+                String unreadable = targets.undecodableIdCount() == 0 ? ""
+                    : "; the feature layer carries " + targets.undecodableIdCount()
+                        + " row ID(s) whose percent-decoded bytes are not valid UTF-8, so no text"
+                        + " featureId can name them and none was matched by substituting U+FFFD";
+                throw new ModelCheckFailure(Issue.error("K4", "model " + quoted(modelId)
+                    + " must target one local gene row: " + quoted(featureId)
+                    + " resolves to " + types + unreadable));
+            }
+            Gff3FeatureIndex.ParentState parent = targets.parentOf(featureId);
+            if (parent == Gff3FeatureIndex.ParentState.NESTED) {
+                // FHGM#29 widened K4's gene target to a ROOT-level gene row: a gene that carries
+                // a Parent attribute is nested, and a pointer into it does not resolve as the
+                // draft now requires. This is a semantics change inside the pinned bytes, not a
+                // new rule label.
+                throw new ModelCheckFailure(Issue.error("K4", "model " + quoted(modelId)
+                    + " must target one local gene row: " + quoted(featureId)
+                    + " has a Parent attribute, so it is not a root gene row"));
+            }
+            if (parent == Gff3FeatureIndex.ParentState.INDETERMINATE) {
+                // The row carries a Parent tag that says nothing readable - `Parent=`, or a bare
+                // `Parent` with no value. That is not a root claim: the gene feature the record points
+                // at has a parent relationship the reader cannot resolve, and a PASS here would assert
+                // the one thing this library did not establish. Feature-line validation belongs to
+                // gff3-validator, which is a second reason not to settle the question from here.
+                throw new ModelCheckFailure(Issue.error("K4", "model " + quoted(modelId)
+                    + " must target one local gene row: " + quoted(featureId)
+                    + " carries a Parent attribute with no readable value, so this reader cannot"
+                    + " establish that it is a root gene row"));
+            }
             byModelId.putIfAbsent(modelId, model);
             LinkKeys recordKeys = referenceKeys(model);
             if (recordKeys.conflictsWith(fileKeys)) {
@@ -327,16 +426,56 @@ public final class FhgmModels {
                     + " has no reference form comparable with the file genome link"));
             }
         }
-        for (String modelId : seen) {
-            long count = records.stream()
-                .filter(m -> modelId.equals(m.path("modelId").asString(null)))
-                .count();
-            if (count > 1) {
-                throw new ModelCheckFailure(Issue.error("K3", "Ambiguous model ID " + quoted(modelId)
-                    + ": " + count + " records share it in one snapshot"));
+        return new Snapshot(header, byModelId, header.path("checksum").asString());
+    }
+
+    /**
+     * The first {@code $defs.text} value in one record that violates the contract's text rule,
+     * described with the field path it was found under, or {@code null}.
+     *
+     * <p>Only the paths in {@code textPaths} are checked - the sites the pinned schema actually types
+     * as {@code $defs/text}, followed through {@code $ref} and {@code allOf}. Checking every string
+     * instead would be the same mistake in the other direction: {@code publication.article} carries a
+     * DOI pattern of its own and no text reference, so a blanket walk rejects values the contract
+     * accepts, and a false invalidity is as wrong as a false pass.
+     */
+    private static String firstTextViolation(JsonNode node, String path,
+                                                     java.util.Set<String> textPaths) {
+        if (node.isString()) {
+            if (!textPaths.contains(path)) {
+                return null;
+            }
+            String violation = DraftTextPolicy.violation(node.asString());
+            return violation == null ? null : (path.isEmpty() ? "the value" : path) + " " + violation;
+        }
+        if (node.isObject()) {
+            for (Map.Entry<String, JsonNode> field : node.properties()) {
+                String found = firstTextViolation(field.getValue(),
+                    DraftTextPolicy.path(path, field.getKey()), textPaths);
+                if (found != null) {
+                    return found;
+                }
+            }
+            return null;
+        }
+        if (node.isArray()) {
+            for (JsonNode element : node) {
+                String found = firstTextViolation(element, path + "[]", textPaths);
+                if (found != null) {
+                    return found;
+                }
             }
         }
-        return new Snapshot(header, byModelId, header.path("checksum").asString());
+        return null;
+    }
+
+    /** The pinned contract's own JSON, for schema-directed scoping (bytes are digest-checked at load). */
+    private static JsonNode readTree(SchemaBundle bundle, String file) {
+        try (java.io.InputStream in = bundle.open(file)) {
+            return new tools.jackson.databind.ObjectMapper().readTree(in);
+        } catch (java.io.IOException e) {
+            throw new java.io.UncheckedIOException(e);
+        }
     }
 
     /** K6, the bounded pointer resolution of the draft. Never throws; reports instead. */

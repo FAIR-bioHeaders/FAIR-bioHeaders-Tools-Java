@@ -179,6 +179,20 @@ public final class Fixtures {
         return sealed(Kind.GFF3, yaml, features);
     }
 
+    /**
+     * An FHGM carrier whose released base citation and stated schemaVersion are both given, so a test
+     * can walk the citation matrix instead of trusting one spelling. The file is sealed as usual, so
+     * the checksum covers the header carrying whichever identity is under test.
+     */
+    public static byte[] fhgmCarrier(String schemaUrl, String schemaVersion, String modelsYaml,
+                                     String features) {
+        String yaml = FHGM_CARRIER.stripTrailing()
+            .replace("schema: https://w3id.org/fair-bioheaders/fhgff3/v0.5.0", "schema: " + schemaUrl)
+            .replace("schemaVersion: '1.1'", "schemaVersion: '" + schemaVersion + "'")
+            + "\nx-fhgm-models:\n" + modelsYaml + "\n";
+        return sealed(Kind.GFF3, yaml, features);
+    }
+
     /** One well-formed record bound to the same assembly as its carrier. */
     public static String record(String modelId, String version, String featureId) {
         return "- modelId: " + modelId + "\n"
