@@ -182,16 +182,18 @@ counts — verified 2026-11-14.)
 | **total** | **291** | **228** | **228** | 0 |
 
 Plus 90 unit/integration/CLI JUnit tests in the released-contract job: **318 test
-executions, 0 failures, 0 skipped** as recorded on 2026-11-16; the released job has
-since grown to 351 executions locally (measured 2026-11-18 on this branch, JDK
-17.0.21.0.3) — that doc/CI-literal lag is tracked as its own change (Tools-Java#14),
-not folded into a re-pin. (JDK 17.0.21.0.3 and 27.0.1.0.3 locally,
-Temurin 17 and 21 in CI on ubuntu-latest and macos-latest). The draft job adds 270
-more (82 FHT draft vectors, 82 lane-off controls, 62 FHGM draft vectors, 10 FHGM
-rule tests, 16 FHGM verdict-precision tests, 16 FHGM carrier-citation cells, 18
-second-round review cases and 2 ledgers) for **639 measured in total on the pinned
-baseline** (351 + 288), on JDK
-17.0.21.0.3. **Baseline matters when quoting these numbers**: the same tree run
+executions, 0 failures, 0 skipped** as recorded on 2026-11-16; the released job grew
+to 351 (measured 2026-11-18) and to **352** (measured 2026-11-19).
+`ReportBoundConsistencyTest` checks that the documented guard floors match the
+`# guard-bound:`-marked `assert-reports.sh` invocations in `build.yml` (318 released,
+288 draft), and that the documented split and total agree with the bounds row.
+These are text-consistency checks, not comparisons with live report totals. (JDK
+17.0.21.0.3 and 27.0.1.0.3 locally, Temurin 17 and 21 in CI on ubuntu-latest and
+macos-latest). The draft job adds **298** (82 FHT draft vectors, 82 lane-off
+controls, 62 FHGM draft vectors, 10 FHGM rule tests, 16 FHGM verdict-precision
+tests, 16 FHGM carrier-citation cells, 18 second-round review cases, 2 ledgers, and
+10 FHT ECMA-whitespace cases from `#16`) for **650 measured in total on the pinned
+baseline** (352 + 298), on JDK 17.0.21.0.3. **Baseline matters when quoting these numbers**: the same tree run
 against FAIR-bioHeaders-Specification's live `main` instead of the pinned `v0.6.0`
 tag measures 607 tests with 7 failures (five shared-suite additions plus two
 ledger/golden totals) — that is not a defect in the draft lane, it is what pinning a
@@ -487,7 +489,8 @@ already green there and stay green: they are controls, and `zeroWidthJoinersAreR
 among them is the measured evidence for blocker 4 — the frozen schema already refused those
 code points, so defect 4 was a claim and a scope question, not a behaviour this library had
 broken. At this head the same class is `17 run / 0 red`, `DraftTextScopeTest` is `1/1`, and
-the whole draft group is `288 run / 0 red`.
+the whole draft group was `288 run / 0 red` at that head (it is 298 today with the
+round-14 `#16` whitespace cases; see the ledger above).
 
 **And a disclosure that was missing from the first fix round**: the FHT-lane `\S`
 dependency is now stated in full, with its corrected count (one pattern, two sites, not
