@@ -113,7 +113,12 @@ run_check() {
     url="$raw_base/$repo/main/$source_path"
     out_file="$workdir/live-$(echo "$label" | tr ':/' '__')"
     rm -f "$out_file"
-    code=$(curl -s -o "$out_file" -w '%{http_code}' "$url" || true)
+    if ! code=$(curl -s -o "$out_file" -w '%{http_code}' "$url"); then
+      echo "$label | $pin ($commit) | $shipped | HTTP_${code:-000}_TRANSFER_FAILED | UNKNOWN"
+      echo "$label: transfer from $url failed" >&2
+      unusable=1
+      return 0
+    fi
 
     # Guard explicitly against unreadable or empty live downloads: never compare "" = "".
     # (file:// bases are used by --self-test; curl reports HTTP 000 for them on macOS even when
