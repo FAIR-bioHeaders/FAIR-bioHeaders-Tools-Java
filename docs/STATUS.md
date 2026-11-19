@@ -183,11 +183,11 @@ counts — verified 2026-11-14.)
 
 Plus 90 unit/integration/CLI JUnit tests in the released-contract job: **318 test
 executions, 0 failures, 0 skipped** as recorded on 2026-11-16; the released job grew
-to 351 (measured 2026-11-18) and to **352** with the round-14 guard of this change —
-the doc/CI-literal lag that let those numbers drift is closed by
-`ReportBoundConsistencyTest`, which single-sources the guard floors at the
+to 351 (measured 2026-11-18) and to **352** (measured 2026-11-19).
+`ReportBoundConsistencyTest` checks that the documented guard floors match the
 `# guard-bound:`-marked `assert-reports.sh` invocations in `build.yml` (318 released,
-288 draft) and fails if prose or the measured aggregate ever disagrees. (JDK
+288 draft), and that the documented split and total agree with the bounds row.
+These are text-consistency checks, not comparisons with live report totals. (JDK
 17.0.21.0.3 and 27.0.1.0.3 locally, Temurin 17 and 21 in CI on ubuntu-latest and
 macos-latest). The draft job adds **298** (82 FHT draft vectors, 82 lane-off
 controls, 62 FHGM draft vectors, 10 FHGM rule tests, 16 FHGM verdict-precision
