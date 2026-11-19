@@ -208,12 +208,10 @@ PY
   check_target "FHGM:$fhgm_t_source" "$fhgm_repo" "$fhgm_t_source" "$fhgm_t_commit" "$fhgm_t_sha" "$fhgm_t_file"
   check_target "FHGM:development/conformance/manifest.json" "$fhgm_repo" "development/conformance/manifest.json" "$fhgm_suite_commit" "$fhgm_suite_sha" "-"
 
-  # Also check FHGM development/model/base-schemas.json if pinned in provenance.json.
+  # The FHGM base-registry pin is required; check_target rejects a missing digest.
   base_note=$(sed -n '/"baseSchemas": {/,/"selectionRule":/p' "$provenance")
   base_sha=$(printf '%s\n' "$base_note" | grep -oE 'sha256 [0-9a-f]{64}' | head -1 | cut -d' ' -f2 || true)
-  if [ -n "$base_sha" ]; then
-    check_target "FHGM:development/model/base-schemas.json" "$fhgm_repo" "development/model/base-schemas.json" "$fhgm_suite_commit" "$base_sha" "-"
-  fi
+  check_target "FHGM:development/model/base-schemas.json" "$fhgm_repo" "development/model/base-schemas.json" "$fhgm_suite_commit" "$base_sha" "-"
 
   if [ "$unusable" -ne 0 ]; then
     echo "one or more draft pin targets were UNKNOWN or UNUSABLE; refusing to report pins as current" >&2
