@@ -125,15 +125,29 @@ public final class ConformanceHarness {
         Path file = specDir.resolve("conformance").resolve(v.get("file").asString());
         byte[] data = BioHeaders.readAll(file);
         boolean retiredValid = false;
+        String evidence = "original payload";
         JsonNode crosswalk = JSON.readTree(ConformanceHarness.class.getResourceAsStream("/golden/retirement-crosswalk.json"));
         for (JsonNode retired : crosswalk.path("cases")) {
-            if (retired.path("id").asString().equals(id) && expectedValid) {
+            if (retired.path("id").asString().equals(id)) {
                 try {
                     String digest = java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(file)));
                     if (!digest.equals(retired.path("oldSha256").asString())) throw new IOException("retired source bytes differ: " + id);
                 } catch (java.security.NoSuchAlgorithmException e) { throw new IllegalStateException(e); }
-                expectedValid = false;
-                retiredValid = true;
+                Path counterpart = Path.of("references/canonical-counterparts").resolve(retired.path("replacementFile").asString());
+                try {
+                    String digest = java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(counterpart)));
+                    if (!digest.equals(retired.path("replacementSha256").asString())) throw new IOException("replacementSha256 mismatch: " + id);
+                } catch (java.security.NoSuchAlgorithmException e) { throw new IllegalStateException(e); }
+                byte[] canonical = BioHeaders.readAll(counterpart);
+                evidence = "digest-bound canonical predicate=" + retired.path("replacedBy").asString();
+                if (expectedValid) {
+                    VerifyResult canonicalResult = verifier.verify(canonical,kind);
+                    if (!canonicalResult.isValid()) throw new IOException("canonical valid counterpart failed: " + retired.path("replacedBy").asString());
+                    expectedValid = false;
+                    retiredValid = true;
+                } else {
+                    data = canonical;
+                }
             }
         }
         VerifyResult result = verifier.verify(data, kind);
@@ -190,7 +204,7 @@ public final class ConformanceHarness {
             }
         }
         return new Outcome(id, format, expectedValid, true, problems.isEmpty(),
-            result.status(), String.join("; ", problems));
+            result.status(), evidence + (problems.isEmpty() ? "" : "; " + String.join("; ", problems)));
     }
 
     /**

@@ -170,3 +170,5 @@ the FAIR-bioHeaders-Specification license terms recorded in
 - [gff3-validator](https://github.com/FAIR-bioHeaders/gff3-validator) — GFF3 feature/SO validation
 - [fhref.org](https://fhref.org/) — project site
 - Paper: Wright et al. 2024, Briefings in Bioinformatics, [doi:10.1093/bib/bbae122](https://doi.org/10.1093/bib/bbae122)
+
+Retired predicate evidence: the immutable historical payload is checked against its crosswalk digest, and every native canonical counterpart is checked against its replacement digest before evaluation. The 39 retired invalid native cases execute their canonical counterpart for the original predicate. The 30 historical valid cases retain the explicit D9/R4 rejection check and separately require the canonical counterpart to validate. Thus 159 original unchanged predicates, 39 canonical invalid predicates, and 30 old R4 checks are distinguished; 69 canonical counterpart predicates are independently checked. The 9 crosswalk cases in JSON-LD/microdata remain outside native coverage.

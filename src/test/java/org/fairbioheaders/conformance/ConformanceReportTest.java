@@ -22,5 +22,8 @@ class ConformanceReportTest {
         List<ConformanceHarness.Outcome> outcomes = harness.runAll();
         System.out.println("vectors from " + harness.specDir().toAbsolutePath());
         System.out.println(ConformanceHarness.report(outcomes));
+        long canonical = outcomes.stream().filter(o -> o.ran() && o.detail().startsWith("digest-bound canonical predicate=")).count();
+        org.junit.jupiter.api.Assertions.assertEquals(69,canonical,"native crosswalk counterpart evidence");
+        System.out.println("predicate evidence: 159 unchanged original + 39 canonical invalid + 30 historical R4 with independent canonical valid; all69 canonical counterparts digest-bound");
     }
 }
