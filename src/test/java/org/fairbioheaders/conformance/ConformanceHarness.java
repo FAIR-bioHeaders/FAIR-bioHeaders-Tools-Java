@@ -180,7 +180,7 @@ public final class ConformanceHarness {
                 problems.add("expected unsupported-version, got " + result.status());
             }
             // Invalid for the right reason: an error must carry the rule the vector breaks.
-            if (v.has("rule") && !result.isValid()) {
+            if ((retiredValid || v.has("rule")) && !result.isValid()) {
                 String rule = retiredValid ? "R4" : v.get("rule").asString();
                 Set<String> accepted = evidenceFor(rule);
                 if (result.errors().stream().noneMatch(i -> accepted.contains(i.rule()))) {

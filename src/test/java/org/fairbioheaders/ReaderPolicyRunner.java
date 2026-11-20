@@ -27,26 +27,31 @@ public final class ReaderPolicyRunner {
             byte[] bytes = Files.readAllBytes(file);
             if (!HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(bytes))
                     .equals(c.path("sha256").asString())) throw new IllegalStateException("corpus digest mismatch");
-            boolean valid;
+            String actual;
             try {
                 if (c.path("operation").asString().equals("metadata")) {
                     JsonNode record = c.path("serialization").asString("").equals("yaml") ?
                         PortableYaml.load(Files.readString(file)) : json.readTree(bytes);
                     var selected = selector.selectRecord(record);
-                    valid = SchemaBundle.validate(bundle.contract(selected.type(), selected.release()), record).isEmpty();
+                    actual = SchemaBundle.validate(bundle.contract(selected.type(), selected.release()), record).isEmpty() ? "valid" : "invalid";
                 } else {
                     Kind kind = switch (c.path("format").asString()) {
                         case "gfa" -> Kind.GFA;
                         case "fhgff3" -> Kind.GFF3;
                         default -> Kind.FASTA;
                     };
-                    valid = reader.verify(BioHeaders.readAll(file), kind).isValid();
+                    var result = reader.verify(BioHeaders.readAll(file), kind);
+                    actual = result.status() == VerifyResult.Status.UNSUPPORTED_VERSION ? "unsupported-version"
+                        : result.isValid() ? "valid" : "invalid";
                 }
-            } catch (SchemaSelection.Unsupported | ScanException | Gunzip.FormatException e) {
-                valid = false;
+            } catch (SchemaSelection.Unsupported e) {
+                actual = "unsupported-version";
+            } catch (ScanException | Gunzip.FormatException e) {
+                actual = "invalid";
             }
-            boolean ok = valid == c.path("expected").asString().equals("valid");
-            System.out.println(c.path("id").asString() + (ok ? " PASS" : " FAIL"));
+            String expected = c.path("result").asString(c.path("expected").asString());
+            boolean ok = actual.equals(expected);
+            System.out.println(c.path("id").asString() + (ok ? " PASS" : " FAIL expected=" + expected + " actual=" + actual));
             if (!ok) failed++;
         }
         System.out.println("reader-policy: compared=64 failed=" + failed + " not-run=0");

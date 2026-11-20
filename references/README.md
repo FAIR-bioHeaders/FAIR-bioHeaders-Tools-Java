@@ -19,3 +19,9 @@ The generated inventory explicitly lists coverage gaps. Source/suite pins remain
 separate. Full external suite payload completeness is not asserted from a manifest
 pin. Actual native draft semantics and final accepted 93/92 suites remain separate
 from these historical reference comparisons; no automatic refresh is performed.
+
+Review hardening verifies any recorded native annotated-tag object separately
+from its dereferenced commit, including a same-commit retag negative control.
+An existing native commit is never replaced by companion metadata. Native
+manifest and base-schema declarations are inventoried independently; missing
+or conflicting measurements cannot become FRESH.
