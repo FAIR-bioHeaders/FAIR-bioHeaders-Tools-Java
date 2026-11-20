@@ -805,3 +805,29 @@ the v0.6.0 ledger, draft FHT/FHGM receipts and any publication/support claim.
 `references/README.md` documents the dynamic advisory reference audit; it never
 refreshes contract/suite/carrier pins automatically. Existing dated 82/62 draft
 receipts are historical, not accepted93/92 or published support.
+
+## Retired predicate accounting (2026-11-19)
+
+How the historical v0.6.0 corpus stays honest after the D9 canonical-parent
+retirements. (This section carries the text previously appended to the README,
+restructured for readers; no numbers changed.)
+
+* **Payload integrity first.** Every immutable historical payload is checked
+  against its crosswalk digest before use, and every native canonical
+  counterpart is checked against its replacement digest before evaluation — a
+  vector that does not match its recorded bytes is never scored.
+* **Retired invalid cases (39).** Each historical case that the old engine
+  rejected executes its canonical counterpart for the *original predicate*: the
+  rejection is re-proved on the replacement bytes, not inherited.
+* **Historical valid cases (30).** Each retains the explicit D9/R4 rejection
+  check — the retired noncanonical shape must still be refused — and
+  *separately* requires its canonical counterpart to validate. Both directions
+  are asserted; neither substitutes for the other.
+* **What the totals distinguish:** 159 original unchanged predicates, 39
+  canonical invalid predicates, and 30 old R4 checks, with the 69 canonical
+  counterpart predicates independently checked alongside them.
+* **Coverage limit, stated:** the 9 crosswalk cases that live in JSON-LD and
+  microdata serializations remain outside native coverage — the Java library
+  reads header bytes, not HTML metadata or JSON-LD documents (see the
+  not-implemented list above).
+
