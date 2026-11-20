@@ -48,6 +48,8 @@ final class Gunzip extends InputStream {
 
     private Inflater inflater;
     private final CRC32 crc = new CRC32();
+    private final CRC32 headerCrc = new CRC32();
+    private boolean readingHeader;
     private long memberSize;
     private boolean finished;
     private boolean started;
@@ -177,6 +179,8 @@ final class Gunzip extends InputStream {
             pos--;
         }
         started = true;
+        headerCrc.reset();
+        readingHeader = true;
         int id1 = next();
         int id2 = next();
         if (id1 != 0x1F || id2 != 0x8B) {
@@ -209,8 +213,13 @@ final class Gunzip extends InputStream {
         if ((flags & 0x10) != 0) { // FCOMMENT
             skipZeroTerminated();
         }
-        if ((flags & 0x02) != 0) { // FHCRC
-            skip(2);
+        readingHeader = false;
+        if ((flags & 0x02) != 0) { // R1: FHCRC excludes the CRC field itself.
+            int lo = next();
+            int hi = next();
+            if (lo < 0 || hi < 0) throw new FormatException("truncated gzip FHCRC");
+            if ((lo | (hi << 8)) != (headerCrc.getValue() & 0xffff))
+                throw new FormatException("gzip FHCRC mismatch");
         }
         crc.reset();
         memberSize = 0;
@@ -268,7 +277,9 @@ final class Gunzip extends InputStream {
         if (pos == lim && !fill()) {
             return -1;
         }
-        return buf[pos++] & 0xFF;
+        int value = buf[pos++] & 0xFF;
+        if (readingHeader) headerCrc.update(value);
+        return value;
     }
 
     /** Refill the empty buffer; false at the end of the input. */

@@ -860,6 +860,726 @@
         "record": "{\"schema\":\"https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json\",\"schemaVersion\":2}",
         "outcome": "FHR@main | WARNING V5: schema https://raw.githubusercontent.com/FAIR-bioHeaders/FHT-Specification/v0.7.0/fht.json is not a FAIR-bioHeaders schema URL; read as FHR, not FHT, against the current schema (rule V5)"
       }
+    },
+    {
+      "id": "d9-canonical-parent-fhp-fasta-lf",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhp-fasta-lf"
+      },
+      "from": {
+        "id": "fhp-fasta-lf",
+        "format": "fhp-fasta",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhp-fasta-lf",
+        "format": "fhp-fasta",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhp-fasta-crlf",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhp-fasta-crlf"
+      },
+      "from": {
+        "id": "fhp-fasta-crlf",
+        "format": "fhp-fasta",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhp-fasta-crlf",
+        "format": "fhp-fasta",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhp-fasta-no-final-newline",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhp-fasta-no-final-newline"
+      },
+      "from": {
+        "id": "fhp-fasta-no-final-newline",
+        "format": "fhp-fasta",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhp-fasta-no-final-newline",
+        "format": "fhp-fasta",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhp-fasta-comments-and-blank-lines",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhp-fasta-comments-and-blank-lines"
+      },
+      "from": {
+        "id": "fhp-fasta-comments-and-blank-lines",
+        "format": "fhp-fasta",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhp-fasta-comments-and-blank-lines",
+        "format": "fhp-fasta",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhp-fasta-escaped-record-markers",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhp-fasta-escaped-record-markers"
+      },
+      "from": {
+        "id": "fhp-fasta-escaped-record-markers",
+        "format": "fhp-fasta",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhp-fasta-escaped-record-markers",
+        "format": "fhp-fasta",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhp-fasta-gzip",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhp-fasta-gzip"
+      },
+      "from": {
+        "id": "fhp-fasta-gzip",
+        "format": "fhp-fasta",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhp-fasta-gzip",
+        "format": "fhp-fasta",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhp-fasta-bgzf",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhp-fasta-bgzf"
+      },
+      "from": {
+        "id": "fhp-fasta-bgzf",
+        "format": "fhp-fasta",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhp-fasta-bgzf",
+        "format": "fhp-fasta",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhp-fasta-mixed-sources",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhp-fasta-mixed-sources"
+      },
+      "from": {
+        "id": "fhp-fasta-mixed-sources",
+        "format": "fhp-fasta",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhp-fasta-mixed-sources",
+        "format": "fhp-fasta",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhp-fasta-rich",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhp-fasta-rich"
+      },
+      "from": {
+        "id": "fhp-fasta-rich",
+        "format": "fhp-fasta",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhp-fasta-rich",
+        "format": "fhp-fasta",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhp-fasta-busco-lineage-dotted",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhp-fasta-busco-lineage-dotted"
+      },
+      "from": {
+        "id": "fhp-fasta-busco-lineage-dotted",
+        "format": "fhp-fasta",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhp-fasta-busco-lineage-dotted",
+        "format": "fhp-fasta",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhgff3-minimal-checksum-link",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhgff3-minimal-checksum-link"
+      },
+      "from": {
+        "id": "fhgff3-minimal-checksum-link",
+        "format": "fhgff3",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhgff3-minimal-checksum-link",
+        "format": "fhgff3",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhgff3-both-links",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhgff3-both-links"
+      },
+      "from": {
+        "id": "fhgff3-both-links",
+        "format": "fhgff3",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhgff3-both-links",
+        "format": "fhgff3",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhgff3-directives-interleaved",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhgff3-directives-interleaved"
+      },
+      "from": {
+        "id": "fhgff3-directives-interleaved",
+        "format": "fhgff3",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhgff3-directives-interleaved",
+        "format": "fhgff3",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhgff3-directives-after-header",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhgff3-directives-after-header"
+      },
+      "from": {
+        "id": "fhgff3-directives-after-header",
+        "format": "fhgff3",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhgff3-directives-after-header",
+        "format": "fhgff3",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhgff3-triple-hash-before-features",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhgff3-triple-hash-before-features"
+      },
+      "from": {
+        "id": "fhgff3-triple-hash-before-features",
+        "format": "fhgff3",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhgff3-triple-hash-before-features",
+        "format": "fhgff3",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhgff3-embedded-fasta",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhgff3-embedded-fasta"
+      },
+      "from": {
+        "id": "fhgff3-embedded-fasta",
+        "format": "fhgff3",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhgff3-embedded-fasta",
+        "format": "fhgff3",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhgff3-header-only",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhgff3-header-only"
+      },
+      "from": {
+        "id": "fhgff3-header-only",
+        "format": "fhgff3",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhgff3-header-only",
+        "format": "fhgff3",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhgff3-version-3-1-26",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhgff3-version-3-1-26"
+      },
+      "from": {
+        "id": "fhgff3-version-3-1-26",
+        "format": "fhgff3",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhgff3-version-3-1-26",
+        "format": "fhgff3",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhgff3-version-3-trailing-whitespace",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhgff3-version-3-trailing-whitespace"
+      },
+      "from": {
+        "id": "fhgff3-version-3-trailing-whitespace",
+        "format": "fhgff3",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhgff3-version-3-trailing-whitespace",
+        "format": "fhgff3",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhgff3-crlf",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhgff3-crlf"
+      },
+      "from": {
+        "id": "fhgff3-crlf",
+        "format": "fhgff3",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhgff3-crlf",
+        "format": "fhgff3",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhgff3-gzip",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhgff3-gzip"
+      },
+      "from": {
+        "id": "fhgff3-gzip",
+        "format": "fhgff3",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhgff3-gzip",
+        "format": "fhgff3",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhgff3-bgzf",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhgff3-bgzf"
+      },
+      "from": {
+        "id": "fhgff3-bgzf",
+        "format": "fhgff3",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhgff3-bgzf",
+        "format": "fhgff3",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhgff3-nested-parent-checksum",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhgff3-nested-parent-checksum"
+      },
+      "from": {
+        "id": "fhgff3-nested-parent-checksum",
+        "format": "fhgff3",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhgff3-nested-parent-checksum",
+        "format": "fhgff3",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhgff3-busco-lineage-dotted",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhgff3-busco-lineage-dotted"
+      },
+      "from": {
+        "id": "fhgff3-busco-lineage-dotted",
+        "format": "fhgff3",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhgff3-busco-lineage-dotted",
+        "format": "fhgff3",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhp-fasta-schema-canonical-raw-main",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhp-fasta-schema-canonical-raw-main"
+      },
+      "from": {
+        "id": "fhp-fasta-schema-canonical-raw-main",
+        "format": "fhp-fasta",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhp-fasta-schema-canonical-raw-main",
+        "format": "fhp-fasta",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhgff3-schema-canonical-raw-main",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhgff3-schema-canonical-raw-main"
+      },
+      "from": {
+        "id": "fhgff3-schema-canonical-raw-main",
+        "format": "fhgff3",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhgff3-schema-canonical-raw-main",
+        "format": "fhgff3",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhp-fasta-schema-raw-tag",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhp-fasta-schema-raw-tag"
+      },
+      "from": {
+        "id": "fhp-fasta-schema-raw-tag",
+        "format": "fhp-fasta",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhp-fasta-schema-raw-tag",
+        "format": "fhp-fasta",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhgff3-schema-raw-main",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhgff3-schema-raw-main"
+      },
+      "from": {
+        "id": "fhgff3-schema-raw-main",
+        "format": "fhgff3",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhgff3-schema-raw-main",
+        "format": "fhgff3",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhp-fasta-extension-fields",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhp-fasta-extension-fields"
+      },
+      "from": {
+        "id": "fhp-fasta-extension-fields",
+        "format": "fhp-fasta",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhp-fasta-extension-fields",
+        "format": "fhp-fasta",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
+    },
+    {
+      "id": "d9-canonical-parent-fhgff3-extension-fields",
+      "reason": "Adopted D9 R4 runtime enforcement. The unchanged historical fixture contains a noncanonical parent checksum. Byte-bound retirement crosswalk makes the new effective expectation invalid; original fixture, manifest and golden remain unchanged.",
+      "section": "vectors",
+      "match": {
+        "id": "fhgff3-extension-fields"
+      },
+      "from": {
+        "id": "fhgff3-extension-fields",
+        "format": "fhgff3",
+        "expected": "valid",
+        "passed": true,
+        "status": "VALID",
+        "detail": ""
+      },
+      "to": {
+        "id": "fhgff3-extension-fields",
+        "format": "fhgff3",
+        "expected": "invalid",
+        "passed": true,
+        "status": "INVALID",
+        "detail": ""
+      }
     }
   ]
 }

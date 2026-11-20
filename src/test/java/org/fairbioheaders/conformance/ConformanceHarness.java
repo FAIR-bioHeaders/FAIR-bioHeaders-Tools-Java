@@ -124,6 +124,18 @@ public final class ConformanceHarness {
         }
         Path file = specDir.resolve("conformance").resolve(v.get("file").asString());
         byte[] data = BioHeaders.readAll(file);
+        boolean retiredValid = false;
+        JsonNode crosswalk = JSON.readTree(ConformanceHarness.class.getResourceAsStream("/golden/retirement-crosswalk.json"));
+        for (JsonNode retired : crosswalk.path("cases")) {
+            if (retired.path("id").asString().equals(id) && expectedValid) {
+                try {
+                    String digest = java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(file)));
+                    if (!digest.equals(retired.path("oldSha256").asString())) throw new IOException("retired source bytes differ: " + id);
+                } catch (java.security.NoSuchAlgorithmException e) { throw new IllegalStateException(e); }
+                expectedValid = false;
+                retiredValid = true;
+            }
+        }
         VerifyResult result = verifier.verify(data, kind);
 
         List<String> problems = new ArrayList<>();
@@ -169,7 +181,7 @@ public final class ConformanceHarness {
             }
             // Invalid for the right reason: an error must carry the rule the vector breaks.
             if (v.has("rule") && !result.isValid()) {
-                String rule = v.get("rule").asString();
+                String rule = retiredValid ? "R4" : v.get("rule").asString();
                 Set<String> accepted = evidenceFor(rule);
                 if (result.errors().stream().noneMatch(i -> accepted.contains(i.rule()))) {
                     problems.add("expected an error for rule " + rule + " (labels " + accepted
@@ -196,6 +208,7 @@ public final class ConformanceHarness {
     public static Set<String> evidenceFor(String rule) {
         return switch (rule) {
             case "G3" -> Set.of("G3", "schema", "container");
+            case "R17" -> Set.of("R17", "container");
             case "P1", "P2", "G2", "R15", "V1", "V2", "V3", "V5", "V6" -> Set.of(rule, "schema");
             case "R1" -> Set.of("R1", "R3");
             case "R4" -> Set.of("R4", "R3", "R5");
