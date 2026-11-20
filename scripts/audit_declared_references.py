@@ -47,6 +47,17 @@ def inventory(root=ROOT):
             row=byfile.get(local,{})
             add(tag+"-"+typ,source,tag,prov.get("tagCommits",{}).get(tag),"released-contract",
                 [file(prefix+local,typ.lower()+".json",row.get("sha256"))])
+    for native in bundle["types"]:
+        row=native.get("draft")
+        if not row: continue
+        typ=native["fileKey"];repo=repository(row["repository"])
+        add("registry-"+typ+"-contract",repo,row.get("commit"),row.get("commit"),"draft-contract",
+            [file(prefix+row["file"],row.get("sourcePath"),row.get("sha256"))],"draft")
+        if row.get("transportFile"):
+            add("registry-"+typ+"-transport",repo,row.get("transportCommit"),row.get("transportCommit"),"draft-contract",
+                [file(prefix+row["transportFile"],row.get("transportSourcePath"),row.get("transportSha256"))],"draft")
+        add("registry-"+typ+"-suite",repo,row.get("suiteCommit"),row.get("suiteCommit"),"conformance-suite",
+            [file(None,"conformance/manifest.json" if typ=="FHT" else "development/conformance/manifest.json",row.get("suiteManifestSha256"))],"draft")
     for typ,row in prov["drafts"].items():
         repo=repository(row["url"])
         for n,a in enumerate(row["artifacts"]):
