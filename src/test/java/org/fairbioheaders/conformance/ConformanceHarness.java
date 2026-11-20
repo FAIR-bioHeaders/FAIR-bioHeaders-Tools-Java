@@ -49,6 +49,8 @@ public final class ConformanceHarness {
     private final Path specDir;
     private final JsonNode manifest;
     private final BioHeaders verifier = new BioHeaders();
+    private final Set<String> canonicalEvidenceIds = new java.util.HashSet<>();
+    public Set<String> canonicalEvidenceIds() { return Set.copyOf(canonicalEvidenceIds); }
 
     public ConformanceHarness() {
         this.specDir = locateSpec();
@@ -125,7 +127,6 @@ public final class ConformanceHarness {
         Path file = specDir.resolve("conformance").resolve(v.get("file").asString());
         byte[] data = BioHeaders.readAll(file);
         boolean retiredValid = false;
-        String evidence = "original payload";
         JsonNode crosswalk = JSON.readTree(ConformanceHarness.class.getResourceAsStream("/golden/retirement-crosswalk.json"));
         for (JsonNode retired : crosswalk.path("cases")) {
             if (retired.path("id").asString().equals(id)) {
@@ -139,7 +140,7 @@ public final class ConformanceHarness {
                     if (!digest.equals(retired.path("replacementSha256").asString())) throw new IOException("replacementSha256 mismatch: " + id);
                 } catch (java.security.NoSuchAlgorithmException e) { throw new IllegalStateException(e); }
                 byte[] canonical = BioHeaders.readAll(counterpart);
-                evidence = "digest-bound canonical predicate=" + retired.path("replacedBy").asString();
+                canonicalEvidenceIds.add(retired.path("replacedBy").asString());
                 if (expectedValid) {
                     VerifyResult canonicalResult = verifier.verify(canonical,kind);
                     if (!canonicalResult.isValid()) throw new IOException("canonical valid counterpart failed: " + retired.path("replacedBy").asString());
@@ -204,7 +205,7 @@ public final class ConformanceHarness {
             }
         }
         return new Outcome(id, format, expectedValid, true, problems.isEmpty(),
-            result.status(), evidence + (problems.isEmpty() ? "" : "; " + String.join("; ", problems)));
+            result.status(), String.join("; ", problems));
     }
 
     /**
