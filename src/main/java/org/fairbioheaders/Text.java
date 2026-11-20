@@ -20,9 +20,9 @@ final class Text {
         StringBuilder sb = null;
         for (int k = 0; k < text.length(); k++) {
             char c = text.charAt(k);
-            boolean control = c < 0x20 || (c >= 0x7F && c <= 0x9F) || c == ' ' || c == ' '
-                || (c >= '‪' && c <= '‮') || (c >= '⁦' && c <= '⁩')
-                || c == '‎' || c == '‏';
+            boolean control = c < 0x20 || (c >= 0x7F && c <= 0x9F) || c == '\u2028' || c == '\u2029'
+                || (c >= '\u202A' && c <= '\u202E') || (c >= '\u2066' && c <= '\u2069')
+                || c == '\u200E' || c == '\u200F';
             if (control && sb == null) {
                 sb = new StringBuilder(text.length() + 8).append(text, 0, k);
             }

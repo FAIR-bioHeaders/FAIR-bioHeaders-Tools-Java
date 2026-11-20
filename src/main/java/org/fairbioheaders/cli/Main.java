@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.fairbioheaders.BioHeaders;
 import org.fairbioheaders.Issue;
@@ -116,6 +118,13 @@ public final class Main {
         builder.enableDrafts(draftNames);
         Options options = draftFlag || !draftNames.isEmpty() ? builder.build() : Options.fromEnvironment();
         BioHeaders verifier = new BioHeaders(options);
+        for (String name : options.draftSelection()) {
+            if (!verifier.declaredDraftTypes().contains(name)) {
+                print(out, "unknown draft type " + name + "; declared types: "
+                    + verifier.declaredDraftTypes());
+                return 2;
+            }
+        }
         if (options.draftContractsEnabled()) {
             out.println("note: the rule V7 draft lane is ON; a record read through an unreleased"
                 + " contract carries a V7 warning naming the pinned commit and SHA-256, and is not"
@@ -213,6 +222,18 @@ public final class Main {
         out.println(sb.append(')').toString());
     }
 
+    private static final Pattern EXPLICIT_PARENT = Pattern.compile(
+        "^([A-Za-z0-9+/]{42}[AEIMQUYcgkosw048]=)=(.+)$", Pattern.DOTALL);
+
+    record ParentSpec(String checksum, String file) { }
+
+    /** A padding '=' belongs to the checksum; only canonical R4 bytes select this form. */
+    static ParentSpec parentSpec(String value) {
+        Matcher match = EXPLICIT_PARENT.matcher(value);
+        return match.matches() ? new ParentSpec(match.group(1), match.group(2))
+            : new ParentSpec(null, value);
+    }
+
     /**
      * Resolves {@code --parent} arguments. Two forms, because a link states only a checksum:
      *
@@ -232,12 +253,9 @@ public final class Main {
         Map<String, ParentLinks.Parent> explicit = new java.util.LinkedHashMap<>();
         List<ParentLinks.Parent> candidates = new ArrayList<>();
         for (String spec : specs) {
-            // A checksum is exactly 44 characters ending in '=', so the explicit form is the one
-            // where character 45 is the separator; a plain path (however it is spelled) never is.
-            boolean explicitForm = spec.length() > 45 && spec.charAt(44) == '='
-                && spec.charAt(43) == '=';
-            String stated = explicitForm ? spec.substring(0, 44) : null;
-            String path = explicitForm ? spec.substring(45) : spec;
+            ParentSpec parsed = parentSpec(spec);
+            String stated = parsed.checksum();
+            String path = parsed.file();
             ParentLinks.Parent parent = load(Path.of(path));
             if (stated == null) {
                 candidates.add(parent);

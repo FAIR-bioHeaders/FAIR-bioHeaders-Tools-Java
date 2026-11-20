@@ -5,7 +5,8 @@
 The [Round 16 policy](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues/211#issuecomment-7042896529)
 supersedes the former conditional agent-merge authorization of 2026-11-16/18 and
 the #268 authority links recorded under it. **Agents must never merge pull
-requests in this repository; a human performs every merge.** Do not enable
+requests; a human performs every merge, across all repositories an agent operates
+in, including external upstream repositories and personal forks.** Do not enable
 auto-merge, enter a merge queue, use another agent or service as a merge proxy,
 or push directly to the default branch as a substitute for merging a PR. Model
 review never grants an agent merge authority; preserve platform protections and
@@ -76,16 +77,13 @@ contract; this repository has no released contract version of its own and
 releases, fixed schema aliases or existing file-bound headers.
 
 Check the adoption decision and released support before implementing a
-proposal; an issue or PR's existence does not establish adoption. **FHT and
-FHGM are drafts (rule V7): they have no released contract, no **released or
-registered** `schemaVersion`, no w3id URL, no entry in the shared registry, and
-no support claim — and a draft never takes a release form.** The qualification is
-load-bearing, not pedantry: the FHT draft contract itself *requires* a
-`schemaVersion: "1.0"` field inside every FHT header, so "no `schemaVersion`" read
-bare is simply false about FHT bytes and makes a future V7 token sweep either cry
-wolf at a required field or miss a real release form. What no draft has is a
-`schemaVersion` **registered in the shared `schemas/versions.json`**, which is the
-thing that would make a reader entitled to select it as a release.** This repository registers **two**
+proposal; an issue or PR's existence does not establish adoption. The family has
+published FHT 1.0 in specification v0.7.0 and native FHGM 0.1 in v0.8.0. FHGM
+remains a model contract, not a header type. This Java build retains its earlier
+reviewed V7 draft pins and does not implement either newly published form; no
+consumer support or pin change follows automatically from publication. The pinned
+FHT draft's required `schemaVersion: "1.0"` is not a claim that this build selects
+the released contract. This repository registers **two**
 drafts as pinned rows of `schemas/bundled.json`, both readable only through the
 explicit V7 opt-in and both warned on for every record read that way: `FHT` (the
 commit and SHA-256 of FHT-Specification's `fht.json`, a file-bound header) and
