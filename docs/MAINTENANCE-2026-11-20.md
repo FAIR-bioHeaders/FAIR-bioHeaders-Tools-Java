@@ -39,3 +39,16 @@ the review packet; no speculative contract or validator changes were made.
 The JVM validation ran on OpenJDK 27 with Java 17 bytecode target; supported JDK
 17/21 platform matrices remain current-head CI obligations. No broad exception
 handler converts internal/configuration failures into ordinary invalid-file verdicts.
+
+
+### Independent integration review and workflow hardening
+
+The continuation received independent review by configured GPT-6.1 Terra,
+separate from the Codex GPT-6 implementation author (exact runtime variant
+unexposed). Review covered all eleven Julia runtime modules, the R/Java
+continuation deltas, and the three workflow hardening changes. Source action
+tag/commit receipts and scan logs are retained in the Round 16 handoff packet.
+Actions are pinned to verified full commit IDs, checkout credential persistence
+is disabled, and Julia CI input boundaries use environment variables. Final
+workflow scans reported zero actionlint and zizmor diagnostics. Human merge is
+required; review does not confer agent merge authority.
