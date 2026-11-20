@@ -354,9 +354,23 @@ public final class SchemaBundle {
         }
     }
 
+    private static void canonicalChecksum(JsonNode value, String location, List<Issue> issues) {
+        if (value.isString() && !value.asString().matches("[A-Za-z0-9+/]{42}[AEIMQUYcgkosw048]=")) {
+            issues.add(Issue.error("R4", location + " is not canonical SHA-512/256 base64"));
+        }
+    }
+
     /** Validate metadata against a contract; each schema failure becomes an ERROR issue. */
     public static List<Issue> validate(Schema contract, JsonNode metadata) {
         List<Issue> issues = new ArrayList<>();
+        canonicalChecksum(metadata.path("checksum"), "/checksum", issues);
+        JsonNode parents = metadata.path("derivedFrom");
+        if (parents.isArray()) {
+            int index = 0;
+            for (JsonNode parent : parents) {
+                canonicalChecksum(parent.path("checksum"), "/derivedFrom/" + index++ + "/checksum", issues);
+            }
+        }
         for (Error error : contract.validate(metadata)) {
             issues.add(Issue.error("schema", error.getMessage()));
         }

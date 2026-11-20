@@ -141,7 +141,7 @@ class CliTest {
         // Naming the parent of a link explicitly is what turns a stale claim into a rejection: the
         // child states a value the supplied file does not produce, so the verdict is CHECKED_FAIL
         // and the record is invalid (C3 is a rejection, not a note).
-        String stale = "B".repeat(43) + "=";
+        String stale = "B".repeat(42) + "A="; // canonical R4 shape, deliberately wrong identity
         Path staleChild = write(dir, "stale.fhgff3.gff3", Fixtures.fhgff3LinkedTo(stale));
         Result failing = run("verify", "--parent", stale + "=" + parentFile, staleChild.toString());
         assertEquals(1, failing.code(), failing.out());

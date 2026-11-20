@@ -1,0 +1,23 @@
+name: Adopted reader policies
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  policy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: FAIR-bioHeaders/FAIR-bioHeaders-Specification
+          ref: 9b5269de0b00186718b07f42b0c48123341ff4de
+          path: .policy
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - run: ./mvnw -B -ntp package -DskipTests
+      - run: java -cp target/test-classes:target/fair-bioheaders-java-0.1.0-SNAPSHOT.jar org.fairbioheaders.ReaderPolicyRunner .policy/conformance/reader-policy

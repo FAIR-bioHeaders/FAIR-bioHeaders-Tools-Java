@@ -221,6 +221,11 @@ final class PortableYaml {
         if (!(ev instanceof DocumentStartEvent)) {
             throw new ScanException("yaml", "expected a YAML document");
         }
+        DocumentStartEvent document = (DocumentStartEvent) ev;
+        if (document.getExplicit() || document.getVersion() != null ||
+                (document.getTags() != null && !document.getTags().isEmpty())) {
+            throw new ScanException("R12", "YAML directives and document-start markers are forbidden");
+        }
         JsonNode root = py.compose(parser, 0);
         ev = parser.getEvent();
         if (!ev.is(Event.ID.DocumentEnd)) {
