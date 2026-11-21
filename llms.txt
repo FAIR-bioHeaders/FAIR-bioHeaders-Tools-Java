@@ -11,7 +11,7 @@ Key facts (this library bundles contract copies of FAIR-bioHeaders-Specification
 - Many FASTA tools reject a leading `;~` block, including samtools faidx (htslib), pysam `FastaFile`, bedtools getfasta, Picard, Bowtie2, HISAT2, STAR, salmon and Biopython's default `fasta` format. Use `bioheaders strip` (Python toolkit) to make a plain copy, or `SeqIO.parse(path, "fasta-pearson")` in Biopython. GFF3 and GFA tools surveyed accept `#~` lines.
 - Plain YAML scalars must read identically under YAML 1.1 and YAML 1.2 (rule R12): `010`, `1_000`, `1:30`, `yes`, `1e3` and explicit tags are invalid; the reader enforces this with its own resolver pinned to the reference toolkit's behavior, not the parser's.
 - Extension fields (rule R15, from FHR 2.1 and FHP/FHGFF3 1.1): top-level `^x-[A-Za-z0-9][A-Za-z0-9_.-]*$` keys are accepted and carry no standard meaning; every other unknown key is invalid and nested objects stay closed.
-- No schema is released for FHT or FHGM (drafts, rule V7): no **released/registered** `schemaVersion` (the FHT draft contract itself requires a `schemaVersion: "1.0"` field in the header — what is absent is a `schemaVersion` registered in the shared `schemas/versions.json`), no w3id URL, no registry row. Header types are registry data (`schemas/bundled.json` `types`). **FHT is registered as a pinned draft** (FHT-Specification commit 86438f21c3a17a58334c97aed4955be1a2393522, SHA-256 4156353aa6d077fee2d2c69be4e17859b8e4f81bb10824f3c87f6701de196e7a): readable only through explicit opt-in (`Options.builder().enableDraftContracts(true)`, `verify --experimental-drafts`, `--draft FHT`, system property `org.fairbioheaders.experimental.drafts`, environment variable `FAIR_BIOHEADERS_EXPERIMENTAL_DRAFTS`), re-digest-checked at bundle build, and warned on per record with the commit and digest named. Gate closed = rule V5 (read as FHR, near-miss warning), byte-identical to the released-only reader. Reading a draft is not adoption, support or release, and its 82 vectors are counted in a separate labelled job, never in the 291. **FHGM is registered as an `embedded-records` draft**: it is not a header type - its records ride inside an FHGFF3 header under `x-fhgm-models`, the file stays routed by its released FHGFF3 citation, and `FhgmModels` (opt-in, two further pinned contract files, each with its own commit: record contract `b7075e58…` at commit `06176262…`, transport overlay `533b3120…` (3 191 B, the dual-base overlay with URL-keyed selection and the widened model layer of FHGM#29) at commit `019bc29e…`, both of FHGM-Specification) applies the draft's model-level rules K1-K6, refusing any carrier whose base schema or checksum fails first (B1). Its 62 vectors and 10 rule tests run in the labelled draft job (this library scores K4 natively while FHGM#22/#27/#28, FAIR-bioHeaders-Specification#241 and JS#11 leave the K4 abstention question open upstream: a pass under these bytes carries FHGM#29's widened model-layer meaning, and 4 FHT vectors remain candidate-unreviewed); the suite's separate FHGFF3-1.2 `base_matrix.json` lane is not run here. See docs/CAPABILITY-MATRIX.md.
+- This build retains historical FHT/FHGM draft pins (rule V7); family FHT 1.0 and native FHGM 0.1 publication do not promote these consumer pins. For these pinned draft forms: no **released/registered** `schemaVersion` (the FHT draft contract itself requires a `schemaVersion: "1.0"` field in the header — what is absent is a `schemaVersion` registered in the shared `schemas/versions.json`), no w3id URL, no registry row. Header types are registry data (`schemas/bundled.json` `types`). **FHT is registered as a pinned draft** (FHT-Specification commit 86438f21c3a17a58334c97aed4955be1a2393522, SHA-256 4156353aa6d077fee2d2c69be4e17859b8e4f81bb10824f3c87f6701de196e7a): readable only through explicit opt-in (`Options.builder().enableDraftContracts(true)`, `verify --experimental-drafts`, `--draft FHT`, system property `org.fairbioheaders.experimental.drafts`, environment variable `FAIR_BIOHEADERS_EXPERIMENTAL_DRAFTS`), re-digest-checked at bundle build, and warned on per record with the commit and digest named. Gate closed = rule V5 (read as FHR, near-miss warning), byte-identical to the released-only reader. Reading a draft is not adoption, support or release, and its 82 vectors are counted in a separate labelled job, never in the 291. **FHGM is registered as an `embedded-records` draft**: it is not a header type - its records ride inside an FHGFF3 header under `x-fhgm-models`, the file stays routed by its released FHGFF3 citation, and `FhgmModels` (opt-in, two further pinned contract files, each with its own commit: record contract `b7075e58…` at commit `06176262…`, transport overlay `533b3120…` (3 191 B, the dual-base overlay with URL-keyed selection and the widened model layer of FHGM#29) at commit `019bc29e…`, both of FHGM-Specification) applies the draft's model-level rules K1-K6, refusing any carrier whose base schema or checksum fails first (B1). Its 62 vectors and 10 rule tests run in the labelled draft job (this library scores K4 natively while FHGM#22/#27/#28, FAIR-bioHeaders-Specification#241 and JS#11 leave the K4 abstention question open upstream: a pass under these bytes carries FHGM#29's widened model-layer meaning, and 4 FHT vectors remain candidate-unreviewed); the suite's separate FHGFF3-1.2 `base_matrix.json` lane is not run here. See docs/CAPABILITY-MATRIX.md.
 
 ## Using it
 
@@ -45,33 +45,29 @@ CLI: `./mvnw -DskipTests package`, then `java -jar target/fair-bioheaders-java-0
 - [fair-bioheaders on PyPI](https://pypi.org/project/fair-bioheaders/) — the reference toolkit (`bioheaders combine|verify|strip|convert`)
 - This repository's [docs/STATUS.md](docs/STATUS.md), [docs/DEPENDENCIES.md](docs/DEPENDENCIES.md) and [AGENTS.md](AGENTS.md)
 
-## Independent review and merge authorization (2026-11-18)
+## Independent review and human-only merges (maintainer direction, 2026-11-20)
 
-Never push directly to the default branch. Use a PR under this authorization.
+The [Round 16 policy](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues/211#issuecomment-7042896529)
+supersedes the former conditional agent-merge authorization of 2026-11-16/18 and
+the #268 authority links recorded under it. **Agents must never merge pull
+requests in this repository; a human performs every merge.** Do not enable
+auto-merge, enter a merge queue, use another agent or service as a merge proxy,
+or push directly to the default branch as a substitute for merging a PR. Model
+review never grants an agent merge authority; preserve platform protections and
+do not forge approval or work around repository permissions.
 
-The maintainer's independent-review rule (2026-11-18) applies only to
-FAIR-bioHeaders repositories and agents operated by David Molik (`molikd`) or
-Adam Wright (`adamjohnwright`). A PR submitted by either maintainer or their
-agents may satisfy the approval gate through an independent **different model**:
-Copilot, or a model operated by David or Adam. The approving model/agent must be
-other than the submitter; an agent must not self-approve its PR, and another
-instance of the same model does not satisfy the different-model requirement.
-Record author/reviewer model provenance when needed to establish independence.
-David and Adam themselves may self-approve their PRs; this exception does not
-apply to their agents.
+Every PR receives independent review from another actual model. A different
+model family is preferred (for example Codex or Gemini reviewing Qwen work, or
+Qwen reviewing Codex work), but family diversity is a preference, not a hard
+requirement; a second session of the same model is not another model. Record
+actual author/reviewer model identities and never invent review provenance.
 
-An eligible agent may merge only after that approval requirement is met, all
-applicable CI checks are green, and its own validation of the current changes
-passes, including changes after review. Recheck the exact head, base branch,
-findings and dependencies immediately before merging. Missing checks are not
-passing checks, and branch protection must not be bypassed. Read every overall
-review and inline finding, reply with its disposition and fix/evidence, resolve
-handled threads, and post an overall response. Merge authorization does not grant
-contract adoption, curator acceptance, release, publication or deployment
-authority; those retain their separate maintainer gates.
-
-Authority: [approval by another, different model](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues/268#issuecomment-6984337685)
-and [human self-approval exception](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/issues/268#issuecomment-6984418624).
-
-Port source: FAIR-bioHeaders-Specification commit
-`0d0d6b43efdee96bc7548f1f7c65fdafb2a31f32` ([specification PR #269](https://github.com/FAIR-bioHeaders/FAIR-bioHeaders-Specification/pull/269)).
+Agents keep monitoring CI and fixing failures and actionable review findings:
+read the overall review and every inline finding, fix in new commits, reply with
+disposition and evidence, resolve handled threads and acknowledge clean reviews.
+Validate the current head after changes and hand the human exact head/base,
+review, CI, dependency and remaining-risk information. Missing, failed and
+NOT_RUN checks are not passes. This grants no contract adoption, curator
+acceptance, release, publication or deployment authority — those gates are
+unchanged. Earlier rounds' authorized merges and dated receipts remain accurate
+historical facts, not future permission.

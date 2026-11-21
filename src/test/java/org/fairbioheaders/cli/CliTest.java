@@ -51,6 +51,30 @@ class CliTest {
     }
 
     @Test
+    void equalSignsDoNotTurnAnOrdinaryParentPathIntoAChecksumArgument() {
+        String plain = "./" + "x".repeat(41) + "==parent.fhr.fasta";
+        assertEquals('=', plain.charAt(43));
+        assertEquals('=', plain.charAt(44));
+        Main.ParentSpec parsed = Main.parentSpec(plain);
+        assertEquals(null, parsed.checksum());
+        assertEquals(plain, parsed.file());
+        String checksum = Fixtures.statedChecksum(Fixtures.fhrFasta(">seq1\nACGT\n"));
+        String file = "folder/with=sign/parent.fhr.fasta";
+        Main.ParentSpec explicit = Main.parentSpec(checksum + "=" + file);
+        assertEquals(checksum, explicit.checksum());
+        assertEquals(file, explicit.file());
+    }
+
+    @Test
+    void anUnknownDraftNameIsAUsageErrorBeforeAnyLaneClaim(@TempDir Path dir) {
+        Path file = write(dir, "valid.fhr.fasta", Fixtures.fhrFasta(">seq1\nACGT\n"));
+        Result result = run("verify", "--draft", "FHTT", file.toString());
+        assertEquals(2, result.code(), result.out());
+        assertTrue(result.out().contains("unknown draft type FHTT"), result.out());
+        assertFalse(result.out().contains("draft lane is ON"), result.out());
+    }
+
+    @Test
     void versionNamesTheBundledReleaseAndTheRegisteredDraft() {
         Result r = run("version");
         assertEquals(0, r.code());
